@@ -27,7 +27,7 @@ go_echo_code <- paste(
 tmp_go <- tempfile(fileext = ".go")
 writeLines(go_echo_code, tmp_go)
 
-tmp_bin <- tempfile()
+tmp_bin <- if (.Platform$OS.type == "windows") tempfile(fileext = ".exe") else tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
 
 ipc_url <- create_ipc_path()
@@ -37,8 +37,17 @@ on.exit(echo_proc$kill())
 Sys.sleep(3)
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")
-print(nanonext::send(sock, msg, mode = "raw"))
+send_result <- nanonext::send(sock, msg, mode = "raw")
+if (nanonext::is_error_value(send_result)) {
+    Sys.sleep(1)
+    send_result <- nanonext::send(sock, msg, mode = "raw")
+}
+print(send_result)
 rep <- nanonext::recv(sock, mode = "raw")
+if (nanonext::is_error_value(rep)) {
+    Sys.sleep(1)
+    rep <- nanonext::recv(sock, mode = "raw")
+}
 Sys.sleep(3)
 print(rawToChar(rep))
 close(sock)
