@@ -2,7 +2,7 @@
 % Please edit documentation in R/mangoro-bin.R
 \name{get_mangos_version}
 \alias{get_mangos_version}
-\title{Get the version of vendored mangos}
+\title{Get the version of vendored mangos using Go tooling (no jsonlite)}
 \usage{
 get_mangos_version()
 }
@@ -10,5 +10,5 @@ get_mangos_version()
 The version string of go.nanomsg.org/mangos/v3 in the vendor go.mod
 }
 \description{
-Get the version of vendored mangos
+Get the version of vendored mangos using Go tooling (no jsonlite)
 }

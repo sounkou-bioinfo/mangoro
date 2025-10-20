@@ -30,44 +30,46 @@ library(processx)
 # vendored mangos version
 get_mangos_version()
 #> [1] "v3.4.3-0.20250905144305-2c434adf4860"
-go_echo_code <- '
-package main
-import (
-  "os"
-  "go.nanomsg.org/mangos/v3/protocol/rep"
-  _ "go.nanomsg.org/mangos/v3/transport/ipc"
+go_echo_code <- paste(
+  'package main',
+  'import (',
+  '  "os"',
+  '  "go.nanomsg.org/mangos/v3/protocol/rep"',
+  '  _ "go.nanomsg.org/mangos/v3/transport/ipc"',
+  ')',
+  'func main() {',
+  '  url := os.Args[1]',
+  '  sock, _ := rep.NewSocket()',
+  '  sock.Listen(url)',
+  '  for {',
+  '    msg, _ := sock.Recv()',
+  '    newMsg := append(msg, []byte(" [echoed by Go]")...)',
+  '    sock.Send(newMsg)',
+  '  }',
+  '}',
+  sep = "\n"
 )
-func main() {
-  url := os.Args[1]
-  sock, _ := rep.NewSocket()
-  sock.Listen(url)
-  for {
-    msg, _ := sock.Recv()
-    sock.Send(msg)
-  }
-}
-'
 
 tmp_go <- tempfile(fileext = ".go")
 writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpQJIB7A/file3579a1d71e111"
+#> [1] "/tmp/RtmpNIqbo3/file53a7f26891c2a"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpQJIB7A/mangoro-echo3579a4c61299c.ipc"
+#> [1] "ipc:///tmp/RtmpNIqbo3/mangoro-echo53a7f5a14f840.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
-
+echo_proc$is_alive()
+#> [1] TRUE
 sock <- nanonext::socket("req", dial = ipc_url)
-msg <- "hello from R (compiled)"
-nanonext::send(sock, msg)
+msg <- charToRaw("hello from R")
+nanonext::send(sock, msg, mode = "raw")
 #> [1] 0
-reply <- nanonext::recv(sock)
-reply
-#> [1] "hello from R (compiled)"
+nanonext::recv(sock, mode = "raw") |> rawToChar()
+#> [1] "hello from R [echoed by Go]"
 close(sock)
 echo_proc$kill()
 #> [1] TRUE

@@ -3,7 +3,7 @@
 # Usage: bash vendorMangos.sh
 
 set -e
-cd "$(dirname "$0")/../src/go"
+cd "$(dirname "$0")/../inst/go"
 
 # Initialize go module if not present
 if [ ! -f go.mod ]; then
