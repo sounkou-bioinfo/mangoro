@@ -36,7 +36,7 @@ library(processx)
 
 # vendored mangos version
 get_mangos_version()
-#> [1] NA
+#> [1] "v3.4.3-0.20250905144305-2c434adf4860"
 
 
 # Create a unique IPC path for the test
@@ -88,7 +88,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpFwMvzw/file223dce107a9e"
+#> [1] "/tmp/RtmplGSuR3/file24d9152dc5fac"
 
 ipc_url <- create_ipc_path()
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
