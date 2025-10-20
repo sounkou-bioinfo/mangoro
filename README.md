@@ -80,7 +80,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpierTMo/file25b005f9ff8b9"
+#> [1] "/tmp/RtmpsEN3wW/file263ef358dfb02"
 
 ipc_url <- create_ipc_path()
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
