@@ -55,11 +55,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpAcDEvo/file599df36d316c2"
+#> [1] "/tmp/RtmpEZvhiI/file666c051cf5b9d"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpAcDEvo/mangoro-echo599df4685f20a.ipc"
+#> [1] "ipc:///tmp/RtmpEZvhiI/mangoro-echo666c04e2e259.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
