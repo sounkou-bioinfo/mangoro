@@ -7,11 +7,13 @@ Authors@R:
 Description: This package provides an interface for inter-process communication (IPC) between R and Go using the Nanomsg library.
     It vendors on the Go side the mango library <https://github.com/nanomsg/mangos>
      and uses nanotext <https://github.com/r-lib/nanonext> on the R side.
-License: GPL (>= 3)
+License: GPL-3 + file LICENSE
+Depends: R (>= 4.4.0)
 Imports: 
-    nanonext,
     processx
-SystemRequirements: go (>= 1.21), GNU make
+Suggests: 
+    nanonext
+SystemRequirements: golang (>= 1.21), GNU make
 URL: https://github.com/sounkou-bioinfo/mangoro
 BugReports: https://github.com/sounkou-bioinfo/mangoro/issues
 Encoding: UTF-8

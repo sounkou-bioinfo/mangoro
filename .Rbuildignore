@@ -7,3 +7,10 @@
 ^inst/bin/*$
 ^README.html$
 ^README.Rmd$
+^\.github/.*$
+^scratch/.*$
+^src/go/.*$
+^.*\.Rcheck$
+^.*\.tar\.gz$
+^inst/go/vendor/github\.com/Microsoft/go-winio/\.golangci\.yml$
+^inst/go/vendor/go\.nanomsg\.org/mangos/v3/\.codecov\.yml$
