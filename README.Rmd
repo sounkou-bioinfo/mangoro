@@ -10,7 +10,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-# R/Go IPC with Nanomsg Next Gen
+[![goserveR status badge](https://sounkou-bioinfo.r-universe.dev/goserveR/badges/version)](https://sounkou-bioinfo.r-universe.dev/goserveR)
+
+# mangoro
+
+R/Go IPC with Nanomsg Next Gen.
+
+## What is mangoro?
+
+We vendore the [mangos/v3](https://github.com/nanomsg/mangos) Go package for IPC between R and Go processes using the `nanonext` R package. The package provides helper functions to build Go binaries that use mangos for IPC, and to find and run those binaries from R. This is a basic setup that can be used as a starting point for more complex R/Go IPC applications.
 
 ## Test echo server setup
 

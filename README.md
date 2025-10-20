@@ -1,5 +1,19 @@
 
-# R/Go IPC with Nanomsg Next Gen
+[![goserveR status
+badge](https://sounkou-bioinfo.r-universe.dev/goserveR/badges/version)](https://sounkou-bioinfo.r-universe.dev/goserveR)
+
+# mangoro
+
+R/Go IPC with Nanomsg Next Gen.
+
+## What is mangoro?
+
+We vendore the [mangos/v3](https://github.com/nanomsg/mangos) Go package
+for IPC between R and Go processes using the `nanonext` R package. The
+package provides helper functions to build Go binaries that use mangos
+for IPC, and to find and run those binaries from R. This is a basic
+setup that can be used as a starting point for more complex R/Go IPC
+applications.
 
 ## Test echo server setup
 
@@ -57,7 +71,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpQ3lNvu/file1be9d2a666220"
+#> [1] "/tmp/RtmpOJDLS0/file1cfff2bb078a8"
 
 ipc_url <- create_ipc_path()
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
