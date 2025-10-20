@@ -55,11 +55,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpEZvhiI/file666c051cf5b9d"
+#> [1] "/tmp/RtmpbNNyki/file9da04390ae60e"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpEZvhiI/mangoro-echo666c04e2e259.ipc"
+#> [1] "ipc:///tmp/RtmpbNNyki/mangoro-echo9da04343a88f2.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -71,6 +71,101 @@ nanonext::send(sock, msg, mode = "raw")
 nanonext::recv(sock, mode = "raw") |> rawToChar()
 #> [1] "hello from R [echoed by Go]"
 close(sock)
+echo_proc$kill()
+#> [1] TRUE
+```
+
+## Arrow IPC with nanoarrow, nanonext, and Go binary
+
+``` r
+library(nanoarrow)
+
+cfg <- nanonext::serial_config(
+  "ArrowTabular",
+  nanoarrow::write_nanoarrow,
+  nanoarrow::read_nanoarrow
+)
+ipc_url <- create_ipc_path()
+go_code <- '
+package main
+import (
+  "os"
+  "bytes"
+  "fmt"
+  "go.nanomsg.org/mangos/v3/protocol/rep"
+  _ "go.nanomsg.org/mangos/v3/transport/ipc"
+  "github.com/apache/arrow/go/v18/arrow/ipc"
+  "github.com/apache/arrow/go/v18/arrow/memory"
+)
+func main() {
+  url := os.Args[1]
+  sock, _ := rep.NewSocket()
+  sock.Listen(url)
+  for {
+    msg, _ := sock.Recv()
+    reader, err := ipc.NewReader(bytes.NewReader(msg), ipc.WithAllocator(memory.DefaultAllocator))
+    if err != nil {
+      fmt.Println("Arrow IPC error:", err)
+      continue
+    }
+    var buf bytes.Buffer
+    writer := ipc.NewWriter(&buf, ipc.WithSchema(reader.Schema()))
+    for reader.Next() {
+      rec := reader.Record()
+      fmt.Println(rec)
+      if err := writer.Write(rec); err != nil {
+        fmt.Println("Arrow IPC write error:", err)
+      }
+      rec.Release()
+    }
+    if err := writer.Close(); err != nil {
+      fmt.Println("Arrow IPC writer close error:", err)
+    }
+    reader.Release()
+    sock.Send(buf.Bytes())
+  }
+}
+'
+tmp_go <- tempfile(fileext = ".go")
+writeLines(go_code, tmp_go)
+tmp_bin <- tempfile()
+mangoro_go_build(tmp_go, tmp_bin)
+#> [1] "/tmp/RtmpbNNyki/file9da04931e1ee"
+
+echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
+Sys.sleep(3)
+echo_proc$is_alive()
+#> [1] TRUE
+sock <- nanonext::socket("req", dial = ipc_url)
+nanonext::opt(sock, "serial") <- cfg
+
+max_attempts <- 20
+send_result <- nanonext::send(sock, mtcars, mode = "serial")
+attempt <- 1
+while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
+  Sys.sleep(1)
+  send_result <- nanonext::send(sock, mtcars, mode = "serial")
+  attempt <- attempt + 1
+}
+print(send_result)
+#> [1] 0
+echo_proc$is_alive()
+#> [1] TRUE
+Sys.sleep(1)
+received <- nanonext::recv(sock, mode = "serial")
+attempt <- 1
+while (nanonext::is_error_value(received) && attempt < max_attempts) {
+  Sys.sleep(1)
+  received <- nanonext::recv(sock, mode = "serial")
+  attempt <- attempt + 1
+}
+print(received)
+#> 'errorValue' int 8 | Try again
+close(sock)
+echo_proc$read_output()
+#> [1] "Arrow IPC error: arrow/ipc: invalid message type (got=NONE, want=Schema)\n"
+echo_proc$read_error()
+#> [1] ""
 echo_proc$kill()
 #> [1] TRUE
 ```

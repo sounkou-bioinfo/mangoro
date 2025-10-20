@@ -14,3 +14,8 @@
 ^.*\.tar\.gz$
 ^inst/go/vendor/github\.com/Microsoft/go-winio/\.golangci\.yml$
 ^inst/go/vendor/go\.nanomsg\.org/mangos/v3/\.codecov\.yml$
+^inst/go/vendor/github.com/apache/arrow/go/v18/arrow/\.editorconfig$
+^inst/go/vendor/github.com/goccy/go-json/\.codecov\.yml$
+^inst/go/vendor/github.com/goccy/go-json/\.golangci\.yml$
+^inst/go/vendor/github.com/klauspost/compress/\.goreleaser\.yml$
+^inst/go/vendor/github.com/klauspost/cpuid/v2/\.goreleaser\.yml$

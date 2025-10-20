@@ -22,6 +22,13 @@ import (
 	_ "go.nanomsg.org/mangos/v3/transport/tlstcp"
 	_ "go.nanomsg.org/mangos/v3/transport/ws"
 	_ "go.nanomsg.org/mangos/v3/transport/wss"
+
+	// Arrow IPC package (and core)
+	_ "github.com/apache/arrow/go/v18/arrow"
+	_ "github.com/apache/arrow/go/v18/arrow/arraw"
+	_ "github.com/apache/arrow/go/v18/arrow/array"
+	_ "github.com/apache/arrow/go/v18/arrow/ipc"
+	_ "github.com/apache/arrow/go/v18/arrow/memory"
 )
 
 func main() {}
