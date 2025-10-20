@@ -19,9 +19,10 @@ for IPC, and to find and run those binaries from R. This is a basic
 setup that can be used as a starting point for more complex R/Go IPC
 applications.
 
-## Test echo server setup
+## On-the-fly Go compilation and echo
 
 ``` r
+
 library(mangoro)
 library(nanonext)
 library(processx)
@@ -29,34 +30,6 @@ library(processx)
 # vendored mangos version
 get_mangos_version()
 #> [1] "v3.4.3-0.20250905144305-2c434adf4860"
-
-
-# Create a unique IPC path for the test
-ipc_url <- create_ipc_path()
-
-# Start echo server in background
-bin_path <- find_mangoro_bin("echo")
-echo_proc <- processx::process$new(bin_path, args = ipc_url)
-Sys.sleep(1) # Give server time to start
-
-# Connect as client and test echo
-sock <- nanonext::socket("req", dial = ipc_url)
-msg <- "hello from R"
-nanonext::send(sock, msg)
-#> [1] 0
-reply <- nanonext::recv(sock)
-reply
-#> [1] "hello from R"
-# Cleanup
-close(sock)
-echo_proc$kill()
-#> [1] TRUE
-```
-
-## Test on-the-fly Go compilation and echo
-
-``` r
-
 go_echo_code <- '
 package main
 import (
@@ -80,7 +53,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpsEN3wW/file263ef358dfb02"
+#> [1] "/tmp/Rtmpq7dsYu/file2a79539068ffb"
 
 ipc_url <- create_ipc_path()
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)

@@ -5,3 +5,5 @@
 ^scratch/*$
 ^mangoro.*.tar\.gz$
 ^inst/bin/*$
+^README.html$
+^README.Rmd$
