@@ -1,6 +1,6 @@
 module mango.local
 
-go 1.22.2
+go 1.22
 
 require go.nanomsg.org/mangos/v3 v3.4.3-0.20250905144305-2c434adf4860
 
