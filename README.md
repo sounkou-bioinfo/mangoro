@@ -1,4 +1,10 @@
 
+<p align="center">
+<a href="https://github.com/sounkou-bioinfo/mangoro">
+<img src="inst/docs/logo.svg" alt="mangoro hexsticker" width="180"/>
+</a>
+</p>
+
 [![mangoro status
 badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
 
@@ -76,7 +82,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpcDOUfc/file1eeb638ea8bd7"
+#> [1] "/tmp/RtmpPdoTyP/file20af9483965d0"
 
 ipc_url <- create_ipc_path()
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
