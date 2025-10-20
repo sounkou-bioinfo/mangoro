@@ -2,7 +2,8 @@
 % Please edit documentation in R/mangoro-bin.R
 \name{find_mangoro_bin}
 \alias{find_mangoro_bin}
-\title{Find the path to a mangoro Go binary}
+\title{find_mangoro_bin
+Find the path to a mangoro Go binary}
 \usage{
 find_mangoro_bin(name)
 }
@@ -13,5 +14,6 @@ find_mangoro_bin(name)
 Full path to the binary in the installed package
 }
 \description{
+find_mangoro_bin
 Find the path to a mangoro Go binary
 }
