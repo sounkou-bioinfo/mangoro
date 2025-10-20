@@ -1,0 +1,6 @@
+^mango\.Rproj$
+^\.Rproj\.user$
+^Makefile$
+^LICENSE\.md$
+^scratch/*$
+^mangoro.*.tar\.gz$

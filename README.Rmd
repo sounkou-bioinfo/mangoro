@@ -1,9 +1,20 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
 
 # mangoro: R/Go IPC with Nanomsg Next Gen
 
 ## Test echo server setup
 
-``` r
+```{r echo-server, message=TRUE, warning=TRUE}
 library(mangoro)
 library(nanonext)
 library(processx)
@@ -25,12 +36,9 @@ Sys.sleep(1) # Give server time to start
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- "hello from R"
 nanonext::send(sock, msg)
-#> [1] 0
 reply <- nanonext::recv(sock)
 reply
-#> [1] "hello from R"
 # Cleanup
 close(sock)
 echo_proc$kill()
-#> [1] TRUE
 ```

@@ -1,0 +1,20 @@
+# github.com/Microsoft/go-winio v0.6.2
+## explicit; go 1.21
+github.com/Microsoft/go-winio
+github.com/Microsoft/go-winio/internal/fs
+github.com/Microsoft/go-winio/internal/socket
+github.com/Microsoft/go-winio/internal/stringbuffer
+github.com/Microsoft/go-winio/pkg/guid
+# go.nanomsg.org/mangos/v3 v3.4.3-0.20250905144305-2c434adf4860
+## explicit; go 1.22
+go.nanomsg.org/mangos/v3
+go.nanomsg.org/mangos/v3/errors
+go.nanomsg.org/mangos/v3/internal/core
+go.nanomsg.org/mangos/v3/protocol
+go.nanomsg.org/mangos/v3/protocol/rep
+go.nanomsg.org/mangos/v3/transport
+go.nanomsg.org/mangos/v3/transport/ipc
+# golang.org/x/sys v0.10.0
+## explicit; go 1.17
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/windows
