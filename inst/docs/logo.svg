@@ -8,8 +8,8 @@
   <ellipse cx="200" cy="140" rx="18" ry="35" fill="#fffbe6" opacity="0.5"/>
   <!-- Mango leaf -->
   <ellipse cx="120" cy="90" rx="35" ry="15" fill="#4caf50" stroke="#357a38" stroke-width="4" transform="rotate(-20 120 90)"/>
-  <!-- Package name -->
-  <text x="150" y="320" font-family="Montserrat, Arial, sans-serif" font-size="38" fill="#357a38" text-anchor="middle" font-weight="bold" letter-spacing="2">
+  <!-- Package name (inside hex) -->
+  <text x="150" y="295" font-family="Montserrat, Arial, sans-serif" font-size="36" fill="#357a38" text-anchor="middle" font-weight="bold" letter-spacing="2">
     mangoro
   </text>
 </svg>
