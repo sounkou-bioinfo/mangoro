@@ -41,3 +41,56 @@ mangoro_ipc_url <- function(prefix = "mangoro-echo") {
     }
     ipc_url
 }
+
+#' Create a unique IPC path for mangoro
+#'
+#' @param prefix Prefix for the temp file (default: "mangoro-echo")
+#' @return IPC URL string suitable for nanonext and mangoro Go binaries
+#' @export
+create_ipc_path <- function(prefix = "mangoro-echo") {
+    tmp_ipc <- tempfile(pattern = prefix, fileext = ".ipc")
+    if (.Platform$OS.type == "windows") {
+        ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
+    } else {
+        ipc_url <- paste0("ipc://", tmp_ipc)
+    }
+    ipc_url
+}
+
+#' Find the path to the Go executable
+#'
+#' @return Path to the Go binary
+#' @export
+find_go <- function() {
+    go <- Sys.which("go")
+    if (!nzchar(go)) stop("Go not found in PATH")
+    go
+}
+
+#' Find the path to the mangoro vendor directory
+#'
+#' @return Path to the vendor directory (inst/go/vendor)
+#' @export
+find_mangoro_vendor <- function() {
+    vend <- system.file("go/vendor", package = "mangoro")
+    if (!dir.exists(vend)) stop("Vendor directory not found: ", vend)
+    vend
+}
+
+#' Compile a Go source file using the vendored dependencies
+#'
+#' @param src Path to the Go source file
+#' @param out Path to the output binary
+#' @param ... Additional arguments to pass to Go build
+#' @return Path to the compiled binary
+#' @export
+mangoro_go_build <- function(src, out, ...) {
+    go <- find_go()
+    vend <- dirname(find_mangoro_vendor())
+    cmd <- sprintf('"%s" build -mod=vendor -o "%s" "%s"', go, out, src)
+    oldwd <- setwd(vend)
+    on.exit(setwd(oldwd))
+    status <- system(cmd, ...)
+    if (status != 0) stop("Go build failed")
+    out
+}

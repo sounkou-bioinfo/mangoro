@@ -9,12 +9,7 @@ library(nanonext)
 library(processx)
 
 # Create a unique IPC path for the test
-tmp_ipc <- tempfile(pattern = "mangoro-echo", fileext = ".ipc")
-if (.Platform$OS.type == "windows") {
-  ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
-} else {
-  ipc_url <- paste0("ipc://", tmp_ipc)
-}
+ipc_url <- create_ipc_path()
 
 # Start echo server in background
 bin_path <- find_mangoro_bin("echo")
