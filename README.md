@@ -1,6 +1,6 @@
 
-[![goserveR status
-badge](https://sounkou-bioinfo.r-universe.dev/goserveR/badges/version)](https://sounkou-bioinfo.r-universe.dev/goserveR)
+[![mangoro status
+badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
 
 # mangoro
 
@@ -21,6 +21,11 @@ applications.
 library(mangoro)
 library(nanonext)
 library(processx)
+
+# vendored mangos version
+get_mangos_version()
+#> [1] NA
+
 
 # Create a unique IPC path for the test
 ipc_url <- create_ipc_path()
@@ -71,7 +76,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpOJDLS0/file1cfff2bb078a8"
+#> [1] "/tmp/RtmpcDOUfc/file1eeb638ea8bd7"
 
 ipc_url <- create_ipc_path()
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)

@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![goserveR status badge](https://sounkou-bioinfo.r-universe.dev/goserveR/badges/version)](https://sounkou-bioinfo.r-universe.dev/goserveR)
+[![mangoro status badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
 
 # mangoro
 
@@ -26,6 +26,10 @@ We vendore the [mangos/v3](https://github.com/nanomsg/mangos) Go package for IPC
 library(mangoro)
 library(nanonext)
 library(processx)
+
+# vendored mangos version
+get_mangos_version()
+
 
 # Create a unique IPC path for the test
 ipc_url <- create_ipc_path()

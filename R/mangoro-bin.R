@@ -94,3 +94,19 @@ mangoro_go_build <- function(src, out, ...) {
     if (status != 0) stop("Go build failed")
     out
 }
+
+#' Get the version of vendored mangos
+#'
+#' @return The version string of go.nanomsg.org/mangos/v3 in the vendor go.mod
+#' @export
+get_mangos_version <- function() {
+    go_mod <- file.path(system.file("go", package = "mangoro"), "go.mod")
+    if (!file.exists(go_mod)) stop("go.mod not found in vendor directory")
+    lines <- readLines(go_mod)
+    pattern <- "^\\s*go\\.nanomsg\\.org/mangos/v3\\s+v([0-9A-Za-z\\.-]+)"
+    version <- sub(pattern, "\\1", grep(pattern, lines, value = TRUE))
+    if (length(version) == 0) {
+        return(NA_character_)
+    }
+    version
+}
