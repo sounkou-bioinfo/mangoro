@@ -1,4 +1,4 @@
-# mangoro 0.1.1
+# mangoro 0.1.2
 
 ## Initial Release
 
@@ -9,3 +9,8 @@
 - Platform-correct IPC path helpers
 - Designed for extensibility and cross-platform use
 - We do not cgo's c-shared mode to avoid loading multiple Go runtimes in the same R session
+
+## Arrow Go IPC Support
+
+- Add Arrow Go IPC roundtrip example and support: send and receive Arrow IPC streams between R and Go using nanoarrow and arrow-go.
+- New function: `get_arrow_go_version()` to report the vendored Arrow Go version.

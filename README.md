@@ -55,11 +55,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpbNNyki/file9da04390ae60e"
+#> [1] "/tmp/RtmprS3m72/filea2f0635be613c"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpbNNyki/mangoro-echo9da04343a88f2.ipc"
+#> [1] "ipc:///tmp/RtmprS3m72/mangoro-echoa2f067325e111.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -130,7 +130,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpbNNyki/file9da04931e1ee"
+#> [1] "/tmp/RtmprS3m72/filea2f06603c61b9"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -139,12 +139,13 @@ echo_proc$is_alive()
 sock <- nanonext::socket("req", dial = ipc_url)
 nanonext::opt(sock, "serial") <- cfg
 
+example_stream <- nanoarrow::example_ipc_stream()
 max_attempts <- 20
-send_result <- nanonext::send(sock, mtcars, mode = "serial")
+send_result <- nanonext::send(sock, example_stream, mode = "raw")
 attempt <- 1
 while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
   Sys.sleep(1)
-  send_result <- nanonext::send(sock, mtcars, mode = "serial")
+  send_result <- nanonext::send(sock, example_stream, mode = "raw")
   attempt <- attempt + 1
 }
 print(send_result)
@@ -153,19 +154,28 @@ echo_proc$is_alive()
 #> [1] TRUE
 Sys.sleep(1)
 received <- nanonext::recv(sock, mode = "serial")
+#> Warning: received data could not be unserialized
 attempt <- 1
 while (nanonext::is_error_value(received) && attempt < max_attempts) {
   Sys.sleep(1)
   received <- nanonext::recv(sock, mode = "serial")
   attempt <- attempt + 1
 }
-print(received)
-#> 'errorValue' int 8 | Try again
+sent_df <- as.data.frame(read_nanoarrow(example_stream))
+received_df <- as.data.frame(read_nanoarrow(received))
+print(sent_df)
+#>   some_col
+#> 1        0
+#> 2        1
+#> 3        2
+print(received_df)
+#>   some_col
+#> 1        0
+#> 2        1
+#> 3        2
+identical(sent_df, received_df)
+#> [1] TRUE
 close(sock)
-echo_proc$read_output()
-#> [1] "Arrow IPC error: arrow/ipc: invalid message type (got=NONE, want=Schema)\n"
-echo_proc$read_error()
-#> [1] ""
 echo_proc$kill()
 #> [1] TRUE
 ```
