@@ -42,8 +42,8 @@ Sys.sleep(3)
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")
 send_result <- nanonext::send(sock, msg, mode = "raw")
-# Retry send up to 5 times if error
-max_attempts <- 15
+# Retry send up to 20 times if error
+max_attempts <- 20
 attempt <- 1
 while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
     Sys.sleep(1)
@@ -51,9 +51,9 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
     attempt <- attempt + 1
 }
 print(send_result)
-# Retry recv up to 5 times if error
+# Retry recv up to 20 times if error
 rep <- nanonext::recv(sock, mode = "raw")
-attempt <- 15
+attempt <- 20
 while (nanonext::is_error_value(rep) && attempt < max_attempts) {
     Sys.sleep(1)
     rep <- nanonext::recv(sock, mode = "raw")
