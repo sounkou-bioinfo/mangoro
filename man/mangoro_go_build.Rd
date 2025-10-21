@@ -4,7 +4,7 @@
 \alias{mangoro_go_build}
 \title{Compile a Go source file using the vendored dependencies}
 \usage{
-mangoro_go_build(src, out, gomaxprocs = NULL, ...)
+mangoro_go_build(src, out, gomaxprocs = 1, ...)
 }
 \arguments{
 \item{src}{Path to the Go source file}

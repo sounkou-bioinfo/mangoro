@@ -63,7 +63,7 @@ find_mangoro_vendor <- function() {
 #' @param ... Additional arguments to pass to Go build
 #' @return Path to the compiled binary
 #' @export
-mangoro_go_build <- function(src, out, gomaxprocs = NULL, ...) {
+mangoro_go_build <- function(src, out, gomaxprocs = 1, ...) {
     go <- find_go()
     vend <- dirname(find_mangoro_vendor())
     # Only one -mod flag can be used per go build invocation

@@ -12,12 +12,12 @@ R/Go IPC with Nanomsg Next Gen.
 
 ## What is mangoro?
 
-We vendor the [mangos/v3](https://github.com/nanomsg/mangos) Go package
-for IPC between R and Go processes using the `nanonext` R package. The
-package provides helper functions to build Go binaries that use mangos
-for IPC, and to find and run those binaries from R. This is a basic
-setup that can be used as a starting point for more complex R/Go IPC
-applications.
+We vendor the [mangos/v3](https://github.com/nanomsg/mangos) and
+[arrow-go](https://github.com/apache/arrow-go) Go packages for IPC
+between R and Go processes using the `nanonext` R package. The package
+provides helper functions to build Go binaries that use mangos and Arrow
+for IPC. This is a basic setup that can be used as a starting point for
+more complex R/Go IPC applications.
 
 ## On-the-fly Go compilation and echo
 
@@ -55,11 +55,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpqX9s13/fileb9b7a3fa9ff83"
+#> [1] "/tmp/RtmpmpsqCN/filebbadf4268d3cf"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpqX9s13/mangoro-echob9b7a3c3ea8f.sock"
+#> [1] "ipc:///tmp/RtmpmpsqCN/mangoro-echobbadf54818fb7.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -130,7 +130,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpqX9s13/fileb9b7a5825cfd4"
+#> [1] "/tmp/RtmpmpsqCN/filebbadf5767ccd"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
