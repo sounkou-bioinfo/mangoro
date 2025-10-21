@@ -37,7 +37,9 @@ mangoro_go_build(tmp_go, tmp_bin)
 ipc_url <- create_ipc_path()
 ipc_url
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
-on.exit(echo_proc$kill())
+on.exit(print(echo_proc$read_output()))
+on.exit(print(echo_proc$read_error()), add = TRUE)
+on.exit(echo_proc$kill(), add = TRUE)
 Sys.sleep(3)
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")
@@ -49,6 +51,7 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
     Sys.sleep(1)
     send_result <- nanonext::send(sock, msg, mode = "raw")
     attempt <- attempt + 1
+    print(echo_proc$is_alive())
 }
 print(send_result)
 # Retry recv up to 20 times if error
