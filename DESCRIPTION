@@ -13,7 +13,7 @@ Imports:
     processx,
     nanonext,
     nanoarrow
-SystemRequirements: golang (>= 1.21), GNU make
+SystemRequirements: Go (https://golang.org), GNU make
 URL: https://github.com/sounkou-bioinfo/mangoro
 BugReports: https://github.com/sounkou-bioinfo/mangoro/issues
 Encoding: UTF-8
