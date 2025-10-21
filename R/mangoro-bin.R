@@ -45,7 +45,7 @@ mangoro_ipc_url <- create_ipc_path
 #' @return IPC URL string suitable for nanonext and mangoro Go binaries
 #' @export
 create_ipc_path <- function(prefix = "mangoro-echo") {
-  tmp_ipc <- tempfile(pattern = prefix, fileext = ".socket")
+  tmp_ipc <- tempfile(pattern = prefix, fileext = ".sock")
   tmp_ipc <- normalizePath(tmp_ipc, mustWork = FALSE)
   if (.Platform$OS.type == "windows") {
     ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
