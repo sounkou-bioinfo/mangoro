@@ -1,4 +1,4 @@
-# mangoro 0.1.2
+# mangoro 0.2.0
 
 ## Initial Release
 
