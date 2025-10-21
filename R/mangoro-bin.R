@@ -32,22 +32,6 @@ run_mangoro_bin <- function(name, args = character(), ...) {
   processx::process$new(bin, args = args, ...)
 }
 
-#' Generate a platform-correct IPC URL for mangoro
-#'
-#' @param prefix Prefix for the temp file (default: "mangoro-echo")
-#' @return IPC URL string suitable for nanonext and mangoro Go binaries
-#' @export
-mangoro_ipc_url <- function(prefix = "mangoro-echo") {
-  tmp_ipc <- tempfile(pattern = prefix, fileext = ".sock")
-  if (.Platform$OS.type == "windows") {
-    ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
-  } else {
-    tmp_ipc <- gsub("/+", "/", x = tmp_ipc)
-    ipc_url <- paste0("ipc://", tmp_ipc)
-  }
-  ipc_url
-}
-
 #' Create a unique IPC path for mangoro
 #'
 #' @param prefix Prefix for the temp file (default: "mangoro-echo")
