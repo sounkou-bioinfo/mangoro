@@ -1,6 +1,8 @@
 
 <p align="center">
+
 <img src="inst/docs/logo.svg" alt="mangoro hexsticker" width="180"/>
+
 </p>
 
 [![mangoro status
@@ -55,11 +57,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmprS3m72/filea2f0635be613c"
+#> [1] "/tmp/RtmpvcRzZz/file1620d94b16b1b7"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmprS3m72/mangoro-echoa2f067325e111.ipc"
+#> [1] "ipc:///tmp/RtmpvcRzZz/mangoro-echo1620d9370d816f.socket"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -130,7 +132,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmprS3m72/filea2f06603c61b9"
+#> [1] "/tmp/RtmpvcRzZz/file1620d942829c75"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)

@@ -53,7 +53,7 @@ mangoro_ipc_url <- function(prefix = "mangoro-echo") {
 #' @return IPC URL string suitable for nanonext and mangoro Go binaries
 #' @export
 create_ipc_path <- function(prefix = "mangoro-echo") {
-    tmp_ipc <- tempfile(pattern = prefix, fileext = ".ipc")
+    tmp_ipc <- tempfile(pattern = prefix, fileext = ".socket")
     if (.Platform$OS.type == "windows") {
         ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
     } else {
@@ -68,7 +68,9 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 #' @export
 find_go <- function() {
     go <- Sys.which("go")
-    if (!nzchar(go)) stop("Go not found in PATH")
+    if (!nzchar(go)) {
+        stop("Go not found in PATH")
+    }
     go
 }
 
@@ -78,7 +80,9 @@ find_go <- function() {
 #' @export
 find_mangoro_vendor <- function() {
     vend <- system.file("go/vendor", package = "mangoro")
-    if (!dir.exists(vend)) stop("Vendor directory not found: ", vend)
+    if (!dir.exists(vend)) {
+        stop("Vendor directory not found: ", vend)
+    }
     vend
 }
 
@@ -96,7 +100,9 @@ mangoro_go_build <- function(src, out, ...) {
     oldwd <- setwd(vend)
     on.exit(setwd(oldwd))
     status <- system(cmd, ...)
-    if (status != 0) stop("Go build failed")
+    if (status != 0) {
+        stop("Go build failed")
+    }
     out
 }
 
@@ -119,7 +125,11 @@ get_mangos_version <- function() {
     )
     if (
         length(res) == 0 ||
-            any(grepl("not a module|no required module", res, ignore.case = TRUE))
+            any(grepl(
+                "not a module|no required module",
+                res,
+                ignore.case = TRUE
+            ))
     ) {
         return(NA_character_)
     }
@@ -154,7 +164,11 @@ get_arrow_go_version <- function() {
     )
     if (
         length(res) == 0 ||
-            any(grepl("not a module|no required module", res, ignore.case = TRUE))
+            any(grepl(
+                "not a module|no required module",
+                res,
+                ignore.case = TRUE
+            ))
     ) {
         return(NA_character_)
     }
