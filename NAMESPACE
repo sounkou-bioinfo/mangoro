@@ -2,7 +2,6 @@
 
 export(create_ipc_path)
 export(find_go)
-export(find_mangoro_bin)
 export(find_mangoro_vendor)
 export(get_arrow_go_version)
 export(get_mangos_version)

@@ -8,19 +8,25 @@ PKGVERS = `sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION`
 
 all: check
 
+rd:
+	R -e 'roxygen2::roxygenize()'
 build: install_deps
 	R CMD build .
 
 check: build
 	R CMD check --no-manual $(PKGNAME)_$(PKGVERS).tar.gz
 
+install2: rd
+	R CMD INSTALL .
 install_deps:
-	Rscript \
+	R \
 	-e 'if (!requireNamespace("remotes")) install.packages("remotes")' \
 	-e 'remotes::install_deps(dependencies = TRUE)'
 
 install: build
 	R CMD INSTALL $(PKGNAME)_$(PKGVERS).tar.gz
 
+render: install2
+	R -e "rmarkdown::render('README.Rmd')"
 clean:
 	@rm -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck

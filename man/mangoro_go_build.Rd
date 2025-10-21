@@ -4,12 +4,14 @@
 \alias{mangoro_go_build}
 \title{Compile a Go source file using the vendored dependencies}
 \usage{
-mangoro_go_build(src, out, ...)
+mangoro_go_build(src, out, gomaxprocs = NULL, ...)
 }
 \arguments{
 \item{src}{Path to the Go source file}
 
 \item{out}{Path to the output binary}
+
+\item{gomaxprocs}{Number of threads for Go build (sets GOMAXPROCS env variable)}
 
 \item{...}{Additional arguments to pass to Go build}
 }
