@@ -99,8 +99,9 @@ mangoro_go_build <- function(src, out, ...) {
   cmd <- sprintf('"%s" build -mod=vendor -o "%s" "%s"', go, out, src)
   oldwd <- setwd(vend)
   on.exit(setwd(oldwd))
-  status <- system(cmd, ...)
-  if (status != 0) {
+  status <- system(cmd, intern = TRUE, ...)
+  if (!file.exists(out)) {
+    print(status)
     stop("Go build failed")
   }
   out
