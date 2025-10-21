@@ -37,15 +37,7 @@ run_mangoro_bin <- function(name, args = character(), ...) {
 #' @param prefix Prefix for the temp file (default: "mangoro-echo")
 #' @return IPC URL string suitable for nanonext and mangoro Go binaries
 #' @export
-mangoro_ipc_url <- function(prefix = "mangoro-echo") {
-  tmp_ipc <- tempfile(pattern = prefix, fileext = ".ipc")
-  if (.Platform$OS.type == "windows") {
-    ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
-  } else {
-    ipc_url <- paste0("ipc://", tmp_ipc)
-  }
-  ipc_url
-}
+mangoro_ipc_url <- create_ipc_path
 
 #' Create a unique IPC path for mangoro
 #'
@@ -54,6 +46,7 @@ mangoro_ipc_url <- function(prefix = "mangoro-echo") {
 #' @export
 create_ipc_path <- function(prefix = "mangoro-echo") {
   tmp_ipc <- tempfile(pattern = prefix, fileext = ".socket")
+  tmp_ipc <- normalizePath(tmp_ipc, mustWork = FALSE)
   if (.Platform$OS.type == "windows") {
     ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
   } else {
