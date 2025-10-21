@@ -39,10 +39,10 @@ run_mangoro_bin <- function(name, args = character(), ...) {
 #' @export
 mangoro_ipc_url <- function(prefix = "mangoro-echo") {
   tmp_ipc <- tempfile(pattern = prefix, fileext = ".sock")
-  tmp_ipc <- normalizePath(tmp_ipc, mustWork = FALSE)
   if (.Platform$OS.type == "windows") {
     ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
   } else {
+    tmp_ipc <- gsub("/+", "/", x = tmp_ipc)
     ipc_url <- paste0("ipc://", tmp_ipc)
   }
   ipc_url
@@ -55,10 +55,10 @@ mangoro_ipc_url <- function(prefix = "mangoro-echo") {
 #' @export
 create_ipc_path <- function(prefix = "mangoro-echo") {
   tmp_ipc <- tempfile(pattern = prefix, fileext = ".sock")
-  tmp_ipc <- normalizePath(tmp_ipc, mustWork = FALSE)
   if (.Platform$OS.type == "windows") {
     ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
   } else {
+    tmp_ipc <- gsub("/+", "/", x = tmp_ipc)
     ipc_url <- paste0("ipc://", tmp_ipc)
   }
   ipc_url
