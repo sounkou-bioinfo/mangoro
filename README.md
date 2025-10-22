@@ -22,7 +22,7 @@ the complexities and limitations of cgo’s c-shared mode, which can lead
 to issues with loading multiple Go runtimes in the same R session as
 discussed in this R-package-devel mailing list thread: [CRAN Policy on
 Go using
-Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.htmll).
+Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.html).
 
 ## On-the-fly Go compilation and echo
 
@@ -60,11 +60,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpBW3Lp5/file1220a612fac0aa"
+#> [1] "/tmp/RtmpTr89JS/file12336d2a2080df"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpBW3Lp5/mangoro-echo1220a626bccf46.sock"
+#> [1] "ipc:///tmp/RtmpTr89JS/mangoro-echo12336d326b468d.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -135,7 +135,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpBW3Lp5/file1220a6260c1a56"
+#> [1] "/tmp/RtmpTr89JS/file12336d525c4f59"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
