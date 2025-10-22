@@ -17,7 +17,12 @@ We vendor the [mangos/v3](https://github.com/nanomsg/mangos) and
 between R and Go processes using the `nanonext` R package. The package
 provides helper functions to build Go binaries that use mangos and Arrow
 for IPC. This is a basic setup that can be used as a starting point for
-more complex R/Go IPC applications.
+more complex R/Go IPC applications. In our opinion, this approach avoids
+the complexities and limitations of cgo’s c-shared mode, which can lead
+to issues with loading multiple Go runtimes in the same R session as
+discussed in this R-package-devel mailing list thread: [CRAN Policy on
+Go using
+Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.htmll).
 
 ## On-the-fly Go compilation and echo
 
@@ -55,11 +60,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpZfYgVD/file121962ff92600"
+#> [1] "/tmp/RtmpBW3Lp5/file1220a612fac0aa"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpZfYgVD/mangoro-echo12196273e5f2e.sock"
+#> [1] "ipc:///tmp/RtmpBW3Lp5/mangoro-echo1220a626bccf46.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -130,7 +135,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpZfYgVD/file121962339af94f"
+#> [1] "/tmp/RtmpBW3Lp5/file1220a6260c1a56"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
