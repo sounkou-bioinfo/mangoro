@@ -64,7 +64,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/Rtmpaq8IyS/file1260e818d20ab7"
+#> [1] "/tmp/RtmpNr5X2c/file1269e950bf3e03"
 ```
 
 create IPC path and send/receive message
@@ -72,7 +72,7 @@ create IPC path and send/receive message
 ``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/Rtmpaq8IyS/mangoro-echo1260e8300d13af.sock"
+#> [1] "ipc:///tmp/RtmpNr5X2c/mangoro-echo1269e91b7a2744.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -146,13 +146,15 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/Rtmpaq8IyS/file1260e81f3156bf"
+#> [1] "/tmp/RtmpNr5X2c/file1269e9788d2105"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
 ```
 
-Configure the socket and send/receive an Arrow IPC stream
+Configure the socket and send/receive an Arrow IPC data. Note that we
+use a loop with retries to handle potential timing issues when the Go
+echo server is not yet ready to receive messages.
 
 ``` r
 echo_proc$is_alive()

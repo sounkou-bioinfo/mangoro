@@ -142,8 +142,9 @@ echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr
 Sys.sleep(3)
 ```
 
-Configure the socket and send/receive an Arrow IPC data
-```{r arrow-ipc-stream, message=TRUE, warning=TRUE}
+Configure the socket and send/receive an Arrow IPC data. Note that we use a loop with retries to handle potential timing issues when the Go echo server is not yet ready to receive messages.
+
+```{r arrow-ipc-data, message=TRUE, warning=TRUE}
 echo_proc$is_alive()
 sock <- nanonext::socket("req", dial = ipc_url)
 nanonext::opt(sock, "serial") <- cfg
