@@ -14,17 +14,21 @@ R/Go IPC with Nanomsg Next Gen.
 
 We vendor the [mangos/v3](https://github.com/nanomsg/mangos) and
 [arrow-go](https://github.com/apache/arrow-go) Go packages for IPC
-between R and Go processes using the `nanonext` R package. The package
-provides helper functions to build Go binaries that use mangos and Arrow
-for IPC. This is a basic setup that can be used as a starting point for
-more complex R/Go IPC applications. In our opinion, this approach avoids
-the complexities and limitations of cgo’s c-shared mode, which can lead
-to issues with loading multiple Go runtimes in the same R session as
-discussed in this R-package-devel mailing list thread: [CRAN Policy on
-Go using
+between R and Go processes using the `nanonext` and `nanoarrow` R
+packages. The package provides helper functions to build Go binaries
+that use mangos and Arrow for IPC. This is a basic setup that can be
+used as a starting point for more complex R/Go IPC applications. In our
+opinion, this approach avoids the complexities and limitations of cgo’s
+c-shared mode, which can lead to issues with loading multiple Go
+runtimes in the same R session as discussed in this R-package-devel
+mailing list thread: [CRAN Policy on Go using
 Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.html).
 
 ## On-the-fly Go compilation and echo
+
+Compile some go code on-the-fly from R using the `mangoro_go_build()`
+function. This uses the vendored go code in
+[inst/go/vendor](inst/go/vendor)
 
 ``` r
 
@@ -60,11 +64,15 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpTr89JS/file12336d2a2080df"
+#> [1] "/tmp/Rtmpaq8IyS/file1260e818d20ab7"
+```
 
+create IPC path and send/receive message
+
+``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpTr89JS/mangoro-echo12336d326b468d.sock"
+#> [1] "ipc:///tmp/Rtmpaq8IyS/mangoro-echo1260e8300d13af.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -80,7 +88,10 @@ echo_proc$kill()
 #> [1] TRUE
 ```
 
-## Arrow IPC with nanoarrow, nanonext, and Go binary
+## Arrow IPC with nanoarrow for serialization
+
+Compile go code this time that uses Arrow IPC for (de)serialization
+between R and Go.
 
 ``` r
 library(nanoarrow)
@@ -135,10 +146,15 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpTr89JS/file12336d525c4f59"
+#> [1] "/tmp/Rtmpaq8IyS/file1260e81f3156bf"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
+```
+
+Configure the socket and send/receive an Arrow IPC stream
+
+``` r
 echo_proc$is_alive()
 #> [1] TRUE
 sock <- nanonext::socket("req", dial = ipc_url)
