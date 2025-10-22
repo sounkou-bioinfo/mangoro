@@ -55,11 +55,11 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpQuTRF2/file11378473efccdd"
+#> [1] "/tmp/RtmpZfYgVD/file121962ff92600"
 
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpQuTRF2/mangoro-echo1137844ce05e58.sock"
+#> [1] "ipc:///tmp/RtmpZfYgVD/mangoro-echo12196273e5f2e.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -130,7 +130,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpQuTRF2/file11378433a14331"
+#> [1] "/tmp/RtmpZfYgVD/file121962339af94f"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
