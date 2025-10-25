@@ -64,7 +64,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpA7HXn4/file12ee201254a508"
+#> [1] "/tmp/RtmpLKobTl/filec015167bfe79"
 ```
 
 create IPC path and send/receive message
@@ -72,7 +72,7 @@ create IPC path and send/receive message
 ``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpA7HXn4/mangoro-echo12ee2078d1564d.sock"
+#> [1] "ipc:///tmp/RtmpLKobTl/mangoro-echoc015475fbac2.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -146,7 +146,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpA7HXn4/file12ee2012c20ad"
+#> [1] "/tmp/RtmpLKobTl/filec015754c1fd0"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -202,3 +202,13 @@ close(sock)
 echo_proc$kill()
 #> [1] TRUE
 ```
+
+## LLM Usage Disclosure
+
+Code and documentation in this project have been generated with the
+assistance of the github Copilot AI tools. While we have reviewed and
+edited the generated content, we acknowledge that AI tools were used in
+the creation process and accordingly (since these models are trained on
+GPL code and other commons + proprietary software license is fake
+anyway) the code is released under GPL-3. So if you use this code in any
+way, you must comply with the GPL-3 license.
