@@ -22,7 +22,7 @@ R/Go IPC with Nanomsg Next Gen.
 
 ## What is mangoro?
 
-We vendor the [mangos/v3](https://github.com/nanomsg/mangos) and [arrow-go](https://github.com/apache/arrow-go) Go packages for IPC between R and Go processes using the `nanonext` and `nanoarrow` R packages. The package provides helper functions to build Go binaries that use mangos and Arrow for IPC. This is a basic setup that can be used as a starting point for more complex R/Go IPC applications. In our opinion, this approach avoids the complexities and limitations of cgo's c-shared mode, which can lead to issues with loading multiple Go runtimes in the same R session as discussed in this R-package-devel mailing list thread: [CRAN Policy on Go using Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.html).
+Beside being the way mangos is said in [bambara](https://bm.wikipedia.org/wiki/Mangoro) (derived from portugese as it happens), in this package we vendor the [mangos/v3](https://github.com/nanomsg/mangos) and [arrow-go](https://github.com/apache/arrow-go) Go packages for IPC between R and Go processes using the `nanonext` and `nanoarrow` R packages on the R side. The package provides helper functions to build Go binaries that use mangos and Arrow for IPC. This is a basic setup that can be used as a starting point for more complex R/Go IPC applications. In our opinion, this approach avoids the complexities and limitations of cgo's c-shared mode, which can lead to issues with loading multiple Go runtimes in the same R session as discussed in this R-package-devel mailing list thread: [CRAN Policy on Go using Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.html).
 
 
 ## On-the-fly Go compilation and echo

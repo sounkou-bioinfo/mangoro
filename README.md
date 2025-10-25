@@ -12,16 +12,19 @@ R/Go IPC with Nanomsg Next Gen.
 
 ## What is mangoro?
 
-We vendor the [mangos/v3](https://github.com/nanomsg/mangos) and
+Beside being the way mangos is said in
+[bambara](https://bm.wikipedia.org/wiki/Mangoro) (derived from portugese
+as it happens), in this package we vendor the
+[mangos/v3](https://github.com/nanomsg/mangos) and
 [arrow-go](https://github.com/apache/arrow-go) Go packages for IPC
 between R and Go processes using the `nanonext` and `nanoarrow` R
-packages. The package provides helper functions to build Go binaries
-that use mangos and Arrow for IPC. This is a basic setup that can be
-used as a starting point for more complex R/Go IPC applications. In our
-opinion, this approach avoids the complexities and limitations of cgo’s
-c-shared mode, which can lead to issues with loading multiple Go
-runtimes in the same R session as discussed in this R-package-devel
-mailing list thread: [CRAN Policy on Go using
+packages on the R side. The package provides helper functions to build
+Go binaries that use mangos and Arrow for IPC. This is a basic setup
+that can be used as a starting point for more complex R/Go IPC
+applications. In our opinion, this approach avoids the complexities and
+limitations of cgo’s c-shared mode, which can lead to issues with
+loading multiple Go runtimes in the same R session as discussed in this
+R-package-devel mailing list thread: [CRAN Policy on Go using
 Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.html).
 
 ## On-the-fly Go compilation and echo
@@ -64,7 +67,7 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpLKobTl/filec015167bfe79"
+#> [1] "/tmp/RtmpcAcAKD/filecece2fc7c51e"
 ```
 
 create IPC path and send/receive message
@@ -72,7 +75,7 @@ create IPC path and send/receive message
 ``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpLKobTl/mangoro-echoc015475fbac2.sock"
+#> [1] "ipc:///tmp/RtmpcAcAKD/mangoro-echocece31894beb.sock"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -146,7 +149,7 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "/tmp/RtmpLKobTl/filec015754c1fd0"
+#> [1] "/tmp/RtmpcAcAKD/filecece43bd5c94"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
