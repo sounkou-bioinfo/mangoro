@@ -21,7 +21,7 @@ run_mangoro_bin <- function(name, args = character(), ...) {
 #' @return IPC URL string suitable for nanonext and mangoro Go binaries
 #' @export
 create_ipc_path <- function(prefix = "mangoro-echo") {
-    tmp_ipc <- tempfile(pattern = prefix, fileext = ".sock")
+    tmp_ipc <- tempfile(pattern = prefix, fileext = ".ipc")
     if (.Platform$OS.type == "windows") {
         ipc_url <- paste0("ipc://", gsub("/", "\\\\", tmp_ipc))
     } else {
@@ -73,8 +73,15 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, ...) {
     env <- character()
     if (!is.null(gomaxprocs)) {
         env <- c(sprintf("GOMAXPROCS=%s", as.integer(gomaxprocs)))
+        go <- normalizePath(go)
+        go <- sprintf("%s %s", env, go)
     }
-    status <- system2(go, args = args, env = env, stdout = TRUE, stderr = TRUE, ...)
+    cmd <- sprintf("%s %s", go, paste(shQuote(args), collapse = " "))
+    print(cmd)
+    status <- system(cmd,
+        ignore.stdout = FALSE,
+        ignore.stderr = FALSE, intern = TRUE, ...
+    )
     if (!file.exists(out)) {
         print(status)
         stop("Go build failed")
