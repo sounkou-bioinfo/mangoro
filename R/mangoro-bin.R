@@ -74,7 +74,7 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, ...) {
     if (!is.null(gomaxprocs)) {
         env <- c(sprintf("GOMAXPROCS=%s", as.integer(gomaxprocs)))
         go <- normalizePath(go)
-        go <- sprintf("%s %s", env, go)
+        if (!.Platform$OS.type == "windows") go <- sprintf("%s %s", env, go)
     }
     cmd <- sprintf("%s %s", go, paste(shQuote(args), collapse = " "))
     print(cmd)
