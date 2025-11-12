@@ -1,0 +1,189 @@
+// Simple RPC server example with function registration
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"os"
+
+	"mangoro.local/pkg/rgoipc"
+
+	"github.com/apache/arrow/go/v18/arrow"
+	"github.com/apache/arrow/go/v18/arrow/array"
+	"github.com/apache/arrow/go/v18/arrow/ipc"
+	"github.com/apache/arrow/go/v18/arrow/memory"
+	"go.nanomsg.org/mangos/v3"
+	"go.nanomsg.org/mangos/v3/protocol/rep"
+	_ "go.nanomsg.org/mangos/v3/transport/ipc"
+)
+
+func die(format string, v ...interface{}) {
+	fmt.Fprintf(os.Stderr, format+"\n", v...)
+	os.Exit(1)
+}
+
+// addHandler adds two numeric vectors element-wise
+func addHandler(input arrow.Record) (arrow.Record, error) {
+	if input.NumCols() != 2 {
+		return nil, fmt.Errorf("expected 2 columns, got %d", input.NumCols())
+	}
+
+	x := input.Column(0).(*array.Float64)
+	y := input.Column(1).(*array.Float64)
+
+	if x.Len() != y.Len() {
+		return nil, fmt.Errorf("length mismatch: %d vs %d", x.Len(), y.Len())
+	}
+
+	// Build result
+	pool := memory.NewGoAllocator()
+	builder := array.NewFloat64Builder(pool)
+	defer builder.Release()
+
+	for i := 0; i < x.Len(); i++ {
+		if x.IsNull(i) || y.IsNull(i) {
+			builder.AppendNull()
+		} else {
+			builder.Append(x.Value(i) + y.Value(i))
+		}
+	}
+
+	result := builder.NewArray()
+	defer result.Release()
+
+	schema := arrow.NewSchema([]arrow.Field{{Name: "result", Type: arrow.PrimitiveTypes.Float64}}, nil)
+	return array.NewRecord(schema, []arrow.Array{result}, int64(result.Len())), nil
+}
+
+func main() {
+	if len(os.Args) != 2 {
+		die("Usage: %s <ipc_path>", os.Args[0])
+	}
+	url := os.Args[1]
+
+	// Create registry and register functions
+	registry := rgoipc.NewRegistry()
+
+	err := registry.Register("add", addHandler, rgoipc.FunctionSignature{
+		Args: []rgoipc.ArgSpec{
+			{Name: "x", Type: rgoipc.TypeSpec{Type: rgoipc.TypeFloat64, Nullable: true}},
+			{Name: "y", Type: rgoipc.TypeSpec{Type: rgoipc.TypeFloat64, Nullable: true}},
+		},
+		ReturnType: rgoipc.TypeSpec{Type: rgoipc.TypeFloat64, Nullable: true},
+		Vectorized: true,
+		Metadata:   map[string]string{"description": "Add two numeric vectors"},
+	})
+	if err != nil {
+		die("Failed to register add function: %s", err)
+	}
+
+	fmt.Println("Registered functions:", registry.List())
+
+	// Setup socket
+	sock, err := rep.NewSocket()
+	if err != nil {
+		die("can't get new rep socket: %s", err)
+	}
+	if err = sock.Listen(url); err != nil {
+		die("can't listen on rep socket: %s", err)
+	}
+
+	fmt.Printf("RPC server listening on %s\n", url)
+
+	// Main loop
+	for {
+		msgBytes, err := sock.Recv()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "receive error: %s\n", err)
+			continue
+		}
+
+		msg, err := rgoipc.UnmarshalRPCMessage(msgBytes)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "unmarshal error: %s\n", err)
+			sendError(sock, "", fmt.Sprintf("unmarshal error: %s", err))
+			continue
+		}
+
+		switch msg.Type {
+		case rgoipc.MsgTypeManifest:
+			handleManifest(sock, registry)
+		case rgoipc.MsgTypeCall:
+			handleCall(sock, registry, msg)
+		default:
+			sendError(sock, "", "unknown message type")
+		}
+	}
+}
+
+func handleManifest(sock mangos.Socket, registry *rgoipc.Registry) {
+	manifest, err := registry.Manifest()
+	if err != nil {
+		sendError(sock, "", fmt.Sprintf("manifest error: %s", err))
+		return
+	}
+
+	response := &rgoipc.RPCMessage{
+		Type:      rgoipc.MsgTypeManifest,
+		ArrowData: manifest,
+	}
+	sock.Send(response.Marshal())
+}
+
+func handleCall(sock mangos.Socket, registry *rgoipc.Registry, msg *rgoipc.RPCMessage) {
+	fn, ok := registry.Get(msg.FuncName)
+	if !ok {
+		sendError(sock, msg.FuncName, "function not found")
+		return
+	}
+
+	// Parse Arrow IPC input
+	reader, err := ipc.NewReader(bytes.NewReader(msg.ArrowData))
+	if err != nil {
+		sendError(sock, msg.FuncName, fmt.Sprintf("arrow read error: %s", err))
+		return
+	}
+	defer reader.Release()
+
+	if !reader.Next() {
+		sendError(sock, msg.FuncName, "no records in input")
+		return
+	}
+
+	inputRecord := reader.Record()
+	defer inputRecord.Release()
+
+	// Execute function
+	result, err := fn.Handler(inputRecord)
+	if err != nil {
+		sendError(sock, msg.FuncName, fmt.Sprintf("execution error: %s", err))
+		return
+	}
+	defer result.Release()
+
+	// Serialize result
+	var buf bytes.Buffer
+	writer := ipc.NewWriter(&buf, ipc.WithSchema(result.Schema()))
+	defer writer.Close()
+
+	if err := writer.Write(result); err != nil {
+		sendError(sock, msg.FuncName, fmt.Sprintf("arrow write error: %s", err))
+		return
+	}
+
+	response := &rgoipc.RPCMessage{
+		Type:      rgoipc.MsgTypeResult,
+		FuncName:  msg.FuncName,
+		ArrowData: buf.Bytes(),
+	}
+	sock.Send(response.Marshal())
+}
+
+func sendError(sock mangos.Socket, funcName, errMsg string) {
+	response := &rgoipc.RPCMessage{
+		Type:     rgoipc.MsgTypeError,
+		FuncName: funcName,
+		ErrorMsg: errMsg,
+	}
+	sock.Send(response.Marshal())
+}
