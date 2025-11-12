@@ -1,6 +1,7 @@
-library(mangoro)
 library(nanonext)
 library(processx)
+library(nanoarrow)
+library(mangoro)
 
 # vendored mangos version
 get_mangos_version()
