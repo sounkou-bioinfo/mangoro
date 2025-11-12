@@ -10,11 +10,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-<p align="center">
-  <img src="inst/docs/logo.svg" alt="mangoro hexsticker" width="180"/>
-</p>
+
 
 [![mangoro status badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
+
+<p align="center">
+  <img src="inst/docs/logo.svg" alt="" width="180"/>
+</p>
 
 # mangoro
 

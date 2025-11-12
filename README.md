@@ -1,10 +1,10 @@
 
-<p align="center">
-<img src="inst/docs/logo.svg" alt="mangoro hexsticker" width="180"/>
-</p>
-
 [![mangoro status
 badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
+
+<p align="center">
+<img src="inst/docs/logo.svg" alt="" width="180"/>
+</p>
 
 # mangoro
 
@@ -67,8 +67,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5gaIfB/file9c4b2280dc59e' '/tmp/Rtmp5gaIfB/file9c4b23486a461.go'"
-#> [1] "/tmp/Rtmp5gaIfB/file9c4b2280dc59e"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp9X9tvc/file161921581d904f' '/tmp/Rtmp9X9tvc/file1619212ebfe867.go'"
+#> [1] "/tmp/Rtmp9X9tvc/file161921581d904f"
 ```
 
 create IPC path and send/receive message
@@ -76,7 +76,7 @@ create IPC path and send/receive message
 ``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/Rtmp5gaIfB/mangoro-echo9c4b21c75a8ad.ipc"
+#> [1] "ipc:///tmp/Rtmp9X9tvc/mangoro-echo161921ca57c29.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -150,8 +150,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5gaIfB/file9c4b21ae3a017' '/tmp/Rtmp5gaIfB/file9c4b265a29cfb.go'"
-#> [1] "/tmp/Rtmp5gaIfB/file9c4b21ae3a017"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp9X9tvc/file16192146948f1b' '/tmp/Rtmp9X9tvc/file16192121f90ff9.go'"
+#> [1] "/tmp/Rtmp9X9tvc/file16192146948f1b"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
