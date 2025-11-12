@@ -199,7 +199,25 @@ echo_proc$kill()
 
 ## Simple RPC with Function Registration
 
-The package includes `rgoipc`, a Go package for building RPC servers with function registration. Functons are registered in the go main application and called by R.
+The package includes `rgoipc`, a Go package for building RPC servers with function registration. Functions are registered in the Go main application and called by R.
+
+### RPC Message Structure
+
+The RPC protocol wraps Arrow IPC data in a simple envelope:
+
+```
+[type:1byte][name_len:4bytes][name][error_len:4bytes][error][arrow_ipc_data]
+```
+
+- **Type**: Message type (0=manifest, 1=call, 2=result, 3=error)
+- **Name length + Name**: Function name (empty for manifest requests)
+- **Error length + Error**: Error message (empty on success)
+- **Arrow IPC data**: 
+  - For **manifest response**: JSON bytes describing available functions
+  - For **function calls**: Arrow IPC stream containing input data frame
+  - For **function results**: Arrow IPC stream containing output data frame
+
+Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC, processes it, and returns Arrow IPC. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data.
 
 ```{r rpc-build}
 
@@ -217,7 +235,7 @@ Request the manifest of registered functions:
 
 ```{r rpc-manifest}
 sock <- nanonext::socket("req", dial = ipc_url)
-manifest <- rpc_get_manifest(sock)
+manifest <- mangoro_rpc_get_manifest(sock)
 print(manifest)
 close(sock)
 ```
@@ -228,7 +246,8 @@ Call the `add` function with Arrow IPC data:
 sock <- nanonext::socket("req", dial = ipc_url)
 
 input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
-result_df <- rpc_call(sock, "add", input_df)
+result <- mangoro_rpc_call(sock, "add", input_df)
+result_df <- as.data.frame(result)
 
 print(input_df)
 print(result_df)

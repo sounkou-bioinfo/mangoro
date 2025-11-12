@@ -68,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file1663463e1978e' '/tmp/Rtmp3yIY5t/file1663467ad2cdde.go'"
-#> [1] "/tmp/Rtmp3yIY5t/file1663463e1978e"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1f24f57b90' '/tmp/RtmpytpTwl/file166c1f711a2e30.go'"
+#> [1] "/tmp/RtmpytpTwl/file166c1f24f57b90"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file16634661f0a067' '/tmp/Rtmp3yIY5t/file16634639ae55b0.go'"
-#> [1] "/tmp/Rtmp3yIY5t/file16634661f0a067"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1fafc02ce' '/tmp/RtmpytpTwl/file166c1f31bc978.go'"
+#> [1] "/tmp/RtmpytpTwl/file166c1fafc02ce"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -225,16 +225,36 @@ echo_proc$kill()
 ## Simple RPC with Function Registration
 
 The package includes `rgoipc`, a Go package for building RPC servers
-with function registration. Functons are registered in the go main
+with function registration. Functions are registered in the Go main
 application and called by R.
+
+### RPC Message Structure
+
+The RPC protocol wraps Arrow IPC data in a simple envelope:
+
+    [type:1byte][name_len:4bytes][name][error_len:4bytes][error][arrow_ipc_data]
+
+- **Type**: Message type (0=manifest, 1=call, 2=result, 3=error)
+- **Name length + Name**: Function name (empty for manifest requests)
+- **Error length + Error**: Error message (empty on success)
+- **Arrow IPC data**:
+  - For **manifest response**: JSON bytes describing available functions
+  - For **function calls**: Arrow IPC stream containing input data frame
+  - For **function results**: Arrow IPC stream containing output data
+    frame
+
+Both the input and output data are serialized using Arrow IPC format.
+The Go server receives Arrow IPC, processes it, and returns Arrow IPC.
+The thin RPC envelope only adds metadata (function name, error handling)
+around the Arrow data.
 
 ``` r
 
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file166346578cf681' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmp3yIY5t/file166346578cf681"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1f7c4a6ca9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpytpTwl/file166c1f7c4a6ca9"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -247,7 +267,7 @@ Request the manifest of registered functions:
 
 ``` r
 sock <- nanonext::socket("req", dial = ipc_url)
-manifest <- rpc_get_manifest(sock)
+manifest <- mangoro_rpc_get_manifest(sock)
 print(manifest)
 #> $add
 #> $add$Args
@@ -284,7 +304,8 @@ Call the `add` function with Arrow IPC data:
 sock <- nanonext::socket("req", dial = ipc_url)
 
 input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
-result_df <- rpc_call(sock, "add", input_df)
+result <- mangoro_rpc_call(sock, "add", input_df)
+result_df <- as.data.frame(result)
 
 print(input_df)
 #>     x   y
