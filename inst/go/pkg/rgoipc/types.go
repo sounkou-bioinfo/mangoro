@@ -10,7 +10,6 @@ type ArrowType string
 
 const (
 	TypeInt32   ArrowType = "int32"   // R integer
-	TypeInt64   ArrowType = "int64"   // R integer (large)
 	TypeFloat64 ArrowType = "float64" // R numeric
 	TypeString  ArrowType = "string"  // R character
 	TypeBool    ArrowType = "bool"    // R logical

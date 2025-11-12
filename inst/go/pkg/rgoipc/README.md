@@ -99,12 +99,13 @@ The following Arrow types map to R types:
 | rgoipc Type | Arrow Type | R Type |
 |-------------|------------|--------|
 | TypeInt32   | int32      | integer |
-| TypeInt64   | int64      | integer (large) |
 | TypeFloat64 | float64    | numeric |
 | TypeString  | string     | character |
 | TypeBool    | bool       | logical |
 | TypeList    | list       | list |
 | TypeStruct  | struct     | data.frame |
+
+**Note**: R's integer type is 32-bit only. Arrow int64 values will be converted to R's numeric (double) type, not integer. Use TypeInt32 for R integers and TypeFloat64 for larger numeric values.
 
 ## Example Server
 

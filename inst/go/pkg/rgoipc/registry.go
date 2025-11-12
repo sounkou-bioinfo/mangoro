@@ -121,8 +121,6 @@ func arrowTypeToDataType(spec TypeSpec) (arrow.DataType, error) {
 	switch spec.Type {
 	case TypeInt32:
 		return arrow.PrimitiveTypes.Int32, nil
-	case TypeInt64:
-		return arrow.PrimitiveTypes.Int64, nil
 	case TypeFloat64:
 		return arrow.PrimitiveTypes.Float64, nil
 	case TypeString:
