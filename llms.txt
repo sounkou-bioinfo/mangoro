@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpz9Yznz/file167029329cb768' '/tmp/Rtmpz9Yznz/file16702913cdd1f7.go'"
-#> [1] "/tmp/Rtmpz9Yznz/file167029329cb768"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmphGg7ZI/file16788559bc9466' '/tmp/RtmphGg7ZI/file167885171975c7.go'"
+#> [1] "/tmp/RtmphGg7ZI/file16788559bc9466"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpz9Yznz/file167029a5ac140' '/tmp/Rtmpz9Yznz/file16702967862dc5.go'"
-#> [1] "/tmp/Rtmpz9Yznz/file167029a5ac140"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmphGg7ZI/file16788550e9e12c' '/tmp/RtmphGg7ZI/file16788517ca7f5e.go'"
+#> [1] "/tmp/RtmphGg7ZI/file16788550e9e12c"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -253,8 +253,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpz9Yznz/file1670292eb6e239' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmpz9Yznz/file1670292eb6e239"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmphGg7ZI/file16788568083964' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmphGg7ZI/file16788568083964"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -295,6 +295,34 @@ print(manifest)
 #> $add$Metadata
 #> $add$Metadata$description
 #> [1] "Add two numeric vectors"
+#> 
+#> 
+#> 
+#> $echoString
+#> $echoString$Args
+#>   Name Type.Type Type.Nullable Type.StructDef Type.ListSchema Optional Default
+#> 1    s    string          TRUE             NA              NA    FALSE      NA
+#> 
+#> $echoString$ReturnType
+#> $echoString$ReturnType$Type
+#> [1] "string"
+#> 
+#> $echoString$ReturnType$Nullable
+#> [1] TRUE
+#> 
+#> $echoString$ReturnType$StructDef
+#> NULL
+#> 
+#> $echoString$ReturnType$ListSchema
+#> NULL
+#> 
+#> 
+#> $echoString$Vectorized
+#> [1] TRUE
+#> 
+#> $echoString$Metadata
+#> $echoString$Metadata$description
+#> [1] "Echo back a string vector"
 close(sock)
 ```
 
@@ -321,6 +349,33 @@ print(result_df)
 #> 4     NA
 print(input_df$x + input_df$y)
 #> [1]  2  4  6 NA
+
+close(sock)
+```
+
+Call the `echoString` function to test string handling:
+
+``` r
+sock <- nanonext::socket("req", dial = ipc_url)
+
+input_df <- data.frame(s = c("hello", "world", NA, "mangoro"))
+result <- mangoro_rpc_call(sock, "echoString", input_df)
+result_df <- as.data.frame(result)
+
+print(input_df)
+#>         s
+#> 1   hello
+#> 2   world
+#> 3    <NA>
+#> 4 mangoro
+print(result_df)
+#>    result
+#> 1   hello
+#> 2   world
+#> 3    <NA>
+#> 4 mangoro
+identical(input_df$s, result_df$result)
+#> [1] TRUE
 
 close(sock)
 rpc_proc$kill()
