@@ -35,9 +35,10 @@ function. This uses the vendored go code in
 
 ``` r
 
-library(mangoro)
 library(nanonext)
 library(processx)
+library(nanoarrow)
+library(mangoro)
 
 # vendored mangos version
 get_mangos_version()
@@ -67,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp8KkPRG/file166059635d936f' '/tmp/Rtmp8KkPRG/file16605975f4f36c.go'"
-#> [1] "/tmp/Rtmp8KkPRG/file166059635d936f"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file1663463e1978e' '/tmp/Rtmp3yIY5t/file1663467ad2cdde.go'"
+#> [1] "/tmp/Rtmp3yIY5t/file1663463e1978e"
 ```
 
 create IPC path and send/receive message
@@ -112,7 +113,6 @@ Compile go code this time that uses Arrow IPC for (de)serialization
 between R and Go.
 
 ``` r
-library(nanoarrow)
 
 cfg <- nanonext::serial_config(
   "ArrowTabular",
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp8KkPRG/file16605948444480' '/tmp/Rtmp8KkPRG/file1660593b349d2e.go'"
-#> [1] "/tmp/Rtmp8KkPRG/file16605948444480"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file16634661f0a067' '/tmp/Rtmp3yIY5t/file16634639ae55b0.go'"
+#> [1] "/tmp/Rtmp3yIY5t/file16634661f0a067"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -222,19 +222,19 @@ echo_proc$kill()
 #> [1] TRUE
 ```
 
-## RPC with Function Registration
+## Simple RPC with Function Registration
 
 The package includes `rgoipc`, a Go package for building RPC servers
-with function registration.
+with function registration. Functons are registered in the go main
+application and called by R.
 
 ``` r
-library(nanoarrow)
 
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp8KkPRG/file1660593c6b005' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmp8KkPRG/file1660593c6b005"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file166346578cf681' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmp3yIY5t/file166346578cf681"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")

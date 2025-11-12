@@ -35,9 +35,10 @@ Compile some go code on-the-fly from R using the `mangoro_go_build()` function. 
 
 ```{r echo-compile, message=TRUE, warning=TRUE}
 
-library(mangoro)
 library(nanonext)
 library(processx)
+library(nanoarrow)
+library(mangoro)
 
 # vendored mangos version
 get_mangos_version()
@@ -196,9 +197,9 @@ close(sock)
 echo_proc$kill()
 ```
 
-## RPC with Function Registration
+## Simple RPC with Function Registration
 
-The package includes `rgoipc`, a Go package for building RPC servers with function registration.
+The package includes `rgoipc`, a Go package for building RPC servers with function registration. Functons are registered in the go main application and called by R.
 
 ```{r rpc-build}
 
