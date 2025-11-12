@@ -62,25 +62,39 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpsTJQaK/file162fce421a3116' '/tmp/RtmpsTJQaK/file162fce4a8203bb.go'"
-#> [1] "/tmp/RtmpsTJQaK/file162fce421a3116"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpo6DxJc/file164ee273b52a5a' '/tmp/Rtmpo6DxJc/file164ee24c0a6c03.go'"
+#> [1] "/tmp/Rtmpo6DxJc/file164ee273b52a5a"
 ```
 
 create IPC path and send/receive message
 
 ``` r
 ipc_url <- create_ipc_path()
-ipc_url
-#> [1] "ipc:///tmp/RtmpsTJQaK/mangoro-echo162fce52d4b043.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
 #> [1] TRUE
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")
-nanonext::send(sock, msg, mode = "raw")
-#> [1] 0
-nanonext::recv(sock, mode = "raw") |> rawToChar()
+
+max_attempts <- 20
+send_result <- nanonext::send(sock, msg, mode = "raw")
+attempt <- 1
+while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
+  Sys.sleep(1)
+  send_result <- nanonext::send(sock, msg, mode = "raw")
+  attempt <- attempt + 1
+}
+
+response <- nanonext::recv(sock, mode = "raw")
+attempt <- 1
+while (nanonext::is_error_value(response) && attempt < max_attempts) {
+  Sys.sleep(1)
+  response <- nanonext::recv(sock, mode = "raw")
+  attempt <- attempt + 1
+}
+
+rawToChar(response)
 #> [1] "hello from R [echoed by Go]"
 close(sock)
 echo_proc$kill()
@@ -145,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpsTJQaK/file162fce5d61771a' '/tmp/RtmpsTJQaK/file162fcee91765.go'"
-#> [1] "/tmp/RtmpsTJQaK/file162fce5d61771a"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpo6DxJc/file164ee24b086754' '/tmp/Rtmpo6DxJc/file164ee21f61be71.go'"
+#> [1] "/tmp/Rtmpo6DxJc/file164ee24b086754"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -202,6 +216,107 @@ close(sock)
 echo_proc$kill()
 #> [1] TRUE
 ```
+
+## RPC with Function Registration
+
+The package includes `rgoipc`, a Go package for building RPC servers
+with function registration.
+
+``` r
+library(nanoarrow)
+
+rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
+rpc_bin <- tempfile()
+mangoro_go_build(rpc_server_path, rpc_bin)
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpo6DxJc/file164ee250009cd2' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmpo6DxJc/file164ee250009cd2"
+
+ipc_url <- create_ipc_path()
+rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
+Sys.sleep(2)
+rpc_proc$is_alive()
+#> [1] TRUE
+```
+
+Request the manifest of registered functions:
+
+``` r
+sock <- nanonext::socket("req", dial = ipc_url)
+
+packInt32 <- function(x) {
+  as.raw(c((x %/% 16777216) %% 256, (x %/% 65536) %% 256, (x %/% 256) %% 256, x %% 256))
+}
+
+unpackInt32 <- function(bytes) {
+  val <- as.numeric(bytes[1]) * 16777216 + as.numeric(bytes[2]) * 65536 + 
+    as.numeric(bytes[3]) * 256 + as.numeric(bytes[4])
+  as.integer(val)
+}
+
+manifest_msg <- c(as.raw(0), packInt32(0), packInt32(0))
+max_attempts <- 20
+send_result <- nanonext::send(sock, manifest_msg, mode = "raw")
+attempt <- 1
+while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
+  Sys.sleep(1)
+  send_result <- nanonext::send(sock, manifest_msg, mode = "raw")
+  attempt <- attempt + 1
+}
+
+manifest_response <- nanonext::recv(sock, mode = "raw")
+attempt <- 1
+while (nanonext::is_error_value(manifest_response) && attempt < max_attempts) {
+  Sys.sleep(1)
+  manifest_response <- nanonext::recv(sock, mode = "raw")
+  attempt <- attempt + 1
+}
+
+msg_type <- as.integer(manifest_response[1])
+name_len <- unpackInt32(manifest_response[2:5])
+error_start <- 6L + as.integer(name_len)
+error_len <- unpackInt32(manifest_response[error_start:(error_start+3L)])
+json_start <- error_start + 4L + as.integer(error_len)
+manifest_json <- rawToChar(manifest_response[json_start:length(manifest_response)])
+manifest <- jsonlite::fromJSON(manifest_json)
+print(manifest)
+#> $add
+#> $add$Args
+#>   Name Type.Type Type.Nullable Type.StructDef Type.ListSchema Optional Default
+#> 1    x   float64          TRUE             NA              NA    FALSE      NA
+#> 2    y   float64          TRUE             NA              NA    FALSE      NA
+#> 
+#> $add$ReturnType
+#> $add$ReturnType$Type
+#> [1] "float64"
+#> 
+#> $add$ReturnType$Nullable
+#> [1] TRUE
+#> 
+#> $add$ReturnType$StructDef
+#> NULL
+#> 
+#> $add$ReturnType$ListSchema
+#> NULL
+#> 
+#> 
+#> $add$Vectorized
+#> [1] TRUE
+#> 
+#> $add$Metadata
+#> $add$Metadata$description
+#> [1] "Add two numeric vectors"
+
+close(sock)
+rpc_proc$kill()
+#> [1] TRUE
+```
+
+The `rgoipc` package provides interfaces for type-safe function
+registration with Arrow schema validation. See
+[inst/go/pkg/rgoipc](https://sounkou-bioinfo.github.io/mangoro/inst/go/pkg/rgoipc)
+for the Go package and
+[inst/go/cmd/rpc-example](https://sounkou-bioinfo.github.io/mangoro/inst/go/cmd/rpc-example)
+for a complete server example.
 
 ## LLM Usage Disclosure
 
