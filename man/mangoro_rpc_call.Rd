@@ -14,7 +14,7 @@ mangoro_rpc_call(sock, func_name, data)
 \item{data}{Data frame or Arrow stream to send as arguments}
 }
 \value{
-A data frame with the result
+The result from nanoarrow::read_nanoarrow (typically a nanoarrow_array_stream)
 }
 \description{
 Call a remote function via RPC

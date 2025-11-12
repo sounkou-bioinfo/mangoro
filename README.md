@@ -68,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmphGg7ZI/file16788559bc9466' '/tmp/RtmphGg7ZI/file167885171975c7.go'"
-#> [1] "/tmp/RtmphGg7ZI/file16788559bc9466"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b021242d0c51' '/tmp/Rtmphs63jM/file16b0218f0e756.go'"
+#> [1] "/tmp/Rtmphs63jM/file16b021242d0c51"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmphGg7ZI/file16788550e9e12c' '/tmp/RtmphGg7ZI/file16788517ca7f5e.go'"
-#> [1] "/tmp/RtmphGg7ZI/file16788550e9e12c"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b0217866e866' '/tmp/Rtmphs63jM/file16b0216d914463.go'"
+#> [1] "/tmp/Rtmphs63jM/file16b0217866e866"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -256,8 +256,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmphGg7ZI/file16788568083964' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmphGg7ZI/file16788568083964"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b0212ed4a258' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmphs63jM/file16b0212ed4a258"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -384,6 +384,75 @@ close(sock)
 rpc_proc$kill()
 #> [1] TRUE
 ```
+
+## HTTP File Server with RPC Control
+
+The package includes an HTTP file server that can be controlled via RPC,
+demonstrating a more complex use case. Unlike the CGo+pipes approach,
+this uses the nanomsg/nanonext IPC framework for all communication.
+
+``` r
+# Build the HTTP server controller
+http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
+http_bin <- tempfile()
+mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b02136da4a22' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/Rtmphs63jM/file16b02136da4a22"
+
+# Start the RPC controller (not the HTTP server itself yet)
+ipc_url <- create_ipc_path()
+http_ctl_proc <- processx::process$new(http_bin, args = ipc_url, stdout = "|", stderr = "|")
+Sys.sleep(2)
+http_ctl_proc$is_alive()
+#> [1] TRUE
+```
+
+Control the HTTP server via RPC:
+
+``` r
+sock <- nanonext::socket("req", dial = ipc_url)
+
+# Get server status (should be stopped initially)
+status <- mangoro_http_status(sock)
+print(status)
+#>   status message
+#> 1 status stopped
+
+# Start HTTP server on port 8080 serving current directory
+result <- mangoro_http_start(sock, "127.0.0.1:8080", dir = ".", cors = TRUE)
+print(result)
+#>   status                               message
+#> 1     ok HTTP server started on 127.0.0.1:8080
+
+# Check status again
+status <- mangoro_http_status(sock)
+print(status)
+#>   status                   message
+#> 1 status running at 127.0.0.1:8080
+
+# Stop the server
+result <- mangoro_http_stop(sock)
+print(result)
+#>   status             message
+#> 1     ok HTTP server stopped
+
+# Verify it stopped
+status <- mangoro_http_status(sock)
+print(status)
+#>   status message
+#> 1 status stopped
+
+close(sock)
+http_ctl_proc$kill()
+#> [1] TRUE
+```
+
+This demonstrates thread-based concurrency where the Go process runs
+both: 1. An RPC server (REQ/REP pattern) for control commands 2. An HTTP
+server (standard Go net/http) running in a goroutine
+
+No CGo or pipes are needed - all communication happens via nanomsg IPC
+sockets.
 
 The `rgoipc` package provides interfaces for type-safe function
 registration with Arrow schema validation. See

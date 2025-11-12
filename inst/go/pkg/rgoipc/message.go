@@ -1,5 +1,13 @@
 package rgoipc
 
+import (
+	"bytes"
+
+	"github.com/apache/arrow/go/v18/arrow"
+	"github.com/apache/arrow/go/v18/arrow/ipc"
+	"github.com/apache/arrow/go/v18/arrow/memory"
+)
+
 // MessageType indicates the kind of RPC message
 type MessageType uint8
 
@@ -92,4 +100,26 @@ func UnmarshalRPCMessage(data []byte) (*RPCMessage, error) {
 	msg.ArrowData = data[pos:]
 
 	return msg, nil
+}
+
+// NewArrowReader creates an Arrow IPC reader from bytes
+func NewArrowReader(data []byte) (*ipc.Reader, error) {
+	return ipc.NewReader(bytes.NewReader(data), ipc.WithAllocator(memory.DefaultAllocator))
+}
+
+// WriteArrowRecord writes an Arrow record to bytes
+func WriteArrowRecord(record arrow.Record) ([]byte, error) {
+	var buf bytes.Buffer
+	writer := ipc.NewWriter(&buf, ipc.WithSchema(record.Schema()))
+	defer writer.Close()
+
+	if err := writer.Write(record); err != nil {
+		return nil, err
+	}
+
+	if err := writer.Close(); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }
