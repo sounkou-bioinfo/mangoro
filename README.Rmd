@@ -14,11 +14,12 @@ knitr::opts_chunk$set(
 
 [![mangoro status badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
 
+
+# mangoro
+
 <p align="center">
   <img src="inst/docs/logo.svg" alt="" width="180"/>
 </p>
-
-# mangoro
 
 R/Go IPC with Nanomsg Next Gen.
 
