@@ -67,8 +67,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpxYFb0v/file16236511910212' '/tmp/RtmpxYFb0v/file1623654c5b9c56.go'"
-#> [1] "/tmp/RtmpxYFb0v/file16236511910212"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpsTJQaK/file162fce421a3116' '/tmp/RtmpsTJQaK/file162fce4a8203bb.go'"
+#> [1] "/tmp/RtmpsTJQaK/file162fce421a3116"
 ```
 
 create IPC path and send/receive message
@@ -76,7 +76,7 @@ create IPC path and send/receive message
 ``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/RtmpxYFb0v/mangoro-echo1623654de4b8fc.ipc"
+#> [1] "ipc:///tmp/RtmpsTJQaK/mangoro-echo162fce52d4b043.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -150,8 +150,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpxYFb0v/file1623651470135f' '/tmp/RtmpxYFb0v/file1623652f362160.go'"
-#> [1] "/tmp/RtmpxYFb0v/file1623651470135f"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpsTJQaK/file162fce5d61771a' '/tmp/RtmpsTJQaK/file162fcee91765.go'"
+#> [1] "/tmp/RtmpsTJQaK/file162fce5d61771a"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
