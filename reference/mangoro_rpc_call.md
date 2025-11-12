@@ -24,4 +24,5 @@ mangoro_rpc_call(sock, func_name, data)
 
 ## Value
 
-A data frame with the result
+The result from nanoarrow::read_nanoarrow (typically a
+nanoarrow_array_stream)

@@ -14,6 +14,12 @@
   : Get the version of vendored mangos using Go tooling (no jsonlite)
 - [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)
   : Compile a Go source file using the vendored dependencies
+- [`mangoro_http_start()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_start.md)
+  : Start an HTTP file server via RPC
+- [`mangoro_http_status()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_status.md)
+  : Get HTTP server status via RPC
+- [`mangoro_http_stop()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_stop.md)
+  : Stop the HTTP file server via RPC
 - [`mangoro_pack_int32()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_pack_int32.md)
   : Pack a 32-bit integer to raw bytes (big-endian)
 - [`mangoro_rpc_call()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call.md)
