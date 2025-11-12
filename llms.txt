@@ -62,8 +62,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWdO81v/file16576f6f91b78b' '/tmp/RtmpWdO81v/file16576f51958f24.go'"
-#> [1] "/tmp/RtmpWdO81v/file16576f6f91b78b"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp8KkPRG/file166059635d936f' '/tmp/Rtmp8KkPRG/file16605975f4f36c.go'"
+#> [1] "/tmp/Rtmp8KkPRG/file166059635d936f"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWdO81v/file16576f58ef9e17' '/tmp/RtmpWdO81v/file16576f5a3ffc.go'"
-#> [1] "/tmp/RtmpWdO81v/file16576f58ef9e17"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp8KkPRG/file16605948444480' '/tmp/Rtmp8KkPRG/file1660593b349d2e.go'"
+#> [1] "/tmp/Rtmp8KkPRG/file16605948444480"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -228,8 +228,8 @@ library(nanoarrow)
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWdO81v/file16576f245aa049' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpWdO81v/file16576f245aa049"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp8KkPRG/file1660593c6b005' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmp8KkPRG/file1660593c6b005"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -242,42 +242,7 @@ Request the manifest of registered functions:
 
 ``` r
 sock <- nanonext::socket("req", dial = ipc_url)
-
-packInt32 <- function(x) {
-  as.raw(c((x %/% 16777216) %% 256, (x %/% 65536) %% 256, (x %/% 256) %% 256, x %% 256))
-}
-
-unpackInt32 <- function(bytes) {
-  val <- as.numeric(bytes[1]) * 16777216 + as.numeric(bytes[2]) * 65536 + 
-    as.numeric(bytes[3]) * 256 + as.numeric(bytes[4])
-  as.integer(val)
-}
-
-manifest_msg <- c(as.raw(0), packInt32(0), packInt32(0))
-max_attempts <- 20
-send_result <- nanonext::send(sock, manifest_msg, mode = "raw")
-attempt <- 1
-while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
-  Sys.sleep(1)
-  send_result <- nanonext::send(sock, manifest_msg, mode = "raw")
-  attempt <- attempt + 1
-}
-
-manifest_response <- nanonext::recv(sock, mode = "raw")
-attempt <- 1
-while (nanonext::is_error_value(manifest_response) && attempt < max_attempts) {
-  Sys.sleep(1)
-  manifest_response <- nanonext::recv(sock, mode = "raw")
-  attempt <- attempt + 1
-}
-
-msg_type <- as.integer(manifest_response[1])
-name_len <- unpackInt32(manifest_response[2:5])
-error_start <- 6L + as.integer(name_len)
-error_len <- unpackInt32(manifest_response[error_start:(error_start+3L)])
-json_start <- error_start + 4L + as.integer(error_len)
-manifest_json <- rawToChar(manifest_response[json_start:length(manifest_response)])
-manifest <- jsonlite::fromJSON(manifest_json)
+manifest <- rpc_get_manifest(sock)
 print(manifest)
 #> $add
 #> $add$Args
@@ -305,7 +270,6 @@ print(manifest)
 #> $add$Metadata
 #> $add$Metadata$description
 #> [1] "Add two numeric vectors"
-
 close(sock)
 ```
 
@@ -315,52 +279,7 @@ Call the `add` function with Arrow IPC data:
 sock <- nanonext::socket("req", dial = ipc_url)
 
 input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
-tmp_arrow <- rawConnection(raw(0), "wb")
-nanoarrow::write_nanoarrow(input_df, tmp_arrow)
-arrow_bytes <- rawConnectionValue(tmp_arrow)
-close(tmp_arrow)
-
-func_name <- "add"
-name_bytes <- charToRaw(func_name)
-name_len <- length(name_bytes)
-
-call_msg <- c(
-  as.raw(1),
-  packInt32(name_len),
-  name_bytes,
-  packInt32(0),
-  arrow_bytes
-)
-
-send_result <- nanonext::send(sock, call_msg, mode = "raw")
-attempt <- 1
-while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
-  Sys.sleep(1)
-  send_result <- nanonext::send(sock, call_msg, mode = "raw")
-  attempt <- attempt + 1
-}
-
-call_response <- nanonext::recv(sock, mode = "raw")
-attempt <- 1
-while (nanonext::is_error_value(call_response) && attempt < max_attempts) {
-  Sys.sleep(1)
-  call_response <- nanonext::recv(sock, mode = "raw")
-  attempt <- attempt + 1
-}
-
-resp_type <- as.integer(call_response[1])
-resp_name_len <- unpackInt32(call_response[2:5])
-resp_error_start <- 6L + as.integer(resp_name_len)
-resp_error_len <- unpackInt32(call_response[resp_error_start:(resp_error_start+3L)])
-
-if (resp_type == 3) {
-  error_msg <- rawToChar(call_response[(resp_error_start+4L):(resp_error_start+3L+resp_error_len)])
-  stop("RPC error: ", error_msg)
-}
-
-resp_arrow_start <- resp_error_start + 4L + as.integer(resp_error_len)
-result_bytes <- call_response[resp_arrow_start:length(call_response)]
-result_df <- as.data.frame(nanoarrow::read_nanoarrow(result_bytes))
+result_df <- rpc_call(sock, "add", input_df)
 
 print(input_df)
 #>     x   y
@@ -415,6 +334,24 @@ way, you must comply with the GPL-3 license.
   : Get the version of vendored mangos using Go tooling (no jsonlite)
 - [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)
   : Compile a Go source file using the vendored dependencies
+- [`pack_int32()`](https://sounkou-bioinfo.github.io/mangoro/reference/pack_int32.md)
+  : Pack a 32-bit integer to raw bytes (big-endian)
+- [`rpc_call()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_call.md)
+  : Call a remote function via RPC
+- [`rpc_call_message()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_call_message.md)
+  : Create an RPC function call message
+- [`rpc_get_manifest()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_get_manifest.md)
+  : Get the manifest of registered functions from an RPC server
+- [`rpc_manifest_request()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_manifest_request.md)
+  : Create an RPC manifest request message
+- [`rpc_parse_response()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_parse_response.md)
+  : Parse an RPC response message
+- [`rpc_recv()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_recv.md)
+  : Receive a message with retries
+- [`rpc_send()`](https://sounkou-bioinfo.github.io/mangoro/reference/rpc_send.md)
+  : Send a message with retries
 - [`run_mangoro_bin()`](https://sounkou-bioinfo.github.io/mangoro/reference/run_mangoro_bin.md)
   : Run a mangoro Go binary with arguments
+- [`unpack_int32()`](https://sounkou-bioinfo.github.io/mangoro/reference/unpack_int32.md)
+  : Unpack a 32-bit integer from raw bytes (big-endian)
 
