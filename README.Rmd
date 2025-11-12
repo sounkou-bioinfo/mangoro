@@ -214,10 +214,10 @@ The RPC protocol wraps Arrow IPC data in a simple envelope:
 - **Error length + Error**: Error message (empty on success)
 - **Arrow IPC data**: 
   - For **manifest response**: JSON bytes describing available functions
-  - For **function calls**: Arrow IPC stream containing input data frame
-  - For **function results**: Arrow IPC stream containing output data frame
+  - For **function calls**: Arrow IPC stream containing input arguments (typically RecordBatch)
+  - For **function results**: Arrow IPC stream containing output (typically RecordBatch)
 
-Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC, processes it, and returns Arrow IPC. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data.
+Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC (as `arrow.Record`), processes it, and returns Arrow IPC. On the R side, you can work with data frames, nanoarrow streams, or any Arrow-compatible structure. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data.
 
 ```{r rpc-build}
 
