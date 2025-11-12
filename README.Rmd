@@ -254,6 +254,22 @@ print(result_df)
 print(input_df$x + input_df$y)
 
 close(sock)
+```
+
+Call the `echoString` function to test string handling:
+
+```{r rpc-echo-string}
+sock <- nanonext::socket("req", dial = ipc_url)
+
+input_df <- data.frame(s = c("hello", "world", NA, "mangoro"))
+result <- mangoro_rpc_call(sock, "echoString", input_df)
+result_df <- as.data.frame(result)
+
+print(input_df)
+print(result_df)
+identical(input_df$s, result_df$result)
+
+close(sock)
 rpc_proc$kill()
 ```
 

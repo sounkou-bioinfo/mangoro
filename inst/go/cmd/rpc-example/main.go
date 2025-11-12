@@ -55,6 +55,34 @@ func addHandler(input arrow.Record) (arrow.Record, error) {
 	return array.NewRecord(schema, []arrow.Array{result}, int64(result.Len())), nil
 }
 
+// echoStringHandler echoes back a string vector unchanged
+func echoStringHandler(input arrow.Record) (arrow.Record, error) {
+	if input.NumCols() != 1 {
+		return nil, fmt.Errorf("expected 1 column, got %d", input.NumCols())
+	}
+
+	strCol := input.Column(0).(*array.String)
+
+	// Build result
+	pool := memory.NewGoAllocator()
+	builder := array.NewStringBuilder(pool)
+	defer builder.Release()
+
+	for i := 0; i < strCol.Len(); i++ {
+		if strCol.IsNull(i) {
+			builder.AppendNull()
+		} else {
+			builder.Append(strCol.Value(i))
+		}
+	}
+
+	result := builder.NewArray()
+	defer result.Release()
+
+	schema := arrow.NewSchema([]arrow.Field{{Name: "result", Type: arrow.BinaryTypes.String}}, nil)
+	return array.NewRecord(schema, []arrow.Array{result}, int64(result.Len())), nil
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		die("Usage: %s <ipc_path>", os.Args[0])
@@ -75,6 +103,18 @@ func main() {
 	})
 	if err != nil {
 		die("Failed to register add function: %s", err)
+	}
+
+	err = registry.Register("echoString", echoStringHandler, rgoipc.FunctionSignature{
+		Args: []rgoipc.ArgSpec{
+			{Name: "s", Type: rgoipc.TypeSpec{Type: rgoipc.TypeString, Nullable: true}},
+		},
+		ReturnType: rgoipc.TypeSpec{Type: rgoipc.TypeString, Nullable: true},
+		Vectorized: true,
+		Metadata:   map[string]string{"description": "Echo back a string vector"},
+	})
+	if err != nil {
+		die("Failed to register echoString function: %s", err)
 	}
 
 	fmt.Println("Registered functions:", registry.List())
