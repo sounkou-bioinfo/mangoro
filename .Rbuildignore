@@ -19,3 +19,7 @@
 ^inst/go/vendor/github.com/goccy/go-json/\.golangci\.yml$
 ^inst/go/vendor/github.com/klauspost/compress/\.goreleaser\.yml$
 ^inst/go/vendor/github.com/klauspost/cpuid/v2/\.goreleaser\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
