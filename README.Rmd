@@ -217,9 +217,7 @@ The RPC protocol wraps Arrow IPC data in a simple envelope:
   - For **function calls**: Arrow IPC stream containing input arguments (typically RecordBatch)
   - For **function results**: Arrow IPC stream containing output (typically RecordBatch)
 
-Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC (as `arrow.Record`), processes it, and returns Arrow IPC. On the R side, you can work with data frames, nanoarrow streams, or any Arrow-compatible structure. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data. 
-
-The `rgoipc` package provides the interfaces for type-safe function registration with Arrow schema validation. See [inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package and [inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) for a complete server example.
+Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC (as `arrow.Record`), processes it, and returns Arrow IPC. On the R side, you can work with data frames, nanoarrow streams, or any Arrow-compatible structure. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data.
 
 ```{r rpc-build}
 
@@ -324,9 +322,10 @@ close(sock)
 http_ctl_proc$kill()
 ```
 
+This demonstrates thread-based concurrency where the Go process runs both an RPC server (REQ/REP pattern) for control commands and HTTP server (standard Go net/http) running in a goroutine
 
 
-
+The `rgoipc` package provides interfaces for type-safe function registration with Arrow schema validation. See [inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package implementation and [inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) and [inst/go/cmd/http-server](inst/go/cmd/http-server) for complete server examples.
 
 ## LLM Usage Disclosure
 
