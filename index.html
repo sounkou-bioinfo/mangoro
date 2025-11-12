@@ -100,8 +100,8 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file1663463e1978e' '/tmp/Rtmp3yIY5t/file1663467ad2cdde.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp3yIY5t/file1663463e1978e"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1f24f57b90' '/tmp/RtmpytpTwl/file166c1f711a2e30.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpytpTwl/file166c1f24f57b90"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -191,8 +191,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file16634661f0a067' '/tmp/Rtmp3yIY5t/file16634639ae55b0.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp3yIY5t/file16634661f0a067"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1fafc02ce' '/tmp/RtmpytpTwl/file166c1f31bc978.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpytpTwl/file166c1fafc02ce"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -246,14 +246,36 @@
 <div class="section level2">
 <h2 id="simple-rpc-with-function-registration">Simple RPC with Function Registration<a class="anchor" aria-label="anchor" href="#simple-rpc-with-function-registration"></a>
 </h2>
-<p>The package includes <code>rgoipc</code>, a Go package for building RPC servers with function registration. Functons are registered in the go main application and called by R.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>The package includes <code>rgoipc</code>, a Go package for building RPC servers with function registration. Functions are registered in the Go main application and called by R.</p>
+<div class="section level3">
+<h3 id="rpc-message-structure">RPC Message Structure<a class="anchor" aria-label="anchor" href="#rpc-message-structure"></a>
+</h3>
+<p>The RPC protocol wraps Arrow IPC data in a simple envelope:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>[type<span class="sc">:</span><span class="dv">1</span>byte][name_len<span class="sc">:</span><span class="dv">4</span>bytes][name][error_len<span class="sc">:</span><span class="dv">4</span>bytes][error][arrow_ipc_data]</span></code></pre></div>
+<ul>
+<li>
+<strong>Type</strong>: Message type (0=manifest, 1=call, 2=result, 3=error)</li>
+<li>
+<strong>Name length + Name</strong>: Function name (empty for manifest requests)</li>
+<li>
+<strong>Error length + Error</strong>: Error message (empty on success)</li>
+<li>
+<strong>Arrow IPC data</strong>:
+<ul>
+<li>For <strong>manifest response</strong>: JSON bytes describing available functions</li>
+<li>For <strong>function calls</strong>: Arrow IPC stream containing input data frame</li>
+<li>For <strong>function results</strong>: Arrow IPC stream containing output data frame</li>
+</ul>
+</li>
+</ul>
+<p>Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC, processes it, and returns Arrow IPC. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">rpc_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"rpc-example"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">rpc_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">rpc_server_path</span>, <span class="va">rpc_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3yIY5t/file166346578cf681' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp3yIY5t/file166346578cf681"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1f7c4a6ca9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpytpTwl/file166c1f7c4a6ca9"</span></span>
 <span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">rpc_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
@@ -261,9 +283,9 @@
 <span><span class="va">rpc_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Request the manifest of registered functions:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
-<span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rpc_get_manifest.html">rpc_get_manifest</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
+<span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_get_manifest.html">mangoro_rpc_get_manifest</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">manifest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $add</span></span>
 <span><span class="co">#&gt; $add$Args</span></span>
@@ -293,11 +315,12 @@
 <span><span class="co">#&gt; [1] "Add two numeric vectors"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
 <p>Call the <code>add</code> function with Arrow IPC data:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">2.5</span>, <span class="fl">3.5</span>, <span class="cn">NA</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>, <span class="fl">4.5</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rpc_call.html">rpc_call</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"add"</span>, <span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_call.html">mangoro_rpc_call</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"add"</span>, <span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     x   y</span></span>
@@ -318,6 +341,7 @@
 <span><span class="va">rpc_proc</span><span class="op">$</span><span class="fu">kill</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>The <code>rgoipc</code> package provides interfaces for type-safe function registration with Arrow schema validation. See <a href="inst/go/pkg/rgoipc">inst/go/pkg/rgoipc</a> for the Go package and <a href="inst/go/cmd/rpc-example">inst/go/cmd/rpc-example</a> for a complete server example.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="llm-usage-disclosure">LLM Usage Disclosure<a class="anchor" aria-label="anchor" href="#llm-usage-disclosure"></a>

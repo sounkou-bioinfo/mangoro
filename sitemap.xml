@@ -12,15 +12,15 @@
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/get_mangos_version.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/pack_int32.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_call.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_call_message.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_get_manifest.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_manifest_request.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_parse_response.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_recv.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/rpc_send.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_pack_int32.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call_message.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_get_manifest.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_manifest_request.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_parse_response.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_recv.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_send.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_unpack_int32.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/run_mangoro_bin.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/unpack_int32.html</loc></url>
 </urlset>
 
