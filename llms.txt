@@ -62,8 +62,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpo6DxJc/file164ee273b52a5a' '/tmp/Rtmpo6DxJc/file164ee24c0a6c03.go'"
-#> [1] "/tmp/Rtmpo6DxJc/file164ee273b52a5a"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWdO81v/file16576f6f91b78b' '/tmp/RtmpWdO81v/file16576f51958f24.go'"
+#> [1] "/tmp/RtmpWdO81v/file16576f6f91b78b"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpo6DxJc/file164ee24b086754' '/tmp/Rtmpo6DxJc/file164ee21f61be71.go'"
-#> [1] "/tmp/Rtmpo6DxJc/file164ee24b086754"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWdO81v/file16576f58ef9e17' '/tmp/RtmpWdO81v/file16576f5a3ffc.go'"
+#> [1] "/tmp/RtmpWdO81v/file16576f58ef9e17"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -228,8 +228,8 @@ library(nanoarrow)
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpo6DxJc/file164ee250009cd2' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmpo6DxJc/file164ee250009cd2"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWdO81v/file16576f245aa049' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpWdO81v/file16576f245aa049"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -305,6 +305,77 @@ print(manifest)
 #> $add$Metadata
 #> $add$Metadata$description
 #> [1] "Add two numeric vectors"
+
+close(sock)
+```
+
+Call the `add` function with Arrow IPC data:
+
+``` r
+sock <- nanonext::socket("req", dial = ipc_url)
+
+input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
+tmp_arrow <- rawConnection(raw(0), "wb")
+nanoarrow::write_nanoarrow(input_df, tmp_arrow)
+arrow_bytes <- rawConnectionValue(tmp_arrow)
+close(tmp_arrow)
+
+func_name <- "add"
+name_bytes <- charToRaw(func_name)
+name_len <- length(name_bytes)
+
+call_msg <- c(
+  as.raw(1),
+  packInt32(name_len),
+  name_bytes,
+  packInt32(0),
+  arrow_bytes
+)
+
+send_result <- nanonext::send(sock, call_msg, mode = "raw")
+attempt <- 1
+while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
+  Sys.sleep(1)
+  send_result <- nanonext::send(sock, call_msg, mode = "raw")
+  attempt <- attempt + 1
+}
+
+call_response <- nanonext::recv(sock, mode = "raw")
+attempt <- 1
+while (nanonext::is_error_value(call_response) && attempt < max_attempts) {
+  Sys.sleep(1)
+  call_response <- nanonext::recv(sock, mode = "raw")
+  attempt <- attempt + 1
+}
+
+resp_type <- as.integer(call_response[1])
+resp_name_len <- unpackInt32(call_response[2:5])
+resp_error_start <- 6L + as.integer(resp_name_len)
+resp_error_len <- unpackInt32(call_response[resp_error_start:(resp_error_start+3L)])
+
+if (resp_type == 3) {
+  error_msg <- rawToChar(call_response[(resp_error_start+4L):(resp_error_start+3L+resp_error_len)])
+  stop("RPC error: ", error_msg)
+}
+
+resp_arrow_start <- resp_error_start + 4L + as.integer(resp_error_len)
+result_bytes <- call_response[resp_arrow_start:length(call_response)]
+result_df <- as.data.frame(nanoarrow::read_nanoarrow(result_bytes))
+
+print(input_df)
+#>     x   y
+#> 1 1.5 0.5
+#> 2 2.5 1.5
+#> 3 3.5 2.5
+#> 4  NA 4.5
+print(result_df)
+#>   result
+#> 1      2
+#> 2      4
+#> 3      6
+#> 4     NA
+print(input_df$x + input_df$y)
+#> [1]  2  4  6 NA
 
 close(sock)
 rpc_proc$kill()
