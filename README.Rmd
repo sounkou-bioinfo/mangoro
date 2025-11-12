@@ -275,7 +275,7 @@ rpc_proc$kill()
 
 ## HTTP File Server with RPC Control
 
-The package includes an HTTP file server that can be controlled via RPC, demonstrating a more complex use case. Unlike the CGo+pipes approach, this uses the nanomsg/nanonext IPC framework for all communication.
+The package includes an HTTP file server that can be controlled via RPC, demonstrating a slighly more complex use case.
 
 ```{r http-server-build}
 # Build the HTTP server controller
@@ -323,10 +323,8 @@ close(sock)
 http_ctl_proc$kill()
 ```
 
-This demonstrates thread-based concurrency where the Go process runs both an RPC server (REQ/REP pattern) for control commands and HTTP server (standard Go net/http) running in a goroutine
 
-
-The `rgoipc` package provides interfaces for type-safe function registration with Arrow schema validation. See [inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package implementation and [inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) and [inst/go/cmd/http-server](inst/go/cmd/http-server) for complete server examples.
+The `rgoipc` package provides the interfaces for type-safe function registration with Arrow schema validation. See [inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package implementation and [inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) and [inst/go/cmd/http-server](inst/go/cmd/http-server) for complete server examples.
 
 ## LLM Usage Disclosure
 

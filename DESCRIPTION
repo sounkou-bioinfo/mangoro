@@ -1,6 +1,6 @@
 Package: mangoro
 Title: R/Go IPC using Nanomsg Next Gen
-Version: 0.2.0.90000
+Version: 0.2.1
 Authors@R: 
     person(given = "Sounkou Mahamane", family = "Toure", 
     email = "sounkoutoure@gmail.com", role = c("aut", "cre"))
@@ -12,7 +12,8 @@ Depends: R (>= 4.4.0)
 Imports: 
     processx,
     nanonext,
-    nanoarrow
+    nanoarrow,
+    jsonlite
 SystemRequirements: Go (https://golang.org), GNU make
 URL: https://github.com/sounkou-bioinfo/mangoro, https://sounkou-bioinfo.github.io/mangoro/
 BugReports: https://github.com/sounkou-bioinfo/mangoro/issues

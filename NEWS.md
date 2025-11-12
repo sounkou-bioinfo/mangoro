@@ -1,3 +1,20 @@
+# mangoro 0.2.1
+
+## RPC Interface
+
+- New `rgoipc` Go package for type-safe function registration with Arrow schema validation
+- RPC protocol wrapping Arrow IPC data with function call envelope
+- RPC helper functions: `mangoro_rpc_get_manifest()`, `mangoro_rpc_call()`, `mangoro_rpc_send()`, `mangoro_rpc_recv()`, `mangoro_rpc_parse_response()`
+- RPC example server demonstrating function registration (add, echoString functions)
+- HTTP file server with RPC control interface (start/stop/status commands)
+- Helper functions for HTTP server control: `mangoro_http_start()`, `mangoro_http_stop()`, `mangoro_http_status()`
+
+## Examples
+
+- Complete RPC function registration and calling example in README
+- HTTP server RPC control demonstration with server output capture
+- Arrow IPC-based RPC communication examples
+
 # mangoro 0.2.0
 
 ## Initial Release

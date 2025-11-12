@@ -1,5 +1,6 @@
 #' @import nanonext
 #' @import nanoarrow
+#' @import jsonlite
 NULL
 
 
