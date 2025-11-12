@@ -265,7 +265,10 @@ Call the `add` function with Arrow IPC data:
 sock <- nanonext::socket("req", dial = ipc_url)
 
 input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
-arrow_bytes <- nanoarrow::write_nanoarrow(input_df)
+tmp_arrow <- rawConnection(raw(0), "wb")
+nanoarrow::write_nanoarrow(input_df, tmp_arrow)
+arrow_bytes <- rawConnectionValue(tmp_arrow)
+close(tmp_arrow)
 
 func_name <- "add"
 name_bytes <- charToRaw(func_name)
