@@ -1,0 +1,15 @@
+<svg width="300" height="346" viewBox="0 0 300 346" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon background -->
+  <polygon points="150,10 290,87 290,259 150,336 10,259 10,87"
+           fill="#ffe066" stroke="#f9a602" stroke-width="8"/>
+  <!-- Mango body -->
+  <ellipse cx="170" cy="180" rx="70" ry="100" fill="#f9a602" stroke="#e17009" stroke-width="6"/>
+  <!-- Mango highlight -->
+  <ellipse cx="200" cy="140" rx="18" ry="35" fill="#fffbe6" opacity="0.5"/>
+  <!-- Mango leaf -->
+  <ellipse cx="120" cy="90" rx="35" ry="15" fill="#4caf50" stroke="#357a38" stroke-width="4" transform="rotate(-20 120 90)"/>
+  <!-- Package name -->
+  <text x="150" y="320" font-family="Montserrat, Arial, sans-serif" font-size="38" fill="#357a38" text-anchor="middle" font-weight="bold" letter-spacing="2">
+    mangoro
+  </text>
+</svg>
