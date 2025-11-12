@@ -53,9 +53,14 @@
 <img src="logo.svg" class="logo" alt=""><h1 id="mangoro">mangoro<a class="anchor" aria-label="anchor" href="#mangoro"></a>
 </h1>
 </div>
-<p align="center">
-<img src="inst/docs/logo.svg" alt="" width="180"></p>
-<p>R/Go IPC with Nanomsg Next Gen.</p>
+<div style="display: flex; align-items: flex-start;">
+<div style="flex: 1;">
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>R<span class="sc">/</span>Go IPC with Nanomsg Next Gen.</span></code></pre></div>
+</div>
+<div style="flex: 0 0 auto; margin-left: 20px;">
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="sc">&lt;</span>img src<span class="ot">=</span><span class="st">"inst/docs/logo.svg"</span> alt<span class="ot">=</span><span class="st">""</span> width<span class="ot">=</span><span class="st">"180"</span><span class="sc">/</span><span class="er">&gt;</span></span></code></pre></div>
+</div>
+</div>
 <div class="section level2">
 <h2 id="what-is-mangoro">What is mangoro?<a class="anchor" aria-label="anchor" href="#what-is-mangoro"></a>
 </h2>
@@ -65,7 +70,7 @@
 <h2 id="on-the-fly-go-compilation-and-echo">On-the-fly Go compilation and echo<a class="anchor" aria-label="anchor" href="#on-the-fly-go-compilation-and-echo"></a>
 </h2>
 <p>Compile some go code on-the-fly from R using the <code><a href="reference/mangoro_go_build.html">mangoro_go_build()</a></code> function. This uses the vendored go code in <a href="inst/go/vendor">inst/go/vendor</a></p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sounkou-bioinfo/mangoro" class="external-link">mangoro</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nanonext.r-lib.org" class="external-link">nanonext</a></span><span class="op">)</span></span>
@@ -99,13 +104,13 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpZyFqlA/file161da549126bd7' '/tmp/RtmpZyFqlA/file161da57c2f55f3.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpZyFqlA/file161da549126bd7"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpIMd8E3/file161eea43785f61' '/tmp/RtmpIMd8E3/file161eea60b342dc.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpIMd8E3/file161eea43785f61"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ipc_url</span></span>
-<span><span class="co">#&gt; [1] "ipc:///tmp/RtmpZyFqlA/mangoro-echo161da52778e8a6.ipc"</span></span>
+<span><span class="co">#&gt; [1] "ipc:///tmp/RtmpIMd8E3/mangoro-echo161eea7c2a9082.ipc"</span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">echo_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
@@ -124,7 +129,7 @@
 <h2 id="arrow-ipc-with-nanoarrow-for-serialization">Arrow IPC with nanoarrow for serialization<a class="anchor" aria-label="anchor" href="#arrow-ipc-with-nanoarrow-for-serialization"></a>
 </h2>
 <p>Compile go code this time that uses Arrow IPC for (de)serialization between R and Go.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://arrow.apache.org/nanoarrow/latest/r/" class="external-link">nanoarrow</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/serial_config.html" class="external-link">serial_config</a></span><span class="op">(</span></span>
@@ -177,13 +182,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpZyFqlA/file161da5ed0fde6' '/tmp/RtmpZyFqlA/file161da56456b8d0.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpZyFqlA/file161da5ed0fde6"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpIMd8E3/file161eea58d162a0' '/tmp/RtmpIMd8E3/file161eea65b1bbe8.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpIMd8E3/file161eea58d162a0"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p>Configure the socket and send/receive an Arrow IPC data. Note that we use a loop with retries to handle potential timing issues when the Go echo server is not yet ready to receive messages.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">echo_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
