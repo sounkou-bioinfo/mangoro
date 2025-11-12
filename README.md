@@ -68,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b021242d0c51' '/tmp/Rtmphs63jM/file16b0218f0e756.go'"
-#> [1] "/tmp/Rtmphs63jM/file16b021242d0c51"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b341c5911' '/tmp/Rtmp1xZIm1/file16b26b2611a788.go'"
+#> [1] "/tmp/Rtmp1xZIm1/file16b26b341c5911"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b0217866e866' '/tmp/Rtmphs63jM/file16b0216d914463.go'"
-#> [1] "/tmp/Rtmphs63jM/file16b0217866e866"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b7307584d' '/tmp/Rtmp1xZIm1/file16b26b25973557.go'"
+#> [1] "/tmp/Rtmp1xZIm1/file16b26b7307584d"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -251,13 +251,19 @@ nanoarrow streams, or any Arrow-compatible structure. The thin RPC
 envelope only adds metadata (function name, error handling) around the
 Arrow data.
 
+The `rgoipc` package provides the interfaces for type-safe function
+registration with Arrow schema validation. See
+[inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package and
+[inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) for a complete server
+example.
+
 ``` r
 
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b0212ed4a258' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmphs63jM/file16b0212ed4a258"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b27bb65f9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmp1xZIm1/file16b26b27bb65f9"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -396,8 +402,8 @@ this uses the nanomsg/nanonext IPC framework for all communication.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmphs63jM/file16b02136da4a22' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/Rtmphs63jM/file16b02136da4a22"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b3d738e5e' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/Rtmp1xZIm1/file16b26b3d738e5e"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -430,6 +436,14 @@ print(status)
 #>   status                   message
 #> 1 status running at 127.0.0.1:8080
 
+# readLines
+readLines("http://127.0.0.1:8080/", n = 5, warn = FALSE)
+#> [1] "<pre>"                                      
+#> [2] "<a href=\".Rbuildignore\">.Rbuildignore</a>"
+#> [3] "<a href=\".cred\">.cred</a>"                
+#> [4] "<a href=\".git/\">.git/</a>"                
+#> [5] "<a href=\".github/\">.github/</a>"
+
 # Stop the server
 result <- mangoro_http_stop(sock)
 print(result)
@@ -446,19 +460,6 @@ close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE
 ```
-
-This demonstrates thread-based concurrency where the Go process runs
-both: 1. An RPC server (REQ/REP pattern) for control commands 2. An HTTP
-server (standard Go net/http) running in a goroutine
-
-No CGo or pipes are needed - all communication happens via nanomsg IPC
-sockets.
-
-The `rgoipc` package provides interfaces for type-safe function
-registration with Arrow schema validation. See
-[inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package and
-[inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) for a complete server
-example.
 
 ## LLM Usage Disclosure
 
