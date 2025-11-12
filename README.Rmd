@@ -288,6 +288,7 @@ ipc_url <- create_ipc_path()
 http_ctl_proc <- processx::process$new(http_bin, args = ipc_url, stdout = "|", stderr = "|")
 Sys.sleep(2)
 http_ctl_proc$is_alive()
+http_ctl_proc$read_output_lines()
 ```
 
 Control the HTTP server via RPC:
@@ -307,8 +308,8 @@ print(result)
 status <- mangoro_http_status(sock)
 print(status)
 
-# readLines
-readLines("http://127.0.0.1:8080/", n = 5, warn = FALSE)
+# Test accessing the HTTP server
+readLines("http://127.0.0.1:8080/", n = 3, warn = FALSE)
 
 # Stop the server
 result <- mangoro_http_stop(sock)
