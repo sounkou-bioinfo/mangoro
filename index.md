@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1f24f57b90' '/tmp/RtmpytpTwl/file166c1f711a2e30.go'"
-#> [1] "/tmp/RtmpytpTwl/file166c1f24f57b90"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpz9Yznz/file167029329cb768' '/tmp/Rtmpz9Yznz/file16702913cdd1f7.go'"
+#> [1] "/tmp/Rtmpz9Yznz/file167029329cb768"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1fafc02ce' '/tmp/RtmpytpTwl/file166c1f31bc978.go'"
-#> [1] "/tmp/RtmpytpTwl/file166c1fafc02ce"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpz9Yznz/file167029a5ac140' '/tmp/Rtmpz9Yznz/file16702967862dc5.go'"
+#> [1] "/tmp/Rtmpz9Yznz/file167029a5ac140"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -236,22 +236,25 @@ The RPC protocol wraps Arrow IPC data in a simple envelope:
 - **Error length + Error**: Error message (empty on success)
 - **Arrow IPC data**:
   - For **manifest response**: JSON bytes describing available functions
-  - For **function calls**: Arrow IPC stream containing input data frame
-  - For **function results**: Arrow IPC stream containing output data
-    frame
+  - For **function calls**: Arrow IPC stream containing input arguments
+    (typically RecordBatch)
+  - For **function results**: Arrow IPC stream containing output
+    (typically RecordBatch)
 
 Both the input and output data are serialized using Arrow IPC format.
-The Go server receives Arrow IPC, processes it, and returns Arrow IPC.
-The thin RPC envelope only adds metadata (function name, error handling)
-around the Arrow data.
+The Go server receives Arrow IPC (as `arrow.Record`), processes it, and
+returns Arrow IPC. On the R side, you can work with data frames,
+nanoarrow streams, or any Arrow-compatible structure. The thin RPC
+envelope only adds metadata (function name, error handling) around the
+Arrow data.
 
 ``` r
 
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpytpTwl/file166c1f7c4a6ca9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpytpTwl/file166c1f7c4a6ca9"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpz9Yznz/file1670292eb6e239' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmpz9Yznz/file1670292eb6e239"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
