@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp6ZxZDR/file16b85d3730c773' '/tmp/Rtmp6ZxZDR/file16b85d2188f9ec.go'"
-#> [1] "/tmp/Rtmp6ZxZDR/file16b85d3730c773"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf1c25a8c7' '/tmp/RtmpwpGr91/file16bbf1358bb599.go'"
+#> [1] "/tmp/RtmpwpGr91/file16bbf1c25a8c7"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp6ZxZDR/file16b85d793fcf13' '/tmp/Rtmp6ZxZDR/file16b85d5628568e.go'"
-#> [1] "/tmp/Rtmp6ZxZDR/file16b85d793fcf13"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf14a44ec2' '/tmp/RtmpwpGr91/file16bbf15329cdba.go'"
+#> [1] "/tmp/RtmpwpGr91/file16bbf14a44ec2"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -253,8 +253,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp6ZxZDR/file16b85d25816318' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmp6ZxZDR/file16b85d25816318"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf1fc8c586' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpwpGr91/file16bbf1fc8c586"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -385,16 +385,15 @@ rpc_proc$kill()
 ## HTTP File Server with RPC Control
 
 The package includes an HTTP file server that can be controlled via RPC,
-demonstrating a more complex use case. Unlike the CGo+pipes approach,
-this uses the nanomsg/nanonext IPC framework for all communication.
+demonstrating a slighly more complex use case.
 
 ``` r
 # Build the HTTP server controller
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp6ZxZDR/file16b85d142beab3' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/Rtmp6ZxZDR/file16b85d142beab3"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf1166f7195' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpwpGr91/file16bbf1166f7195"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -403,8 +402,8 @@ Sys.sleep(2)
 http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
-#> [1] "Registered functions: [stopServer serverStatus startServer]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/Rtmp6ZxZDR/mangoro-echo16b85d18513eb3.ipc"
+#> [1] "Registered functions: [startServer stopServer serverStatus]"                             
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpwpGr91/mangoro-echo16bbf1705cee00.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -453,11 +452,7 @@ http_ctl_proc$kill()
 #> [1] TRUE
 ```
 
-This demonstrates thread-based concurrency where the Go process runs
-both an RPC server (REQ/REP pattern) for control commands and HTTP
-server (standard Go net/http) running in a goroutine
-
-The `rgoipc` package provides interfaces for type-safe function
+The `rgoipc` package provides the interfaces for type-safe function
 registration with Arrow schema validation. See
 [inst/go/pkg/rgoipc](https://sounkou-bioinfo.github.io/mangoro/inst/go/pkg/rgoipc)
 for the Go package implementation and

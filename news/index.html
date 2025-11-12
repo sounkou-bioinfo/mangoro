@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.90000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,26 @@
       <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1" id="mangoro-021">mangoro 0.2.1<a class="anchor" aria-label="anchor" href="#mangoro-021"></a></h2>
+<div class="section level3">
+<h3 id="rpc-interface-0-2-1">RPC Interface<a class="anchor" aria-label="anchor" href="#rpc-interface-0-2-1"></a></h3>
+<ul><li>New <code>rgoipc</code> Go package for type-safe function registration with Arrow schema validation</li>
+<li>RPC protocol wrapping Arrow IPC data with function call envelope</li>
+<li>RPC helper functions: <code><a href="../reference/mangoro_rpc_get_manifest.html">mangoro_rpc_get_manifest()</a></code>, <code><a href="../reference/mangoro_rpc_call.html">mangoro_rpc_call()</a></code>, <code><a href="../reference/mangoro_rpc_send.html">mangoro_rpc_send()</a></code>, <code><a href="../reference/mangoro_rpc_recv.html">mangoro_rpc_recv()</a></code>, <code><a href="../reference/mangoro_rpc_parse_response.html">mangoro_rpc_parse_response()</a></code>
+</li>
+<li>RPC example server demonstrating function registration (add, echoString functions)</li>
+<li>HTTP file server with RPC control interface (start/stop/status commands)</li>
+<li>Helper functions for HTTP server control: <code><a href="../reference/mangoro_http_start.html">mangoro_http_start()</a></code>, <code><a href="../reference/mangoro_http_stop.html">mangoro_http_stop()</a></code>, <code><a href="../reference/mangoro_http_status.html">mangoro_http_status()</a></code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="examples-0-2-1">Examples<a class="anchor" aria-label="anchor" href="#examples-0-2-1"></a></h3>
+<ul><li>Complete RPC function registration and calling example in README</li>
+<li>HTTP server RPC control demonstration with server output capture</li>
+<li>Arrow IPC-based RPC communication examples</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="mangoro-020">mangoro 0.2.0<a class="anchor" aria-label="anchor" href="#mangoro-020"></a></h2>
 <div class="section level3">

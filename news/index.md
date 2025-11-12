@@ -1,5 +1,33 @@
 # Changelog
 
+## mangoro 0.2.1
+
+### RPC Interface
+
+- New `rgoipc` Go package for type-safe function registration with Arrow
+  schema validation
+- RPC protocol wrapping Arrow IPC data with function call envelope
+- RPC helper functions:
+  [`mangoro_rpc_get_manifest()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_get_manifest.md),
+  [`mangoro_rpc_call()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call.md),
+  [`mangoro_rpc_send()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_send.md),
+  [`mangoro_rpc_recv()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_recv.md),
+  [`mangoro_rpc_parse_response()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_parse_response.md)
+- RPC example server demonstrating function registration (add,
+  echoString functions)
+- HTTP file server with RPC control interface (start/stop/status
+  commands)
+- Helper functions for HTTP server control:
+  [`mangoro_http_start()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_start.md),
+  [`mangoro_http_stop()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_stop.md),
+  [`mangoro_http_status()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_status.md)
+
+### Examples
+
+- Complete RPC function registration and calling example in README
+- HTTP server RPC control demonstration with server output capture
+- Arrow IPC-based RPC communication examples
+
 ## mangoro 0.2.0
 
 ### Initial Release
