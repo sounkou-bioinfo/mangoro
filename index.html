@@ -53,8 +53,9 @@
 <img src="logo.svg" class="logo" alt=""><h1 id="mangoro">mangoro<a class="anchor" aria-label="anchor" href="#mangoro"></a>
 </h1>
 </div>
-<p><img src="inst/docs/logo.svg" alt="" width="180" align="right"></p>
 <p>R/Go IPC with Nanomsg Next Gen.</p>
+<p>
+<img src="inst/docs/logo.svg" alt="" width="180" align="right"></p>
 <div class="section level2">
 <h2 id="what-is-mangoro">What is mangoro?<a class="anchor" aria-label="anchor" href="#what-is-mangoro"></a>
 </h2>
@@ -98,13 +99,13 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3Bw0r4/file16204912c10c36' '/tmp/Rtmp3Bw0r4/file1620497a60a60d.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp3Bw0r4/file16204912c10c36"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpxYFb0v/file16236511910212' '/tmp/RtmpxYFb0v/file1623654c5b9c56.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpxYFb0v/file16236511910212"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ipc_url</span></span>
-<span><span class="co">#&gt; [1] "ipc:///tmp/Rtmp3Bw0r4/mangoro-echo162049103fea97.ipc"</span></span>
+<span><span class="co">#&gt; [1] "ipc:///tmp/RtmpxYFb0v/mangoro-echo1623654de4b8fc.ipc"</span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">echo_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
@@ -176,8 +177,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3Bw0r4/file1620495e449d83' '/tmp/Rtmp3Bw0r4/file162049228ed4d1.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp3Bw0r4/file1620495e449d83"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpxYFb0v/file1623651470135f' '/tmp/RtmpxYFb0v/file1623652f362160.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpxYFb0v/file1623651470135f"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>

@@ -1,8 +1,8 @@
 # mangoro
 
-![](inst/docs/logo.svg)
-
 R/Go IPC with Nanomsg Next Gen.
+
+![](inst/docs/logo.svg)
 
 ## What is mangoro?
 
@@ -62,8 +62,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3Bw0r4/file16204912c10c36' '/tmp/Rtmp3Bw0r4/file1620497a60a60d.go'"
-#> [1] "/tmp/Rtmp3Bw0r4/file16204912c10c36"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpxYFb0v/file16236511910212' '/tmp/RtmpxYFb0v/file1623654c5b9c56.go'"
+#> [1] "/tmp/RtmpxYFb0v/file16236511910212"
 ```
 
 create IPC path and send/receive message
@@ -71,7 +71,7 @@ create IPC path and send/receive message
 ``` r
 ipc_url <- create_ipc_path()
 ipc_url
-#> [1] "ipc:///tmp/Rtmp3Bw0r4/mangoro-echo162049103fea97.ipc"
+#> [1] "ipc:///tmp/RtmpxYFb0v/mangoro-echo1623654de4b8fc.ipc"
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url)
 Sys.sleep(1)
 echo_proc$is_alive()
@@ -145,8 +145,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp3Bw0r4/file1620495e449d83' '/tmp/Rtmp3Bw0r4/file162049228ed4d1.go'"
-#> [1] "/tmp/Rtmp3Bw0r4/file1620495e449d83"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpxYFb0v/file1623651470135f' '/tmp/RtmpxYFb0v/file1623652f362160.go'"
+#> [1] "/tmp/RtmpxYFb0v/file1623651470135f"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
