@@ -100,8 +100,8 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b341c5911' '/tmp/Rtmp1xZIm1/file16b26b2611a788.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1xZIm1/file16b26b341c5911"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b4747a678337' '/tmp/RtmpV60Ahr/file16b474cc13406.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpV60Ahr/file16b4747a678337"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -191,8 +191,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b7307584d' '/tmp/Rtmp1xZIm1/file16b26b25973557.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1xZIm1/file16b26b7307584d"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b4745f4085f8' '/tmp/RtmpV60Ahr/file16b4744372ece0.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpV60Ahr/file16b4745f4085f8"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -269,14 +269,13 @@
 </li>
 </ul>
 <p>Both the input and output data are serialized using Arrow IPC format. The Go server receives Arrow IPC (as <code>arrow.Record</code>), processes it, and returns Arrow IPC. On the R side, you can work with data frames, nanoarrow streams, or any Arrow-compatible structure. The thin RPC envelope only adds metadata (function name, error handling) around the Arrow data.</p>
-<p>The <code>rgoipc</code> package provides the interfaces for type-safe function registration with Arrow schema validation. See <a href="inst/go/pkg/rgoipc">inst/go/pkg/rgoipc</a> for the Go package and <a href="inst/go/cmd/rpc-example">inst/go/cmd/rpc-example</a> for a complete server example.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">rpc_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"rpc-example"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">rpc_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">rpc_server_path</span>, <span class="va">rpc_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b27bb65f9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1xZIm1/file16b26b27bb65f9"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b4743ba6921' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpV60Ahr/file16b4743ba6921"</span></span>
 <span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">rpc_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
@@ -404,8 +403,8 @@
 <span><span class="va">http_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"http-server"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">http_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">http_server_path</span>, <span class="va">http_bin</span>, gomaxprocs <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b3d738e5e' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1xZIm1/file16b26b3d738e5e"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b47429ee1af7' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpV60Ahr/file16b47429ee1af7"</span></span>
 <span></span>
 <span><span class="co"># Start the RPC controller (not the HTTP server itself yet)</span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -458,6 +457,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">kill</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>This demonstrates thread-based concurrency where the Go process runs both an RPC server (REQ/REP pattern) for control commands and HTTP server (standard Go net/http) running in a goroutine</p>
+<p>The <code>rgoipc</code> package provides interfaces for type-safe function registration with Arrow schema validation. See <a href="inst/go/pkg/rgoipc">inst/go/pkg/rgoipc</a> for the Go package implementation and <a href="inst/go/cmd/rpc-example">inst/go/cmd/rpc-example</a> and <a href="inst/go/cmd/http-server">inst/go/cmd/http-server</a> for complete server examples.</p>
 </div>
 <div class="section level2">
 <h2 id="llm-usage-disclosure">LLM Usage Disclosure<a class="anchor" aria-label="anchor" href="#llm-usage-disclosure"></a>

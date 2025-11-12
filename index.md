@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b341c5911' '/tmp/Rtmp1xZIm1/file16b26b2611a788.go'"
-#> [1] "/tmp/Rtmp1xZIm1/file16b26b341c5911"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b4747a678337' '/tmp/RtmpV60Ahr/file16b474cc13406.go'"
+#> [1] "/tmp/RtmpV60Ahr/file16b4747a678337"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b7307584d' '/tmp/Rtmp1xZIm1/file16b26b25973557.go'"
-#> [1] "/tmp/Rtmp1xZIm1/file16b26b7307584d"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b4745f4085f8' '/tmp/RtmpV60Ahr/file16b4744372ece0.go'"
+#> [1] "/tmp/RtmpV60Ahr/file16b4745f4085f8"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -248,20 +248,13 @@ nanoarrow streams, or any Arrow-compatible structure. The thin RPC
 envelope only adds metadata (function name, error handling) around the
 Arrow data.
 
-The `rgoipc` package provides the interfaces for type-safe function
-registration with Arrow schema validation. See
-[inst/go/pkg/rgoipc](https://sounkou-bioinfo.github.io/mangoro/inst/go/pkg/rgoipc)
-for the Go package and
-[inst/go/cmd/rpc-example](https://sounkou-bioinfo.github.io/mangoro/inst/go/cmd/rpc-example)
-for a complete server example.
-
 ``` r
 
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b27bb65f9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmp1xZIm1/file16b26b27bb65f9"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b4743ba6921' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpV60Ahr/file16b4743ba6921"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -400,8 +393,8 @@ this uses the nanomsg/nanonext IPC framework for all communication.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1xZIm1/file16b26b3d738e5e' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/Rtmp1xZIm1/file16b26b3d738e5e"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpV60Ahr/file16b47429ee1af7' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpV60Ahr/file16b47429ee1af7"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -458,6 +451,19 @@ close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE
 ```
+
+This demonstrates thread-based concurrency where the Go process runs
+both an RPC server (REQ/REP pattern) for control commands and HTTP
+server (standard Go net/http) running in a goroutine
+
+The `rgoipc` package provides interfaces for type-safe function
+registration with Arrow schema validation. See
+[inst/go/pkg/rgoipc](https://sounkou-bioinfo.github.io/mangoro/inst/go/pkg/rgoipc)
+for the Go package implementation and
+[inst/go/cmd/rpc-example](https://sounkou-bioinfo.github.io/mangoro/inst/go/cmd/rpc-example)
+and
+[inst/go/cmd/http-server](https://sounkou-bioinfo.github.io/mangoro/inst/go/cmd/http-server)
+for complete server examples.
 
 ## LLM Usage Disclosure
 
