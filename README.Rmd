@@ -17,11 +17,16 @@ knitr::opts_chunk$set(
 
 # mangoro
 
-<p align="center">
-  <img src="inst/docs/logo.svg" alt="" width="180"/>
-</p>
+<div style="display: flex; align-items: flex-start;">
+  <div style="flex: 1;">
+    R/Go IPC with Nanomsg Next Gen.
+  </div>
+  <div style="flex: 0 0 auto; margin-left: 20px;">
+    <img src="inst/docs/logo.svg" alt="" width="180"/>
+  </div>
+</div>
 
-R/Go IPC with Nanomsg Next Gen.
+
 
 ## What is mangoro?
 
