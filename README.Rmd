@@ -17,11 +17,11 @@ knitr::opts_chunk$set(
 
 # mangoro 
 
-<img src="inst/docs/logo.svg" alt="" width="180" align="right"/>
 
 R/Go IPC with Nanomsg Next Gen.
 
 <p>
+<img src="inst/docs/logo.svg" alt="" width="180" align="right"/>
 </p>
 
 ## What is mangoro?
