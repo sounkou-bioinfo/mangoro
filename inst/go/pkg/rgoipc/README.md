@@ -1,6 +1,23 @@
 # rgoipc - R/Go IPC Package
 
-The `rgoipc` package provides a framework for building RPC servers in Go that can be called from R using Arrow IPC serialization and nanomsg messaging.
+The `rgoipc` package provides a framework for building RPC server## Supported Types
+
+The following types are supported for function arguments and returns:
+
+| rgoipc Type | Arrow Type | Usage |
+|-------------|------------|-------|
+| TypeInt32   | int32      | Single column of integers |
+| TypeFloat64 | float64    | Single column of numeric values |
+| TypeString  | string     | Single column of character values |
+| TypeBool    | bool       | Single column of logical values |
+| TypeList    | list\<T\>  | Variable-length arrays (rare) |
+| TypeStruct  | struct     | Named fields - used for RecordBatch schema |
+
+**Important**: 
+- **Primary data exchange**: R data.frames ↔ Arrow RecordBatch (represented as `arrow.Record` in Go)
+- **Function handlers** always work with `arrow.Record` (tabular data), not individual structs
+- **Multi-column returns**: Just create an `arrow.Record` with multiple columns - no need for TypeStruct
+- **R integer limitation**: R integers are 32-bit only. Use TypeInt32 for R integers, TypeFloat64 for larger values.an be called from R using Arrow IPC serialization and nanomsg messaging.
 
 ## Overview
 
@@ -94,18 +111,45 @@ func addHandler(input arrow.Record) (arrow.Record, error) {
 
 ## Supported Types
 
-The following Arrow types map to R types:
+The following Arrow types map to R types for **individual columns**:
 
-| rgoipc Type | Arrow Type | R Type |
-|-------------|------------|--------|
-| TypeInt32   | int32      | integer |
-| TypeFloat64 | float64    | numeric |
-| TypeString  | string     | character |
-| TypeBool    | bool       | logical |
-| TypeList    | list       | list |
-| TypeStruct  | struct     | data.frame |
+| rgoipc Type | Arrow Type | R Type (column) | Notes |
+|-------------|------------|-----------------|-------|
+| TypeInt32   | int32      | integer         | R's integer is 32-bit only |
+| TypeFloat64 | float64    | numeric         | Use for large numbers and decimals |
+| TypeString  | string     | character       | Text data |
+| TypeBool    | bool       | logical         | TRUE/FALSE values |
+| TypeList    | list<T>    | list            | Variable-length arrays per row (advanced) |
+| TypeStruct  | struct     | named list      | Single row with named fields (advanced) |
 
-**Note**: R's integer type is 32-bit only. Arrow int64 values will be converted to R's numeric (double) type, not integer. Use TypeInt32 for R integers and TypeFloat64 for larger numeric values.
+**Important**: R's integer type is 32-bit only. Arrow int64 values will be converted to R's numeric (double) type, not integer. Use TypeInt32 for R integers and TypeFloat64 for larger numeric values.
+
+### Data Exchange Model
+
+The **primary data exchange** format is **Arrow RecordBatch ↔ R data.frame**:
+
+- **From R to Go**: A data.frame is serialized as an Arrow RecordBatch where each column becomes an Arrow Array
+- **From Go to R**: An `arrow.Record` (tabular data) is deserialized into an R data.frame
+- **Function handlers** receive and return `arrow.Record` with one or more columns
+
+**Single-column results** (most common):
+```go
+// Returns a single numeric vector
+schema := arrow.NewSchema([]arrow.Field{{Name: "result", Type: arrow.PrimitiveTypes.Float64}}, nil)
+return array.NewRecord(schema, []arrow.Array{resultArray}, numRows)
+```
+
+**Multi-column results** (for structured data):
+```go
+// Returns multiple columns like a data.frame with 2 columns
+schema := arrow.NewSchema([]arrow.Field{
+    {Name: "status", Type: arrow.BinaryTypes.String},
+    {Name: "value", Type: arrow.PrimitiveTypes.Float64},
+}, nil)
+return array.NewRecord(schema, []arrow.Array{statusArray, valueArray}, numRows)
+```
+
+In this case, you don't use `TypeStruct` in the signature - the return type describes a single column. For multi-column returns, the actual schema is determined dynamically by the handler function.
 
 ## Example Server
 

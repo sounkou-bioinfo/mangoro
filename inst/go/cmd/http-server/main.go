@@ -194,6 +194,8 @@ func buildResponse(status, message string) (arrow.Record, error) {
 	defer statusArr.Release()
 	defer messageArr.Release()
 
+	// Build a RecordBatch with 2 columns (status, message) and 1 row
+	// This will be deserialized in R as a data.frame with 2 columns and 1 row
 	schema := arrow.NewSchema([]arrow.Field{
 		{Name: "status", Type: arrow.BinaryTypes.String},
 		{Name: "message", Type: arrow.BinaryTypes.String},
@@ -241,6 +243,9 @@ func main() {
 	registry := rgoipc.NewRegistry()
 
 	// Define the return type for all HTTP server functions
+	// Note: TypeStruct here is used to describe the schema of the returned RecordBatch,
+	// not an Arrow Struct type. The handler returns an arrow.Record with 2 columns
+	// (status and message), which gets deserialized as a 1-row, 2-column data.frame in R.
 	returnType := rgoipc.TypeSpec{
 		Type: rgoipc.TypeStruct,
 		StructDef: &rgoipc.StructDef{

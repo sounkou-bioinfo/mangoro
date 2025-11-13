@@ -6,6 +6,18 @@
 // processes connected via nanomsg IPC sockets, with Arrow IPC used for data
 // serialization.
 //
+// # Data Exchange Model
+//
+// The primary data format is Arrow RecordBatch ↔ R data.frame:
+//   - R data.frames are serialized as Arrow RecordBatches (tabular data)
+//   - Go functions receive/return arrow.Record (multiple columns, multiple rows)
+//   - Each column in the data.frame becomes an Arrow Array in the Record
+//
+// For simple single-column results, specify the column type in ReturnType.
+// For multi-column results (like returning status + message), use TypeStruct
+// to describe the schema, but understand that this describes the columns of
+// the RecordBatch, not an Arrow Struct type per se.
+//
 // # Basic Usage
 //
 // Create a registry and register functions:

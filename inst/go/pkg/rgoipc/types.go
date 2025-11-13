@@ -9,12 +9,19 @@ import (
 type ArrowType string
 
 const (
-	TypeInt32   ArrowType = "int32"   // R integer
-	TypeFloat64 ArrowType = "float64" // R numeric
-	TypeString  ArrowType = "string"  // R character
-	TypeBool    ArrowType = "bool"    // R logical
-	TypeList    ArrowType = "list"    // R list -> Arrow struct
-	TypeStruct  ArrowType = "struct"  // R data.frame -> Arrow record batch
+	TypeInt32   ArrowType = "int32"   // R integer (single column)
+	TypeFloat64 ArrowType = "float64" // R numeric (single column)
+	TypeString  ArrowType = "string"  // R character (single column)
+	TypeBool    ArrowType = "bool"    // R logical (single column)
+	
+	// Complex types - rarely used in typical data processing
+	TypeList    ArrowType = "list"    // Arrow List<T> - variable-length arrays (R list column)
+	TypeStruct  ArrowType = "struct"  // Arrow Struct - single row with named fields (R named list)
+	
+	// Note: The primary data exchange format is Arrow RecordBatch (tabular data),
+	// which naturally maps to R data.frame. Functions receive/return arrow.Record,
+	// which represents tabular data with multiple columns and rows.
+	// For multi-column results, use arrow.Record directly - no need for TypeStruct.
 )
 
 // TypeSpec describes a type for function arguments or returns
@@ -54,8 +61,24 @@ type FunctionSignature struct {
 }
 
 // FunctionHandler processes Arrow record batches
-// Input: Arrow Record containing function arguments
-// Output: Arrow Record containing function results
+// Input: Arrow Record containing function arguments as columns (like a data.frame row)
+// Output: Arrow Record containing function results as columns (like a data.frame row)
+// 
+// The Record can have:
+// - Single column (scalar/vector return) - most common case
+// - Multiple columns (structured return) - for complex results
+// - Multiple rows (batch processing) - when Vectorized=true
+//
+// Example for scalar return (single column, single row):
+//   schema := arrow.NewSchema([]arrow.Field{{Name: "result", Type: arrow.PrimitiveTypes.Float64}}, nil)
+//   return array.NewRecord(schema, []arrow.Array{resultArray}, numRows)
+//
+// Example for structured return (multiple columns, single row):
+//   schema := arrow.NewSchema([]arrow.Field{
+//     {Name: "status", Type: arrow.BinaryTypes.String},
+//     {Name: "message", Type: arrow.BinaryTypes.String}
+//   }, nil)
+//   return array.NewRecord(schema, []arrow.Array{statusArray, messageArray}, 1)
 type FunctionHandler func(input arrow.Record) (arrow.Record, error)
 
 // RegisteredFunction represents a function registered for RPC

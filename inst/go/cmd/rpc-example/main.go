@@ -84,8 +84,12 @@ func echoStringHandler(input arrow.Record) (arrow.Record, error) {
 }
 
 // transposeMatrixHandler transposes a matrix passed as a data.frame (columns become rows)
-// Input: data.frame with N numeric columns of length M
-// Output: data.frame with M numeric columns of length N
+// Input: data.frame with N numeric columns of length M (sent as arrow.Record)
+// Output: data.frame with M numeric columns of length N (returned as arrow.Record)
+// 
+// Note: This demonstrates how arrow.Record (tabular data) naturally maps to R data.frames.
+// The input data.frame is deserialized as an arrow.Record where each df column is an Arrow column.
+// The output arrow.Record is serialized back to R as a data.frame with transposed dimensions.
 func transposeMatrixHandler(input arrow.Record) (arrow.Record, error) {
 	nCols := int(input.NumCols())
 	if nCols == 0 {
@@ -172,7 +176,7 @@ func main() {
 		ReturnType: rgoipc.TypeSpec{
 			Type: rgoipc.TypeStruct,
 			StructDef: &rgoipc.StructDef{
-				Fields: []rgoipc.FieldDef{}, // Empty - dynamic structure
+				Fields: []rgoipc.FieldDef{}, // Empty - dynamic structure (schema determined at runtime)
 			},
 		},
 		Vectorized: false,
