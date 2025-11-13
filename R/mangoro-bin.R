@@ -4,18 +4,6 @@
 NULL
 
 
-#' Run a mangoro Go binary with arguments
-#'
-#' @param name Name of the binary (e.g. "echo")
-#' @param args Arguments to pass to the binary
-#' @param ... Additional arguments passed to processx::process$new
-#' @return A processx process object
-#' @export
-run_mangoro_bin <- function(name, args = character(), ...) {
-  bin <- find_mangoro_bin(name)
-  processx::process$new(bin, args = args, ...)
-}
-
 #' Create a unique IPC path for mangoro
 #'
 #' @param prefix Prefix for the temp file (default: "mangoro-echo")
