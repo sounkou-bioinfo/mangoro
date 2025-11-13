@@ -3,6 +3,10 @@ library(processx)
 library(nanoarrow)
 library(mangoro)
 
+# skip test if Sys.which cannot find go
+if (nchar(Sys.which("go")) == 0) {
+  quit(status = 0)
+}
 # vendored mangos version
 get_mangos_version()
 go_echo_code <- paste(

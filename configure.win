@@ -2,6 +2,8 @@
 # check the go command and version
 # copied from https://github.com/walkerke/pmtiles/blob/main/configure.win
 # Detect architecture
+# for now on windows only, we skip the check for golang
+exit 0
 if [ -z "$R_ARCH" ]; then
   # Try to detect from PROCESSOR_ARCHITECTURE or uname
   if [ ! -z "$PROCESSOR_ARCHITECTURE" ]; then
