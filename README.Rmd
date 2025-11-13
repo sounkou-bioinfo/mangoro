@@ -312,7 +312,8 @@ person_df <- data.frame(
 )
 
 # Wrap in a data frame with I() to create a nested structure
-# This creates a single column 'person' of type struct{name, age}
+# I() preserves person_df as a single nested column (Arrow struct type)
+# Without I(), R would flatten it into person.name and person.age columns
 input_df <- data.frame(person = I(person_df))
 
 # Call the RPC function
@@ -325,9 +326,8 @@ str(result_df)
 
 result_df
 
-# The AsIs class from I() is not preserved through Arrow IPC
-# Compare the actual data instead
-all.equal(input_df$person, result_df$person)
+# Nested data roundtrip successful (AsIs class not preserved)
+all.equal(input_df$person, result_df$person, check.attributes = FALSE)
 
 close(sock)
 rpc_proc$kill()
