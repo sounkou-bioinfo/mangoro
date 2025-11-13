@@ -68,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpF4uZ9C/file172f382752c3d5' '/tmp/RtmpF4uZ9C/file172f382e1ab350.go'"
-#> [1] "/tmp/RtmpF4uZ9C/file172f382752c3d5"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e4e2a3ea8' '/tmp/RtmpnQxms9/file173f2e560629cc.go'"
+#> [1] "/tmp/RtmpnQxms9/file173f2e4e2a3ea8"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpF4uZ9C/file172f381d4a31db' '/tmp/RtmpF4uZ9C/file172f384871efa7.go'"
-#> [1] "/tmp/RtmpF4uZ9C/file172f381d4a31db"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e38c17669' '/tmp/RtmpnQxms9/file173f2e46b4ae92.go'"
+#> [1] "/tmp/RtmpnQxms9/file173f2e38c17669"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -256,8 +256,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpF4uZ9C/file172f381156fa7f' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpF4uZ9C/file172f381156fa7f"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e1429fb29' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpnQxms9/file173f2e1429fb29"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -456,8 +456,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpF4uZ9C/file172f389afa96e' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpF4uZ9C/file172f389afa96e"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e32b3a4b0' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpnQxms9/file173f2e32b3a4b0"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -466,8 +466,8 @@ Sys.sleep(2)
 http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
-#> [1] "Registered functions: [serverStatus startServer stopServer]"                            
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpF4uZ9C/mangoro-echo172f38a6c0da3.ipc"
+#> [1] "Registered functions: [startServer stopServer serverStatus]"                             
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpnQxms9/mangoro-echo173f2e53ba011b.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -525,9 +525,10 @@ server examples.
 
 ## Some issues to investigate
 
-There is some convertion overhead now when sending data to go processes
-because we are sending the arrow data as bytes. Moroever for some
-reason, we cannot send directly matrices.
+There is some conversion overhead now when sending data to go processes
+because we are sending the arrow data as bytes after convertion of the R
+objects using nanoarrow. Moroever for some reason, we cannot send
+directly matrices since we can a `arrow` package requirement.
 
 ## LLM Usage Disclosure
 
