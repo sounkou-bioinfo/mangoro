@@ -4,10 +4,10 @@ Version: 0.2.2
 Authors@R: 
     person(given = "Sounkou Mahamane", family = "Toure", 
     email = "sounkoutoure@gmail.com", role = c("aut", "cre"))
-Description: mangoro provides an interface for inter-process communication (IPC) between R and Go using the Nanomsg library.
+Description: The tools provide an interface for inter-process communication (IPC) between R and Go using the Nanomsg library.
     It vendors on the Go side the mango library <https://github.com/nanomsg/mangos> and arrow-go <https://github.com/apache/arrow-go>
      and uses nanonext and nanoarrow on the R side.
-License: GPL-3 + file LICENSE
+License: GPL-3
 Depends: R (>= 4.4.0)
 Imports: 
     nanonext,
