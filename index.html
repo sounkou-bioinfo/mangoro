@@ -100,8 +100,8 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c80379cb67f' '/tmp/Rtmpa9rYKe/file183c805b7397ec.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa9rYKe/file183c80379cb67f"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpq9WML2/file196289668cf7cf' '/tmp/Rtmpq9WML2/file19628941a99f15.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpq9WML2/file196289668cf7cf"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -191,8 +191,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c802aa0ff62' '/tmp/Rtmpa9rYKe/file183c8059d637f5.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa9rYKe/file183c802aa0ff62"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpq9WML2/file196289345bf17b' '/tmp/Rtmpq9WML2/file196289b575a14.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpq9WML2/file196289345bf17b"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -275,8 +275,8 @@
 <span><span class="va">rpc_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"rpc-example"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">rpc_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">rpc_server_path</span>, <span class="va">rpc_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c8052c79c3b' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa9rYKe/file183c8052c79c3b"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpq9WML2/file1962894320f34f' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpq9WML2/file1962894320f34f"</span></span>
 <span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">rpc_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
@@ -540,8 +540,8 @@
 <span><span class="va">http_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"http-server"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">http_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">http_server_path</span>, <span class="va">http_bin</span>, gomaxprocs <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c8016dc50d3' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa9rYKe/file183c8016dc50d3"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpq9WML2/file1962897bbcf6d7' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpq9WML2/file1962897bbcf6d7"</span></span>
 <span></span>
 <span><span class="co"># Start the RPC controller (not the HTTP server itself yet)</span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -550,8 +550,8 @@
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">read_output_lines</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Registered functions: [startServer stopServer serverStatus]"                             </span></span>
-<span><span class="co">#&gt; [2] "HTTP server controller listening on ipc:///tmp/Rtmpa9rYKe/mangoro-echo183c80592f8820.ipc"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Registered functions: [stopServer serverStatus startServer]"                             </span></span>
+<span><span class="co">#&gt; [2] "HTTP server controller listening on ipc:///tmp/Rtmpq9WML2/mangoro-echo1962891c140a2f.ipc"</span></span></code></pre></div>
 <p>Control the HTTP server via RPC:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
@@ -577,8 +577,8 @@
 <span><span class="co"># Test accessing the HTTP server</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"http://127.0.0.1:8080/"</span>, n <span class="op">=</span> <span class="fl">3</span>, warn <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "&lt;pre&gt;"                                      </span></span>
-<span><span class="co">#&gt; [2] "&lt;a href=\".Rbuildignore\"&gt;.Rbuildignore&lt;/a&gt;"</span></span>
-<span><span class="co">#&gt; [3] "&lt;a href=\".certs_test/\"&gt;.certs_test/&lt;/a&gt;"</span></span>
+<span><span class="co">#&gt; [2] "&lt;a href=\"..Rcheck/\"&gt;..Rcheck/&lt;/a&gt;"        </span></span>
+<span><span class="co">#&gt; [3] "&lt;a href=\".Rbuildignore\"&gt;.Rbuildignore&lt;/a&gt;"</span></span>
 <span></span>
 <span><span class="co"># Stop the server</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_stop.html">mangoro_http_stop</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
@@ -638,12 +638,12 @@
 <span><span class="co">#&gt;   status             message</span></span>
 <span><span class="co">#&gt; 1     ok HTTP server stopped</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">read_output_lines</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "[mangoro server] 2025/11/13 14:49:12 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" </span></span>
-<span><span class="co">#&gt; [2] "[mangoro server] 2025/11/13 14:49:14 GET / 127.0.0.1:41736 75.146µs"                                    </span></span>
-<span><span class="co">#&gt; [3] "[mangoro server] 2025/11/13 14:49:14 HTTP server stopped"                                               </span></span>
-<span><span class="co">#&gt; [4] "[mangoro server] 2025/11/13 14:49:17 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"</span></span>
-<span><span class="co">#&gt; [5] "[mangoro server] 2025/11/13 14:49:19 GET /.Rbuildignore 127.0.0.1:54422 4.479893ms"                     </span></span>
-<span><span class="co">#&gt; [6] "[mangoro server] 2025/11/13 14:49:19 HTTP server stopped"</span></span>
+<span><span class="co">#&gt; [1] "[mangoro server] 2025/11/13 18:42:36 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" </span></span>
+<span><span class="co">#&gt; [2] "[mangoro server] 2025/11/13 18:42:38 GET / 127.0.0.1:39270 67.4µs"                                      </span></span>
+<span><span class="co">#&gt; [3] "[mangoro server] 2025/11/13 18:42:38 HTTP server stopped"                                               </span></span>
+<span><span class="co">#&gt; [4] "[mangoro server] 2025/11/13 18:42:41 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"</span></span>
+<span><span class="co">#&gt; [5] "[mangoro server] 2025/11/13 18:42:43 GET /.Rbuildignore 127.0.0.1:47802 1.526923ms"                     </span></span>
+<span><span class="co">#&gt; [6] "[mangoro server] 2025/11/13 18:42:43 HTTP server stopped"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">kill</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
