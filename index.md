@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp08e59O/file17bf0755af0cd8' '/tmp/Rtmp08e59O/file17bf07fffc8db.go'"
-#> [1] "/tmp/Rtmp08e59O/file17bf0755af0cd8"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c80379cb67f' '/tmp/Rtmpa9rYKe/file183c805b7397ec.go'"
+#> [1] "/tmp/Rtmpa9rYKe/file183c80379cb67f"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp08e59O/file17bf072e914c5' '/tmp/Rtmp08e59O/file17bf077e6fc59e.go'"
-#> [1] "/tmp/Rtmp08e59O/file17bf072e914c5"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c802aa0ff62' '/tmp/Rtmpa9rYKe/file183c8059d637f5.go'"
+#> [1] "/tmp/Rtmpa9rYKe/file183c802aa0ff62"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -258,8 +258,8 @@ objects, which represent this tabular structure.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp08e59O/file17bf07397345c2' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmp08e59O/file17bf07397345c2"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c8052c79c3b' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmpa9rYKe/file183c8052c79c3b"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -542,8 +542,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp08e59O/file17bf074529d135' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/Rtmp08e59O/file17bf074529d135"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmpa9rYKe/file183c8016dc50d3' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/Rtmpa9rYKe/file183c8016dc50d3"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -553,7 +553,7 @@ http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
 #> [1] "Registered functions: [startServer stopServer serverStatus]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/Rtmp08e59O/mangoro-echo17bf075edd85ed.ipc"
+#> [2] "HTTP server controller listening on ipc:///tmp/Rtmpa9rYKe/mangoro-echo183c80592f8820.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -646,12 +646,12 @@ result
 #>   status             message
 #> 1     ok HTTP server stopped
 http_ctl_proc$read_output_lines()
-#> [1] "[mangoro server] 2025/11/13 05:25:46 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
-#> [2] "[mangoro server] 2025/11/13 05:25:48 GET / 127.0.0.1:46262 275.363µs"                                   
-#> [3] "[mangoro server] 2025/11/13 05:25:48 HTTP server stopped"                                               
-#> [4] "[mangoro server] 2025/11/13 05:25:51 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
-#> [5] "[mangoro server] 2025/11/13 05:25:53 GET /.Rbuildignore 127.0.0.1:51378 6.824686ms"                     
-#> [6] "[mangoro server] 2025/11/13 05:25:54 HTTP server stopped"
+#> [1] "[mangoro server] 2025/11/13 14:49:12 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
+#> [2] "[mangoro server] 2025/11/13 14:49:14 GET / 127.0.0.1:41736 75.146µs"                                    
+#> [3] "[mangoro server] 2025/11/13 14:49:14 HTTP server stopped"                                               
+#> [4] "[mangoro server] 2025/11/13 14:49:17 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
+#> [5] "[mangoro server] 2025/11/13 14:49:19 GET /.Rbuildignore 127.0.0.1:54422 4.479893ms"                     
+#> [6] "[mangoro server] 2025/11/13 14:49:19 HTTP server stopped"
 close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE
