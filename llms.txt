@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file171996e9bd466' '/tmp/RtmpXbWgsX/file171996407bf330.go'"
-#> [1] "/tmp/RtmpXbWgsX/file171996e9bd466"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpEguKVZ/file1721474dc8e1e2' '/tmp/RtmpEguKVZ/file17214721aa6d55.go'"
+#> [1] "/tmp/RtmpEguKVZ/file1721474dc8e1e2"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file171996180072e8' '/tmp/RtmpXbWgsX/file17199657cde93a.go'"
-#> [1] "/tmp/RtmpXbWgsX/file171996180072e8"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpEguKVZ/file17214768ab0521' '/tmp/RtmpEguKVZ/file1721474941ae82.go'"
+#> [1] "/tmp/RtmpEguKVZ/file17214768ab0521"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -253,8 +253,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file17199614043b7d' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpXbWgsX/file17199614043b7d"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpEguKVZ/file1721471b01569a' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpEguKVZ/file1721471b01569a"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -432,14 +432,11 @@ colnames(input_df) <- paste0("V", 1:ncol(mat))
 
 # Transpose via RPC
 result <- mangoro_rpc_call(sock, "transposeMatrix", input_df)
-result
-#> <nanoarrow_array_stream struct<V1: double, V2: double, V3: double>>
-#>  $ get_schema:function ()  
-#>  $ get_next  :function (schema = x$get_schema(), validate = TRUE)  
-#>  $ release   :function ()
+result_df <- as.data.frame(result)
+
 # Compare values (ignore dimnames)
-all.equal(result, t(mat), check.attributes = FALSE)
-#> [1] "target is nanoarrow_array_stream, current is matrix"
+all.equal(as.matrix(result_df), t(mat), check.attributes = FALSE)
+#> [1] TRUE
 
 close(sock)
 rpc_proc$kill()
@@ -456,8 +453,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file1719963c41d2e5' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpXbWgsX/file1719963c41d2e5"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpEguKVZ/file172147438724ca' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpEguKVZ/file172147438724ca"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -467,7 +464,7 @@ http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
 #> [1] "Registered functions: [serverStatus startServer stopServer]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpXbWgsX/mangoro-echo17199622505276.ipc"
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpEguKVZ/mangoro-echo1721472ae72cf3.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -524,6 +521,12 @@ for the Go package implementation and
 and
 [inst/go/cmd/http-server](https://sounkou-bioinfo.github.io/mangoro/inst/go/cmd/http-server)
 for complete server examples.
+
+## Some issues to investigate
+
+There is some convertion overhead now when sending data to go processes
+because we are sending the arrow data as bytes. Moroever for some
+reason, we cannot send directly matrices.
 
 ## LLM Usage Disclosure
 
