@@ -16,12 +16,17 @@ const (
 	
 	// Complex types - rarely used in typical data processing
 	TypeList    ArrowType = "list"    // Arrow List<T> - variable-length arrays (R list column)
-	TypeStruct  ArrowType = "struct"  // Arrow Struct - single row with named fields (R named list)
+	TypeStruct  ArrowType = "struct"  // Arrow Struct - nested record with named fields (R struct column)
 	
 	// Note: The primary data exchange format is Arrow RecordBatch (tabular data),
 	// which naturally maps to R data.frame. Functions receive/return arrow.Record,
 	// which represents tabular data with multiple columns and rows.
-	// For multi-column results, use arrow.Record directly - no need for TypeStruct.
+	//
+	// TypeStruct is for creating a COLUMN of structs (nested data), NOT for describing
+	// multi-column results. For multi-column returns, just create arrow.Record with
+	// multiple columns directly - see cmd/rpc-example for examples.
+	//
+	// Example struct column usage: misc/test_struct_column.R
 )
 
 // TypeSpec describes a type for function arguments or returns

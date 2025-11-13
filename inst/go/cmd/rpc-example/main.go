@@ -83,6 +83,79 @@ func echoStringHandler(input arrow.Record) (arrow.Record, error) {
 	return array.NewRecord(schema, []arrow.Array{result}, int64(result.Len())), nil
 }
 
+// echoStructHandler echoes back a struct column (nested data)
+// Input: data.frame with one column of type struct (nested list in R)
+// Output: same struct column echoed back
+//
+// Note: This demonstrates actual Arrow Struct type usage - a column where each row
+// contains a nested record with named fields. In R, this maps to a list column.
+// This is different from a regular multi-column data.frame!
+func echoStructHandler(input arrow.Record) (arrow.Record, error) {
+	if input.NumCols() != 1 {
+		return nil, fmt.Errorf("expected 1 column, got %d", input.NumCols())
+	}
+
+	structCol, ok := input.Column(0).(*array.Struct)
+	if !ok {
+		return nil, fmt.Errorf("expected struct column, got %T", input.Column(0))
+	}
+
+	// Get the struct type to reconstruct it
+	structType := structCol.DataType().(*arrow.StructType)
+	
+	// Build output struct column
+	pool := memory.NewGoAllocator()
+	builder := array.NewStructBuilder(pool, structType)
+	defer builder.Release()
+
+	// Copy each struct row
+	for i := 0; i < structCol.Len(); i++ {
+		if structCol.IsNull(i) {
+			builder.AppendNull()
+		} else {
+			builder.Append(true)
+			// Copy each field
+			for fieldIdx := 0; fieldIdx < structCol.NumField(); fieldIdx++ {
+				fieldArray := structCol.Field(fieldIdx)
+				fieldBuilder := builder.FieldBuilder(fieldIdx)
+				
+				// Copy value based on type
+				switch fb := fieldBuilder.(type) {
+				case *array.StringBuilder:
+					strArray := fieldArray.(*array.String)
+					if strArray.IsNull(i) {
+						fb.AppendNull()
+					} else {
+						fb.Append(strArray.Value(i))
+					}
+				case *array.Int32Builder:
+					intArray := fieldArray.(*array.Int32)
+					if intArray.IsNull(i) {
+						fb.AppendNull()
+					} else {
+						fb.Append(intArray.Value(i))
+					}
+				case *array.Float64Builder:
+					floatArray := fieldArray.(*array.Float64)
+					if floatArray.IsNull(i) {
+						fb.AppendNull()
+					} else {
+						fb.Append(floatArray.Value(i))
+					}
+				default:
+					return nil, fmt.Errorf("unsupported field type: %T", fb)
+				}
+			}
+		}
+	}
+
+	result := builder.NewArray()
+	defer result.Release()
+
+	schema := arrow.NewSchema([]arrow.Field{{Name: "person", Type: structType}}, nil)
+	return array.NewRecord(schema, []arrow.Array{result}, int64(structCol.Len())), nil
+}
+
 // transposeMatrixHandler transposes a matrix passed as a data.frame (columns become rows)
 // Input: data.frame with N numeric columns of length M (sent as arrow.Record)
 // Output: data.frame with M numeric columns of length N (returned as arrow.Record)
@@ -169,6 +242,38 @@ func main() {
 	})
 	if err != nil {
 		die("Failed to register echoString function: %s", err)
+	}
+
+	// Register echoStruct - demonstrates actual Arrow Struct type (nested data)
+	err = registry.Register("echoStruct", echoStructHandler, rgoipc.FunctionSignature{
+		Args: []rgoipc.ArgSpec{
+			{
+				Name: "person",
+				Type: rgoipc.TypeSpec{
+					Type: rgoipc.TypeStruct,
+					StructDef: &rgoipc.StructDef{
+						Fields: []rgoipc.FieldDef{
+							{Name: "name", Type: rgoipc.TypeSpec{Type: rgoipc.TypeString}},
+							{Name: "age", Type: rgoipc.TypeSpec{Type: rgoipc.TypeInt32}},
+						},
+					},
+				},
+			},
+		},
+		ReturnType: rgoipc.TypeSpec{
+			Type: rgoipc.TypeStruct,
+			StructDef: &rgoipc.StructDef{
+				Fields: []rgoipc.FieldDef{
+					{Name: "name", Type: rgoipc.TypeSpec{Type: rgoipc.TypeString}},
+					{Name: "age", Type: rgoipc.TypeSpec{Type: rgoipc.TypeInt32}},
+				},
+			},
+		},
+		Vectorized: true,
+		Metadata:   map[string]string{"description": "Echo back a struct column (nested data)"},
+	})
+	if err != nil {
+		die("Failed to register echoStruct function: %s", err)
 	}
 
 	err = registry.Register("transposeMatrix", transposeMatrixHandler, rgoipc.FunctionSignature{

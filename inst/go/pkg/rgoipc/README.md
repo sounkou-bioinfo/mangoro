@@ -17,7 +17,33 @@ The following types are supported for function arguments and returns:
 - **Primary data exchange**: R data.frames ↔ Arrow RecordBatch (represented as `arrow.Record` in Go)
 - **Function handlers** always work with `arrow.Record` (tabular data), not individual structs
 - **Multi-column returns**: Just create an `arrow.Record` with multiple columns - no need for TypeStruct
-- **R integer limitation**: R integers are 32-bit only. Use TypeInt32 for R integers, TypeFloat64 for larger values.an be called from R using Arrow IPC serialization and nanomsg messaging.
+- **R integer limitation**: R integers are 32-bit only. Use TypeInt32 for R integers, TypeFloat64 for larger values.
+
+### When to Use TypeStruct vs Multi-Column Records
+
+**TypeStruct (rare)** - For a **single column** containing nested records:
+```r
+# In R: One column with nested structure (list column)
+data <- arrow_table(
+  person = struct_array(
+    name = c("Alice", "Bob"),
+    age = c(30L, 25L)
+  )
+)
+# Result: 1 column named "person", each row is a struct with name/age fields
+```
+
+**Multi-column Record (common)** - For regular tabular data:
+```r
+# In R: Multiple separate columns (normal data.frame)
+data <- data.frame(
+  name = c("Alice", "Bob"),
+  age = c(30, 25)
+)
+# Result: 2 columns named "name" and "age"
+```
+
+See `misc/test_struct_column.R` for a working example of struct columns.an be called from R using Arrow IPC serialization and nanomsg messaging.
 
 ## Overview
 

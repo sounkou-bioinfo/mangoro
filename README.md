@@ -68,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d5647e78a0' '/tmp/Rtmp1gIhnX/file1792d51d2d3e68.go'"
-#> [1] "/tmp/Rtmp1gIhnX/file1792d5647e78a0"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b5d1154e8' '/tmp/Rtmp5hKDOM/file17ba2b5e9133dd.go'"
+#> [1] "/tmp/Rtmp5hKDOM/file17ba2b5d1154e8"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d523b58a5c' '/tmp/Rtmp1gIhnX/file1792d5517e3d1a.go'"
-#> [1] "/tmp/Rtmp1gIhnX/file1792d523b58a5c"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b3899753c' '/tmp/Rtmp5hKDOM/file17ba2b441fdfe7.go'"
+#> [1] "/tmp/Rtmp5hKDOM/file17ba2b3899753c"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -261,8 +261,8 @@ objects, which represent this tabular structure.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d51e95e735' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/Rtmp1gIhnX/file1792d51e95e735"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b29fd24b9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/Rtmp5hKDOM/file17ba2b29fd24b9"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -331,6 +331,42 @@ manifest
 #> $echoString$Metadata
 #> $echoString$Metadata$description
 #> [1] "Echo back a string vector"
+#> 
+#> 
+#> 
+#> $echoStruct
+#> $echoStruct$Args
+#>     Name Type.Type Type.Nullable
+#> 1 person    struct         FALSE
+#>                                                      Type.Fields
+#> 1 name, age, string, int32, FALSE, FALSE, NA, NA, NA, NA, NA, NA
+#>   Type.ListSchema Optional Default
+#> 1              NA    FALSE      NA
+#> 
+#> $echoStruct$ReturnType
+#> $echoStruct$ReturnType$Type
+#> [1] "struct"
+#> 
+#> $echoStruct$ReturnType$Nullable
+#> [1] FALSE
+#> 
+#> $echoStruct$ReturnType$StructDef
+#> $echoStruct$ReturnType$StructDef$Fields
+#>   Name Type.Type Type.Nullable Type.StructDef Type.ListSchema Metadata
+#> 1 name    string         FALSE             NA              NA       NA
+#> 2  age     int32         FALSE             NA              NA       NA
+#> 
+#> 
+#> $echoStruct$ReturnType$ListSchema
+#> NULL
+#> 
+#> 
+#> $echoStruct$Vectorized
+#> [1] TRUE
+#> 
+#> $echoStruct$Metadata
+#> $echoStruct$Metadata$description
+#> [1] "Echo back a struct column (nested data)"
 #> 
 #> 
 #> 
@@ -447,6 +483,53 @@ all.equal(as.matrix(result_df), t(mat), check.attributes = FALSE)
 #> [1] TRUE
 
 close(sock)
+```
+
+Call the `echoStruct` function to demonstrate nested/struct column
+handling
+
+``` r
+sock <- nanonext::socket("req", dial = ipc_url)
+
+# Create a struct column: a single column named 'person' 
+# where each element is a struct with 'name' and 'age' fields
+person_df <- data.frame(
+    name = c("Alice", "Bob", "Charlie"),
+    age = c(30L, 25L, 35L),
+    stringsAsFactors = FALSE
+)
+
+# Wrap in a data frame with I() to create a nested structure
+# This creates a single column 'person' of type struct{name, age}
+input_df <- data.frame(person = I(person_df))
+
+# Call the RPC function
+result <- mangoro_rpc_call(sock, "echoStruct", input_df)
+result_df <- as.data.frame(result)
+
+str(input_df)
+#> 'data.frame':    3 obs. of  1 variable:
+#>  $ person:Classes 'AsIs' and 'data.frame':   3 obs. of  2 variables:
+#>   ..$ name: chr  "Alice" "Bob" "Charlie"
+#>   ..$ age : int  30 25 35
+
+str(result_df)
+#> 'data.frame':    3 obs. of  1 variable:
+#>  $ person:'data.frame':  3 obs. of  2 variables:
+#>   ..$ name: chr  "Alice" "Bob" "Charlie"
+#>   ..$ age : int  30 25 35
+
+result_df
+#>   person.name person.age
+#> 1       Alice         30
+#> 2         Bob         25
+#> 3     Charlie         35
+
+# Verify roundtrip
+identical(input_df, result_df)
+#> [1] FALSE
+
+close(sock)
 rpc_proc$kill()
 #> [1] TRUE
 ```
@@ -461,8 +544,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d556f059f1' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/Rtmp1gIhnX/file1792d556f059f1"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b301bc472' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/Rtmp5hKDOM/file17ba2b301bc472"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -471,8 +554,8 @@ Sys.sleep(2)
 http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
-#> [1] "Registered functions: [startServer stopServer serverStatus]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/Rtmp1gIhnX/mangoro-echo1792d5600fa45a.ipc"
+#> [1] "Registered functions: [startServer stopServer serverStatus]"                            
+#> [2] "HTTP server controller listening on ipc:///tmp/Rtmp5hKDOM/mangoro-echo17ba2b5c37b83.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -565,12 +648,12 @@ result
 #>   status             message
 #> 1     ok HTTP server stopped
 http_ctl_proc$read_output_lines()
-#> [1] "[mangoro server] 2025/11/13 04:47:59 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
-#> [2] "[mangoro server] 2025/11/13 04:48:01 GET / 127.0.0.1:57926 75.902µs"                                    
-#> [3] "[mangoro server] 2025/11/13 04:48:01 HTTP server stopped"                                               
-#> [4] "[mangoro server] 2025/11/13 04:48:05 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
-#> [5] "[mangoro server] 2025/11/13 04:48:07 GET /.Rbuildignore 127.0.0.1:44386 8.702294ms"                     
-#> [6] "[mangoro server] 2025/11/13 04:48:07 HTTP server stopped"
+#> [1] "[mangoro server] 2025/11/13 05:18:27 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
+#> [2] "[mangoro server] 2025/11/13 05:18:29 GET / 127.0.0.1:44874 66.293µs"                                    
+#> [3] "[mangoro server] 2025/11/13 05:18:29 HTTP server stopped"                                               
+#> [4] "[mangoro server] 2025/11/13 05:18:32 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
+#> [5] "[mangoro server] 2025/11/13 05:18:34 GET /.Rbuildignore 127.0.0.1:56212 5.465772ms"                     
+#> [6] "[mangoro server] 2025/11/13 05:18:34 HTTP server stopped"
 close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE

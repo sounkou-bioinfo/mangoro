@@ -296,6 +296,39 @@ result_df <- as.data.frame(result)
 all.equal(as.matrix(result_df), t(mat), check.attributes = FALSE)
 
 close(sock)
+```
+
+Call the `echoStruct` function to demonstrate nested/struct column handling
+
+```{r rpc-struct-column}
+sock <- nanonext::socket("req", dial = ipc_url)
+
+# Create a struct column: a single column named 'person' 
+# where each element is a struct with 'name' and 'age' fields
+person_df <- data.frame(
+    name = c("Alice", "Bob", "Charlie"),
+    age = c(30L, 25L, 35L),
+    stringsAsFactors = FALSE
+)
+
+# Wrap in a data frame with I() to create a nested structure
+# This creates a single column 'person' of type struct{name, age}
+input_df <- data.frame(person = I(person_df))
+
+# Call the RPC function
+result <- mangoro_rpc_call(sock, "echoStruct", input_df)
+result_df <- as.data.frame(result)
+
+str(input_df)
+
+str(result_df)
+
+result_df
+
+# Verify roundtrip
+identical(input_df, result_df)
+
+close(sock)
 rpc_proc$kill()
 ```
 
