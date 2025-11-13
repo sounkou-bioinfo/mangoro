@@ -1,3 +1,19 @@
+# mangoro 0.2.2
+
+## CRAN Packaging Improvements
+
+- Fixed long path warnings by relocating flatbuf files during build process
+- Flatbuf files now stored in `tools/flatbuf/` and restored during package installation via configure script
+- Configure scripts updated to be POSIX-compliant (replaced bashisms with standard sh syntax)
+- Moved `processx` from Imports to Suggests (only used in tests)
+- Package now passes `R CMD check --as-cran` with no warnings
+
+## Internal Changes
+
+- Updated `tools/vendorMangos.sh` to move flatbuf files to tools directory after vendoring
+- Enhanced configure/configure.win scripts to restore flatbuf files during installation
+- Excluded `inst/go/vendor/.../flatbuf` directory from package tarball via .Rbuildignore
+
 # mangoro 0.2.1
 
 ## RPC Interface
