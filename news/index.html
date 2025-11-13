@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,23 @@
       <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.2" id="mangoro-022">mangoro 0.2.2<a class="anchor" aria-label="anchor" href="#mangoro-022"></a></h2>
+<div class="section level3">
+<h3 id="cran-packaging-improvements-0-2-2">CRAN Packaging Improvements<a class="anchor" aria-label="anchor" href="#cran-packaging-improvements-0-2-2"></a></h3>
+<ul><li>Fixed long path warnings by relocating flatbuf files during build process</li>
+<li>Flatbuf files now stored in <code>tools/flatbuf/</code> and restored during package installation via configure script</li>
+<li>Configure scripts updated to be POSIX-compliant (replaced bashisms with standard sh syntax)</li>
+<li>Moved <code>processx</code> from Imports to Suggests (only used in tests)</li>
+<li>Package now passes <code>R CMD check --as-cran</code> with no warnings</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-changes-0-2-2">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes-0-2-2"></a></h3>
+<ul><li>Updated <code>tools/vendorMangos.sh</code> to move flatbuf files to tools directory after vendoring</li>
+<li>Enhanced configure/configure.win scripts to restore flatbuf files during installation</li>
+<li>Excluded <code>inst/go/vendor/.../flatbuf</code> directory from package tarball via .Rbuildignore</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="mangoro-021">mangoro 0.2.1<a class="anchor" aria-label="anchor" href="#mangoro-021"></a></h2>
 <div class="section level3">
