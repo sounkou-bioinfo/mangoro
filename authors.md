@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/sounkou-bioinfo/mangoro/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/sounkou-bioinfo/mangoro/blob/0.2.1/DESCRIPTION)
 
 Toure S (2025). *mangoro: R/Go IPC using Nanomsg Next Gen*. R package
 version 0.2.1, <https://github.com/sounkou-bioinfo/mangoro>.
