@@ -195,7 +195,8 @@ func main() {
 
 	fmt.Printf("RPC server listening on %s\n", url)
 
-	// Main loop
+	// Main loop - REP socket can handle multiple REQ clients
+	// Process each request in a goroutine for concurrency
 	for {
 		msgBytes, err := sock.Recv()
 		if err != nil {
@@ -203,21 +204,27 @@ func main() {
 			continue
 		}
 
-		msg, err := rgoipc.UnmarshalRPCMessage(msgBytes)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "unmarshal error: %s\n", err)
-			sendError(sock, "", fmt.Sprintf("unmarshal error: %s", err))
-			continue
-		}
+		// Handle each request concurrently
+		// REP routing ensures response goes to correct client
+		go handleRequest(sock, registry, msgBytes)
+	}
+}
 
-		switch msg.Type {
-		case rgoipc.MsgTypeManifest:
-			handleManifest(sock, registry)
-		case rgoipc.MsgTypeCall:
-			handleCall(sock, registry, msg)
-		default:
-			sendError(sock, "", "unknown message type")
-		}
+func handleRequest(sock mangos.Socket, registry *rgoipc.Registry, msgBytes []byte) {
+	msg, err := rgoipc.UnmarshalRPCMessage(msgBytes)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "unmarshal error: %s\n", err)
+		sendError(sock, "", fmt.Sprintf("unmarshal error: %s", err))
+		return
+	}
+
+	switch msg.Type {
+	case rgoipc.MsgTypeManifest:
+		handleManifest(sock, registry)
+	case rgoipc.MsgTypeCall:
+		handleCall(sock, registry, msg)
+	default:
+		sendError(sock, "", "unknown message type")
 	}
 }
 
