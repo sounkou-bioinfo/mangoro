@@ -12,6 +12,8 @@ mangoro_http_start(
   cors = FALSE,
   coop = FALSE,
   tls = FALSE,
+  cert = NULL,
+  key = NULL,
   silent = FALSE
 )
 }
@@ -29,6 +31,10 @@ mangoro_http_start(
 \item{coop}{Enable Cross-Origin-Opener-Policy (default: FALSE)}
 
 \item{tls}{Enable TLS (default: FALSE)}
+
+\item{cert}{Path to TLS certificate file (required if tls = TRUE)}
+
+\item{key}{Path to TLS key file (required if tls = TRUE)}
 
 \item{silent}{Suppress server logs (default: FALSE)}
 }

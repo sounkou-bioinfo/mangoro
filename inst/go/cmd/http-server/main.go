@@ -35,8 +35,8 @@ var (
 
 // startServerHandler starts an HTTP server with given configuration
 func startServerHandler(input arrow.Record) (arrow.Record, error) {
-	if input.NumCols() != 7 {
-		return nil, fmt.Errorf("expected 7 columns, got %d", input.NumCols())
+	if input.NumCols() != 9 {
+		return nil, fmt.Errorf("expected 9 columns, got %d", input.NumCols())
 	}
 
 	// Extract parameters
@@ -46,7 +46,9 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 	corsCol := input.Column(3).(*array.Boolean)
 	coopCol := input.Column(4).(*array.Boolean)
 	tlsCol := input.Column(5).(*array.Boolean)
-	silentCol := input.Column(6).(*array.Boolean)
+	certCol := input.Column(6).(*array.String)
+	keyCol := input.Column(7).(*array.String)
+	silentCol := input.Column(8).(*array.Boolean)
 
 	if addrCol.Len() == 0 {
 		return nil, fmt.Errorf("no server address provided")
@@ -64,6 +66,14 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 	cors := corsCol.Len() > 0 && !corsCol.IsNull(0) && corsCol.Value(0)
 	coop := coopCol.Len() > 0 && !coopCol.IsNull(0) && coopCol.Value(0)
 	useTLS := tlsCol.Len() > 0 && !tlsCol.IsNull(0) && tlsCol.Value(0)
+	certFile := ""
+	if certCol.Len() > 0 && !certCol.IsNull(0) {
+		certFile = certCol.Value(0)
+	}
+	keyFile := ""
+	if keyCol.Len() > 0 && !keyCol.IsNull(0) {
+		keyFile = keyCol.Value(0)
+	}
 	silent := silentCol.Len() > 0 && !silentCol.IsNull(0) && silentCol.Value(0)
 
 	// Check if server is already running
@@ -121,8 +131,13 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 	go func() {
 		var err error
 		if useTLS {
+			// Validate cert and key files are provided
+			if certFile == "" || keyFile == "" {
+				serverLog.Printf("TLS error: certificate and key files required")
+				return
+			}
 			serverLog.Printf("Starting HTTPS server on %s serving %s at %s", addr, absDir, prefix)
-			err = httpServer.ListenAndServeTLS("", "") // Cert/key would need to be added
+			err = httpServer.ListenAndServeTLS(certFile, keyFile)
 		} else {
 			serverLog.Printf("Starting HTTP server on %s serving %s at %s", addr, absDir, prefix)
 			err = httpServer.ListenAndServe()
@@ -245,6 +260,8 @@ func main() {
 			{Name: "cors", Type: rgoipc.TypeSpec{Type: rgoipc.TypeBool, Nullable: true}},
 			{Name: "coop", Type: rgoipc.TypeSpec{Type: rgoipc.TypeBool, Nullable: true}},
 			{Name: "tls", Type: rgoipc.TypeSpec{Type: rgoipc.TypeBool, Nullable: true}},
+			{Name: "cert", Type: rgoipc.TypeSpec{Type: rgoipc.TypeString, Nullable: true}},
+			{Name: "key", Type: rgoipc.TypeSpec{Type: rgoipc.TypeString, Nullable: true}},
 			{Name: "silent", Type: rgoipc.TypeSpec{Type: rgoipc.TypeBool, Nullable: true}},
 		},
 		ReturnType: returnType,

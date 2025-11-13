@@ -343,6 +343,46 @@ result
 status <- mangoro_http_status(sock)
 status
 
+# Verify it stopped
+status <- mangoro_http_status(sock)
+status
+```
+
+### HTTPS/TLS Support
+
+The HTTP server supports HTTPS with TLS certificates. Start an HTTPS server by providing certificate and key files:
+
+```{r http-server-https, eval=TRUE}
+# Start HTTPS server with certificates (reusing the existing server controller)
+result <- mangoro_http_start(
+  sock,
+  addr = "127.0.0.1:8443",
+  dir = ".",
+  tls = TRUE,
+  cert = ".certs_test/cert.pem" |> normalizePath(),
+  key = ".certs_test/key.pem" |> normalizePath(),
+  cors = TRUE
+)
+result
+
+# Check status
+status <- mangoro_http_status(sock)
+status
+
+# Download a file from HTTPS server using R's download.file
+temp_file <- tempfile()
+download.file("https://127.0.0.1:8443/.Rbuildignore", 
+              destfile = temp_file,
+              method = "curl",
+              extra = "-k",
+              quiet = TRUE)
+# Read the downloaded file
+readLines(temp_file, n = 3)
+# Stop the HTTPS server
+result <- mangoro_http_stop(sock)
+result
+http_ctl_proc$read_output_lines()
+http_ctl_proc$read_error_lines()
 close(sock)
 http_ctl_proc$kill()
 ```

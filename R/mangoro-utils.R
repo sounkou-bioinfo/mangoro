@@ -1,3 +1,6 @@
+# Null coalescing operator for convenience
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 #' Pack a 32-bit integer to raw bytes (big-endian)
 #'
 #' @param x An integer value
@@ -191,19 +194,22 @@ mangoro_rpc_call <- function(sock, func_name, data) {
 #' @param cors Enable CORS headers (default: FALSE)
 #' @param coop Enable Cross-Origin-Opener-Policy (default: FALSE)
 #' @param tls Enable TLS (default: FALSE)
+#' @param cert Path to TLS certificate file (required if tls = TRUE)
+#' @param key Path to TLS key file (required if tls = TRUE)
 #' @param silent Suppress server logs (default: FALSE)
 #' @return List with status and message
 #' @export
 mangoro_http_start <- function(
-  sock,
-  addr,
-  dir = ".",
-  prefix = "/",
-  cors = FALSE,
-  coop = FALSE,
-  tls = FALSE,
-  silent = FALSE
-) {
+    sock,
+    addr,
+    dir = ".",
+    prefix = "/",
+    cors = FALSE,
+    coop = FALSE,
+    tls = FALSE,
+    cert = NULL,
+    key = NULL,
+    silent = FALSE) {
   input_df <- data.frame(
     addr = addr,
     dir = dir,
@@ -211,6 +217,8 @@ mangoro_http_start <- function(
     cors = cors,
     coop = coop,
     tls = tls,
+    cert = cert %||% "",
+    key = key %||% "",
     silent = silent,
     stringsAsFactors = FALSE
   )
