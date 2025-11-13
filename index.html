@@ -100,8 +100,8 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f374259bf40e' '/tmp/RtmpWfrEzp/file16f374275ee24c.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpWfrEzp/file16f374259bf40e"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file171996e9bd466' '/tmp/RtmpXbWgsX/file171996407bf330.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpXbWgsX/file171996e9bd466"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -191,8 +191,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f374996ca74' '/tmp/RtmpWfrEzp/file16f374551fc36c.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpWfrEzp/file16f374996ca74"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file171996180072e8' '/tmp/RtmpXbWgsX/file17199657cde93a.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpXbWgsX/file171996180072e8"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -212,7 +212,7 @@
 <span>  <span class="va">send_result</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/send.html" class="external-link">send</a></span><span class="op">(</span><span class="va">sock</span>, <span class="va">example_stream</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span>  <span class="va">attempt</span> <span class="op">&lt;-</span> <span class="va">attempt</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">send_result</span><span class="op">)</span></span>
+<span><span class="va">send_result</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="va">echo_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
@@ -227,12 +227,12 @@
 <span><span class="op">}</span></span>
 <span><span class="va">sent_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://arrow.apache.org/nanoarrow/latest/r/reference/read_nanoarrow.html" class="external-link">read_nanoarrow</a></span><span class="op">(</span><span class="va">example_stream</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">received_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://arrow.apache.org/nanoarrow/latest/r/reference/read_nanoarrow.html" class="external-link">read_nanoarrow</a></span><span class="op">(</span><span class="va">received</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sent_df</span><span class="op">)</span></span>
+<span><span class="va">sent_df</span></span>
 <span><span class="co">#&gt;   some_col</span></span>
 <span><span class="co">#&gt; 1        0</span></span>
 <span><span class="co">#&gt; 2        1</span></span>
 <span><span class="co">#&gt; 3        2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">received_df</span><span class="op">)</span></span>
+<span><span class="va">received_df</span></span>
 <span><span class="co">#&gt;   some_col</span></span>
 <span><span class="co">#&gt; 1        0</span></span>
 <span><span class="co">#&gt; 2        1</span></span>
@@ -274,8 +274,8 @@
 <span><span class="va">rpc_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"rpc-example"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">rpc_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">rpc_server_path</span>, <span class="va">rpc_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f37474915e88' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpWfrEzp/file16f37474915e88"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file17199614043b7d' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpXbWgsX/file17199614043b7d"</span></span>
 <span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">rpc_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
@@ -286,7 +286,7 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
 <span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_get_manifest.html">mangoro_rpc_get_manifest</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">manifest</span><span class="op">)</span></span>
+<span><span class="va">manifest</span></span>
 <span><span class="co">#&gt; $add</span></span>
 <span><span class="co">#&gt; $add$Args</span></span>
 <span><span class="co">#&gt;   Name Type.Type Type.Nullable Type.StructDef Type.ListSchema Optional Default</span></span>
@@ -341,6 +341,35 @@
 <span><span class="co">#&gt; $echoString$Metadata</span></span>
 <span><span class="co">#&gt; $echoString$Metadata$description</span></span>
 <span><span class="co">#&gt; [1] "Echo back a string vector"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix</span></span>
+<span><span class="co">#&gt; $transposeMatrix$Args</span></span>
+<span><span class="co">#&gt; list()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix$ReturnType</span></span>
+<span><span class="co">#&gt; $transposeMatrix$ReturnType$Type</span></span>
+<span><span class="co">#&gt; [1] "struct"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix$ReturnType$Nullable</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix$ReturnType$StructDef</span></span>
+<span><span class="co">#&gt; $transposeMatrix$ReturnType$StructDef$Fields</span></span>
+<span><span class="co">#&gt; list()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix$ReturnType$ListSchema</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix$Vectorized</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $transposeMatrix$Metadata</span></span>
+<span><span class="co">#&gt; $transposeMatrix$Metadata$description</span></span>
+<span><span class="co">#&gt; [1] "Transpose a matrix (columns &lt;-&gt; rows)"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
 <p>Call the <code>add</code> function with Arrow IPC data:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -350,19 +379,19 @@
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_call.html">mangoro_rpc_call</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"add"</span>, <span class="va">input_df</span><span class="op">)</span></span>
 <span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="va">input_df</span></span>
 <span><span class="co">#&gt;     x   y</span></span>
 <span><span class="co">#&gt; 1 1.5 0.5</span></span>
 <span><span class="co">#&gt; 2 2.5 1.5</span></span>
 <span><span class="co">#&gt; 3 3.5 2.5</span></span>
 <span><span class="co">#&gt; 4  NA 4.5</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result_df</span><span class="op">)</span></span>
+<span><span class="va">result_df</span></span>
 <span><span class="co">#&gt;   result</span></span>
 <span><span class="co">#&gt; 1      2</span></span>
 <span><span class="co">#&gt; 2      4</span></span>
 <span><span class="co">#&gt; 3      6</span></span>
 <span><span class="co">#&gt; 4     NA</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="va">input_df</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">input_df</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="va">input_df</span><span class="op">$</span><span class="va">y</span></span>
 <span><span class="co">#&gt; [1]  2  4  6 NA</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
@@ -374,13 +403,13 @@
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_call.html">mangoro_rpc_call</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"echoString"</span>, <span class="va">input_df</span><span class="op">)</span></span>
 <span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="va">input_df</span></span>
 <span><span class="co">#&gt;         s</span></span>
 <span><span class="co">#&gt; 1   hello</span></span>
 <span><span class="co">#&gt; 2   world</span></span>
 <span><span class="co">#&gt; 3    &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 4 mangoro</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result_df</span><span class="op">)</span></span>
+<span><span class="va">result_df</span></span>
 <span><span class="co">#&gt;    result</span></span>
 <span><span class="co">#&gt; 1   hello</span></span>
 <span><span class="co">#&gt; 2   world</span></span>
@@ -388,6 +417,36 @@
 <span><span class="co">#&gt; 4 mangoro</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">$</span><span class="va">s</span>, <span class="va">result_df</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
+<p>Call the <code>transposeMatrix</code> function to demonstrate matrix handling. In R, we send a matrix as a data.frame (each column is a column), and Go transposes it:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a 3x4 matrix and convert to data.frame for Arrow IPC</span></span>
+<span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">10</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">3</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="st">"Input matrix (3x4):"</span></span>
+<span><span class="co">#&gt; [1] "Input matrix (3x4):"</span></span>
+<span><span class="va">mat</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
+<span><span class="co">#&gt; [1,]    1    4    7   10</span></span>
+<span><span class="co">#&gt; [2,]    2    5    8   11</span></span>
+<span><span class="co">#&gt; [3,]    3    6    9   12</span></span>
+<span></span>
+<span><span class="co"># Convert to data.frame - each column becomes a column</span></span>
+<span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Transpose via RPC</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_call.html">mangoro_rpc_call</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"transposeMatrix"</span>, <span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">#&gt; &lt;nanoarrow_array_stream struct&lt;V1: double, V2: double, V3: double&gt;&gt;</span></span>
+<span><span class="co">#&gt;  $ get_schema:function ()  </span></span>
+<span><span class="co">#&gt;  $ get_next  :function (schema = x$get_schema(), validate = TRUE)  </span></span>
+<span><span class="co">#&gt;  $ release   :function ()</span></span>
+<span><span class="co"># Compare values (ignore dimnames)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">result</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "target is nanoarrow_array_stream, current is matrix"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span><span class="op">$</span><span class="fu">kill</span><span class="op">(</span><span class="op">)</span></span>
@@ -398,13 +457,13 @@
 <h2 id="http-file-server-with-rpc-control">HTTP File Server with RPC Control<a class="anchor" aria-label="anchor" href="#http-file-server-with-rpc-control"></a>
 </h2>
 <p>The package includes an HTTP file server that can be controlled via RPC, demonstrating a slighly more complex use case.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build the HTTP server controller</span></span>
 <span><span class="va">http_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"http-server"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">http_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">http_server_path</span>, <span class="va">http_bin</span>, gomaxprocs <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f3743610b05b' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpWfrEzp/file16f3743610b05b"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file1719963c41d2e5' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpXbWgsX/file1719963c41d2e5"</span></span>
 <span></span>
 <span><span class="co"># Start the RPC controller (not the HTTP server itself yet)</span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -413,27 +472,27 @@
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">read_output_lines</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Registered functions: [startServer stopServer serverStatus]"                             </span></span>
-<span><span class="co">#&gt; [2] "HTTP server controller listening on ipc:///tmp/RtmpWfrEzp/mangoro-echo16f3746c710799.ipc"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Registered functions: [serverStatus startServer stopServer]"                             </span></span>
+<span><span class="co">#&gt; [2] "HTTP server controller listening on ipc:///tmp/RtmpXbWgsX/mangoro-echo17199622505276.ipc"</span></span></code></pre></div>
 <p>Control the HTTP server via RPC:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get server status (should be stopped initially)</span></span>
 <span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_status.html">mangoro_http_status</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
+<span><span class="va">status</span></span>
 <span><span class="co">#&gt;   status message</span></span>
 <span><span class="co">#&gt; 1 status stopped</span></span>
 <span></span>
 <span><span class="co"># Start HTTP server on port 8080 serving current directory</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_start.html">mangoro_http_start</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"127.0.0.1:8080"</span>, dir <span class="op">=</span> <span class="st">"."</span>, cors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="va">result</span></span>
 <span><span class="co">#&gt;   status                               message</span></span>
 <span><span class="co">#&gt; 1     ok HTTP server started on 127.0.0.1:8080</span></span>
 <span></span>
 <span><span class="co"># Check status again</span></span>
 <span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_status.html">mangoro_http_status</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
+<span><span class="va">status</span></span>
 <span><span class="co">#&gt;   status                   message</span></span>
 <span><span class="co">#&gt; 1 status running at 127.0.0.1:8080</span></span>
 <span></span>
@@ -445,13 +504,13 @@
 <span></span>
 <span><span class="co"># Stop the server</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_stop.html">mangoro_http_stop</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="va">result</span></span>
 <span><span class="co">#&gt;   status             message</span></span>
 <span><span class="co">#&gt; 1     ok HTTP server stopped</span></span>
 <span></span>
 <span><span class="co"># Verify it stopped</span></span>
 <span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_status.html">mangoro_http_status</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
+<span><span class="va">status</span></span>
 <span><span class="co">#&gt;   status message</span></span>
 <span><span class="co">#&gt; 1 status stopped</span></span>
 <span></span>
