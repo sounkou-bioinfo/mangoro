@@ -127,6 +127,9 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 		}
 	}
 
+	// Channel to capture startup errors
+	errChan := make(chan error, 1)
+
 	// Start server in background
 	go func() {
 		var err error
@@ -134,6 +137,7 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 			// Validate cert and key files are provided
 			if certFile == "" || keyFile == "" {
 				serverLog.Printf("TLS error: certificate and key files required")
+				errChan <- fmt.Errorf("certificate and key files required for TLS")
 				return
 			}
 			serverLog.Printf("Starting HTTPS server on %s serving %s at %s", addr, absDir, prefix)
@@ -144,10 +148,18 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 		}
 		if err != nil && err != http.ErrServerClosed {
 			serverLog.Printf("HTTP server error: %v", err)
+			errChan <- err
 		}
 	}()
 
-	time.Sleep(100 * time.Millisecond) // Give server time to start
+	// Wait briefly to detect immediate startup errors (like port already in use)
+	select {
+	case err := <-errChan:
+		httpServer = nil
+		return buildResponse("error", fmt.Sprintf("failed to start server: %v", err))
+	case <-time.After(500 * time.Millisecond):
+		// Server seems to have started successfully
+	}
 
 	return buildResponse("ok", fmt.Sprintf("HTTP server started on %s", addr))
 }
