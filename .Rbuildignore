@@ -1,5 +1,6 @@
+^certs*$
 ^misc/.*$
-^mango\.Rproj$
+^mangoro\.Rproj$
 ^\.Rproj\.user$
 ^Makefile$
 ^LICENSE\.md$
