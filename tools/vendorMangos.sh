@@ -17,3 +17,13 @@ go mod tidy
 go mod vendor
 
 echo "Vendoring complete. Mangos and dependencies are now in ./vendor."
+
+# Move problematic long-path flatbuf files to tools/ directory
+echo "Moving flatbuf files to avoid long path warnings..."
+cd ../..
+rm -rf tools/flatbuf
+mkdir -p tools/flatbuf
+cp -r inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf/* tools/flatbuf/
+rm -rf inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf
+
+echo "Flatbuf files moved to tools/flatbuf/"

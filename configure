@@ -2,6 +2,17 @@
 # check the go command and version
 # copied from https://github.com/walkerke/pmtiles/blob/main/configure.win
 # Detect architecture
+
+# Restore flatbuf files from tools/ to vendor directory during installation
+if [ -d "tools/flatbuf" ] && [ ! -d "inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf" ]; then
+  echo "***********************************************************************"
+  echo "Restoring flatbuf files from tools/flatbuf..."
+  echo "***********************************************************************"
+  mkdir -p inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf
+  cp -r tools/flatbuf/* inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf/
+  echo "Flatbuf files restored."
+fi
+
 if [ -z "$R_ARCH" ]; then
   # Try to detect from PROCESSOR_ARCHITECTURE or uname
   if [ ! -z "$PROCESSOR_ARCHITECTURE" ]; then
