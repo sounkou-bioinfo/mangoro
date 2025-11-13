@@ -88,7 +88,7 @@ func startServerHandler(input arrow.Record) (arrow.Record, error) {
 	} else {
 		logWriter = os.Stdout
 	}
-	serverLog = log.New(logWriter, "[HTTP] ", log.LstdFlags)
+	serverLog = log.New(logWriter, "[mangoro server] ", log.LstdFlags)
 
 	// Get absolute directory path
 	absDir, err := filepath.Abs(dir)

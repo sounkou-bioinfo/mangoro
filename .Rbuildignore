@@ -1,4 +1,4 @@
-^certs*$
+^\.certs_test/.*$
 ^misc/.*$
 ^mangoro\.Rproj$
 ^\.Rproj\.user$

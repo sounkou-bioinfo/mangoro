@@ -297,7 +297,7 @@ close(sock)
 rpc_proc$kill()
 ```
 
-## HTTP File Server with RPC Control
+## HTTP(S) File Server with RPC Control
 
 The package includes an HTTP file server that can be controlled via RPC, demonstrating a slighly more complex use case.
 
@@ -382,7 +382,6 @@ readLines(temp_file, n = 3)
 result <- mangoro_http_stop(sock)
 result
 http_ctl_proc$read_output_lines()
-http_ctl_proc$read_error_lines()
 close(sock)
 http_ctl_proc$kill()
 ```
