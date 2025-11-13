@@ -68,8 +68,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f374259bf40e' '/tmp/RtmpWfrEzp/file16f374275ee24c.go'"
-#> [1] "/tmp/RtmpWfrEzp/file16f374259bf40e"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file171996e9bd466' '/tmp/RtmpXbWgsX/file171996407bf330.go'"
+#> [1] "/tmp/RtmpXbWgsX/file171996e9bd466"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +164,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f374996ca74' '/tmp/RtmpWfrEzp/file16f374551fc36c.go'"
-#> [1] "/tmp/RtmpWfrEzp/file16f374996ca74"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file171996180072e8' '/tmp/RtmpXbWgsX/file17199657cde93a.go'"
+#> [1] "/tmp/RtmpXbWgsX/file171996180072e8"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -190,7 +190,7 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
   send_result <- nanonext::send(sock, example_stream, mode = "raw")
   attempt <- attempt + 1
 }
-print(send_result)
+send_result
 #> [1] 0
 echo_proc$is_alive()
 #> [1] TRUE
@@ -205,12 +205,12 @@ while (nanonext::is_error_value(received) && attempt < max_attempts) {
 }
 sent_df <- as.data.frame(read_nanoarrow(example_stream))
 received_df <- as.data.frame(read_nanoarrow(received))
-print(sent_df)
+sent_df
 #>   some_col
 #> 1        0
 #> 2        1
 #> 3        2
-print(received_df)
+received_df
 #>   some_col
 #> 1        0
 #> 2        1
@@ -256,8 +256,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f37474915e88' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpWfrEzp/file16f37474915e88"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file17199614043b7d' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpXbWgsX/file17199614043b7d"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -271,7 +271,7 @@ Request the manifest of registered functions:
 ``` r
 sock <- nanonext::socket("req", dial = ipc_url)
 manifest <- mangoro_rpc_get_manifest(sock)
-print(manifest)
+manifest
 #> $add
 #> $add$Args
 #>   Name Type.Type Type.Nullable Type.StructDef Type.ListSchema Optional Default
@@ -326,6 +326,35 @@ print(manifest)
 #> $echoString$Metadata
 #> $echoString$Metadata$description
 #> [1] "Echo back a string vector"
+#> 
+#> 
+#> 
+#> $transposeMatrix
+#> $transposeMatrix$Args
+#> list()
+#> 
+#> $transposeMatrix$ReturnType
+#> $transposeMatrix$ReturnType$Type
+#> [1] "struct"
+#> 
+#> $transposeMatrix$ReturnType$Nullable
+#> [1] FALSE
+#> 
+#> $transposeMatrix$ReturnType$StructDef
+#> $transposeMatrix$ReturnType$StructDef$Fields
+#> list()
+#> 
+#> 
+#> $transposeMatrix$ReturnType$ListSchema
+#> NULL
+#> 
+#> 
+#> $transposeMatrix$Vectorized
+#> [1] FALSE
+#> 
+#> $transposeMatrix$Metadata
+#> $transposeMatrix$Metadata$description
+#> [1] "Transpose a matrix (columns <-> rows)"
 close(sock)
 ```
 
@@ -338,19 +367,19 @@ input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
 result <- mangoro_rpc_call(sock, "add", input_df)
 result_df <- as.data.frame(result)
 
-print(input_df)
+input_df
 #>     x   y
 #> 1 1.5 0.5
 #> 2 2.5 1.5
 #> 3 3.5 2.5
 #> 4  NA 4.5
-print(result_df)
+result_df
 #>   result
 #> 1      2
 #> 2      4
 #> 3      6
 #> 4     NA
-print(input_df$x + input_df$y)
+input_df$x + input_df$y
 #> [1]  2  4  6 NA
 
 close(sock)
@@ -365,13 +394,13 @@ input_df <- data.frame(s = c("hello", "world", NA, "mangoro"))
 result <- mangoro_rpc_call(sock, "echoString", input_df)
 result_df <- as.data.frame(result)
 
-print(input_df)
+input_df
 #>         s
 #> 1   hello
 #> 2   world
 #> 3    <NA>
 #> 4 mangoro
-print(result_df)
+result_df
 #>    result
 #> 1   hello
 #> 2   world
@@ -379,6 +408,41 @@ print(result_df)
 #> 4 mangoro
 identical(input_df$s, result_df$result)
 #> [1] TRUE
+
+close(sock)
+```
+
+Call the `transposeMatrix` function to demonstrate matrix handling. In
+R, we send a matrix as a data.frame (each column is a column), and Go
+transposes it:
+
+``` r
+sock <- nanonext::socket("req", dial = ipc_url)
+
+# Create a 3x4 matrix and convert to data.frame for Arrow IPC
+mat <- matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), nrow = 3, ncol = 4)
+"Input matrix (3x4):"
+#> [1] "Input matrix (3x4):"
+mat
+#>      [,1] [,2] [,3] [,4]
+#> [1,]    1    4    7   10
+#> [2,]    2    5    8   11
+#> [3,]    3    6    9   12
+
+# Convert to data.frame - each column becomes a column
+input_df <- as.data.frame(mat)
+colnames(input_df) <- paste0("V", 1:ncol(mat))
+
+# Transpose via RPC
+result <- mangoro_rpc_call(sock, "transposeMatrix", input_df)
+result
+#> <nanoarrow_array_stream struct<V1: double, V2: double, V3: double>>
+#>  $ get_schema:function ()  
+#>  $ get_next  :function (schema = x$get_schema(), validate = TRUE)  
+#>  $ release   :function ()
+# Compare values (ignore dimnames)
+all.equal(result, t(mat), check.attributes = FALSE)
+#> [1] "target is nanoarrow_array_stream, current is matrix"
 
 close(sock)
 rpc_proc$kill()
@@ -395,8 +459,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f3743610b05b' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpWfrEzp/file16f3743610b05b"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpXbWgsX/file1719963c41d2e5' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpXbWgsX/file1719963c41d2e5"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -405,8 +469,8 @@ Sys.sleep(2)
 http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
-#> [1] "Registered functions: [startServer stopServer serverStatus]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpWfrEzp/mangoro-echo16f3746c710799.ipc"
+#> [1] "Registered functions: [serverStatus startServer stopServer]"                             
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpXbWgsX/mangoro-echo17199622505276.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -416,19 +480,19 @@ sock <- nanonext::socket("req", dial = ipc_url)
 
 # Get server status (should be stopped initially)
 status <- mangoro_http_status(sock)
-print(status)
+status
 #>   status message
 #> 1 status stopped
 
 # Start HTTP server on port 8080 serving current directory
 result <- mangoro_http_start(sock, "127.0.0.1:8080", dir = ".", cors = TRUE)
-print(result)
+result
 #>   status                               message
 #> 1     ok HTTP server started on 127.0.0.1:8080
 
 # Check status again
 status <- mangoro_http_status(sock)
-print(status)
+status
 #>   status                   message
 #> 1 status running at 127.0.0.1:8080
 
@@ -440,13 +504,13 @@ readLines("http://127.0.0.1:8080/", n = 3, warn = FALSE)
 
 # Stop the server
 result <- mangoro_http_stop(sock)
-print(result)
+result
 #>   status             message
 #> 1     ok HTTP server stopped
 
 # Verify it stopped
 status <- mangoro_http_status(sock)
-print(status)
+status
 #>   status message
 #> 1 status stopped
 

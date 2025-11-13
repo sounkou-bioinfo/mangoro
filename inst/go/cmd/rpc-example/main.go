@@ -83,6 +83,56 @@ func echoStringHandler(input arrow.Record) (arrow.Record, error) {
 	return array.NewRecord(schema, []arrow.Array{result}, int64(result.Len())), nil
 }
 
+// transposeMatrixHandler transposes a matrix passed as a data.frame (columns become rows)
+// Input: data.frame with N numeric columns of length M
+// Output: data.frame with M numeric columns of length N
+func transposeMatrixHandler(input arrow.Record) (arrow.Record, error) {
+	nCols := int(input.NumCols())
+	if nCols == 0 {
+		return nil, fmt.Errorf("expected at least 1 column")
+	}
+
+	nRows := int(input.NumRows())
+	if nRows == 0 {
+		return nil, fmt.Errorf("expected at least 1 row")
+	}
+
+	// Read all input columns as float64 arrays
+	inputCols := make([]*array.Float64, nCols)
+	for i := 0; i < nCols; i++ {
+		col, ok := input.Column(i).(*array.Float64)
+		if !ok {
+			return nil, fmt.Errorf("column %d is not float64", i)
+		}
+		inputCols[i] = col
+	}
+
+	// Build transposed output: nRows columns, each with nCols rows
+	pool := memory.NewGoAllocator()
+	outputCols := make([]arrow.Array, nRows)
+	fields := make([]arrow.Field, nRows)
+
+	for rowIdx := 0; rowIdx < nRows; rowIdx++ {
+		builder := array.NewFloat64Builder(pool)
+		
+		for colIdx := 0; colIdx < nCols; colIdx++ {
+			if inputCols[colIdx].IsNull(rowIdx) {
+				builder.AppendNull()
+			} else {
+				builder.Append(inputCols[colIdx].Value(rowIdx))
+			}
+		}
+		
+		outputCols[rowIdx] = builder.NewArray()
+		defer outputCols[rowIdx].Release()
+		fields[rowIdx] = arrow.Field{Name: fmt.Sprintf("V%d", rowIdx+1), Type: arrow.PrimitiveTypes.Float64}
+		builder.Release()
+	}
+
+	schema := arrow.NewSchema(fields, nil)
+	return array.NewRecord(schema, outputCols, int64(nCols)), nil
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		die("Usage: %s <ipc_path>", os.Args[0])
@@ -115,6 +165,21 @@ func main() {
 	})
 	if err != nil {
 		die("Failed to register echoString function: %s", err)
+	}
+
+	err = registry.Register("transposeMatrix", transposeMatrixHandler, rgoipc.FunctionSignature{
+		Args: []rgoipc.ArgSpec{},
+		ReturnType: rgoipc.TypeSpec{
+			Type: rgoipc.TypeStruct,
+			StructDef: &rgoipc.StructDef{
+				Fields: []rgoipc.FieldDef{}, // Empty - dynamic structure
+			},
+		},
+		Vectorized: false,
+		Metadata:   map[string]string{"description": "Transpose a matrix (columns <-> rows)"},
+	})
+	if err != nil {
+		die("Failed to register transposeMatrix function: %s", err)
 	}
 
 	fmt.Println("Registered functions:", registry.List())

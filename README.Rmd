@@ -178,7 +178,7 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
   send_result <- nanonext::send(sock, example_stream, mode = "raw")
   attempt <- attempt + 1
 }
-print(send_result)
+send_result
 echo_proc$is_alive()
 Sys.sleep(1)
 received <- nanonext::recv(sock, mode = "serial")
@@ -190,8 +190,8 @@ while (nanonext::is_error_value(received) && attempt < max_attempts) {
 }
 sent_df <- as.data.frame(read_nanoarrow(example_stream))
 received_df <- as.data.frame(read_nanoarrow(received))
-print(sent_df)
-print(received_df)
+sent_df
+received_df
 identical(sent_df, received_df)
 close(sock)
 echo_proc$kill()
@@ -236,7 +236,7 @@ Request the manifest of registered functions:
 ```{r rpc-manifest}
 sock <- nanonext::socket("req", dial = ipc_url)
 manifest <- mangoro_rpc_get_manifest(sock)
-print(manifest)
+manifest
 close(sock)
 ```
 
@@ -249,9 +249,9 @@ input_df <- data.frame(x = c(1.5, 2.5, 3.5, NA), y = c(0.5, 1.5, 2.5, 4.5))
 result <- mangoro_rpc_call(sock, "add", input_df)
 result_df <- as.data.frame(result)
 
-print(input_df)
-print(result_df)
-print(input_df$x + input_df$y)
+input_df
+result_df
+input_df$x + input_df$y
 
 close(sock)
 ```
@@ -265,9 +265,32 @@ input_df <- data.frame(s = c("hello", "world", NA, "mangoro"))
 result <- mangoro_rpc_call(sock, "echoString", input_df)
 result_df <- as.data.frame(result)
 
-print(input_df)
-print(result_df)
+input_df
+result_df
 identical(input_df$s, result_df$result)
+
+close(sock)
+```
+
+Call the `transposeMatrix` function to demonstrate matrix handling. In R, we send a matrix as a data.frame (each column is a column), and Go transposes it:
+
+```{r rpc-transpose-matrix}
+sock <- nanonext::socket("req", dial = ipc_url)
+
+# Create a 3x4 matrix and convert to data.frame for Arrow IPC
+mat <- matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), nrow = 3, ncol = 4)
+"Input matrix (3x4):"
+mat
+
+# Convert to data.frame - each column becomes a column
+input_df <- as.data.frame(mat)
+colnames(input_df) <- paste0("V", 1:ncol(mat))
+
+# Transpose via RPC
+result <- mangoro_rpc_call(sock, "transposeMatrix", input_df)
+result
+# Compare values (ignore dimnames)
+all.equal(result, t(mat), check.attributes = FALSE)
 
 close(sock)
 rpc_proc$kill()
@@ -298,26 +321,26 @@ sock <- nanonext::socket("req", dial = ipc_url)
 
 # Get server status (should be stopped initially)
 status <- mangoro_http_status(sock)
-print(status)
+status
 
 # Start HTTP server on port 8080 serving current directory
 result <- mangoro_http_start(sock, "127.0.0.1:8080", dir = ".", cors = TRUE)
-print(result)
+result
 
 # Check status again
 status <- mangoro_http_status(sock)
-print(status)
+status
 
 # Test accessing the HTTP server
 readLines("http://127.0.0.1:8080/", n = 3, warn = FALSE)
 
 # Stop the server
 result <- mangoro_http_stop(sock)
-print(result)
+result
 
 # Verify it stopped
 status <- mangoro_http_status(sock)
-print(status)
+status
 
 close(sock)
 http_ctl_proc$kill()
