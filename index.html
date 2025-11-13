@@ -100,8 +100,8 @@
 <span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d5647e78a0' '/tmp/Rtmp1gIhnX/file1792d51d2d3e68.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1gIhnX/file1792d5647e78a0"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b5d1154e8' '/tmp/Rtmp5hKDOM/file17ba2b5e9133dd.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp5hKDOM/file17ba2b5d1154e8"</span></span></code></pre></div>
 <p>create IPC path and send/receive message</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -191,8 +191,8 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">go_code</span>, <span class="va">tmp_go</span><span class="op">)</span></span>
 <span><span class="va">tmp_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">tmp_go</span>, <span class="va">tmp_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d523b58a5c' '/tmp/Rtmp1gIhnX/file1792d5517e3d1a.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1gIhnX/file1792d523b58a5c"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b3899753c' '/tmp/Rtmp5hKDOM/file17ba2b441fdfe7.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp5hKDOM/file17ba2b3899753c"</span></span>
 <span></span>
 <span><span class="va">echo_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">tmp_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -275,8 +275,8 @@
 <span><span class="va">rpc_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"rpc-example"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">rpc_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">rpc_server_path</span>, <span class="va">rpc_bin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d51e95e735' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1gIhnX/file1792d51e95e735"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b29fd24b9' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp5hKDOM/file17ba2b29fd24b9"</span></span>
 <span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">rpc_bin</span>, args <span class="op">=</span> <span class="va">ipc_url</span>, stdout <span class="op">=</span> <span class="st">"|"</span>, stderr <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
@@ -342,6 +342,42 @@
 <span><span class="co">#&gt; $echoString$Metadata</span></span>
 <span><span class="co">#&gt; $echoString$Metadata$description</span></span>
 <span><span class="co">#&gt; [1] "Echo back a string vector"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct</span></span>
+<span><span class="co">#&gt; $echoStruct$Args</span></span>
+<span><span class="co">#&gt;     Name Type.Type Type.Nullable</span></span>
+<span><span class="co">#&gt; 1 person    struct         FALSE</span></span>
+<span><span class="co">#&gt;                                                      Type.Fields</span></span>
+<span><span class="co">#&gt; 1 name, age, string, int32, FALSE, FALSE, NA, NA, NA, NA, NA, NA</span></span>
+<span><span class="co">#&gt;   Type.ListSchema Optional Default</span></span>
+<span><span class="co">#&gt; 1              NA    FALSE      NA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct$ReturnType</span></span>
+<span><span class="co">#&gt; $echoStruct$ReturnType$Type</span></span>
+<span><span class="co">#&gt; [1] "struct"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct$ReturnType$Nullable</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct$ReturnType$StructDef</span></span>
+<span><span class="co">#&gt; $echoStruct$ReturnType$StructDef$Fields</span></span>
+<span><span class="co">#&gt;   Name Type.Type Type.Nullable Type.StructDef Type.ListSchema Metadata</span></span>
+<span><span class="co">#&gt; 1 name    string         FALSE             NA              NA       NA</span></span>
+<span><span class="co">#&gt; 2  age     int32         FALSE             NA              NA       NA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct$ReturnType$ListSchema</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct$Vectorized</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $echoStruct$Metadata</span></span>
+<span><span class="co">#&gt; $echoStruct$Metadata$description</span></span>
+<span><span class="co">#&gt; [1] "Echo back a struct column (nested data)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -446,6 +482,49 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">result_df</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
+<p>Call the <code>echoStruct</code> function to demonstrate nested/struct column handling</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a struct column: a single column named 'person' </span></span>
+<span><span class="co"># where each element is a struct with 'name' and 'age' fields</span></span>
+<span><span class="va">person_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Charlie"</span><span class="op">)</span>,</span>
+<span>    age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30L</span>, <span class="fl">25L</span>, <span class="fl">35L</span><span class="op">)</span>,</span>
+<span>    stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Wrap in a data frame with I() to create a nested structure</span></span>
+<span><span class="co"># This creates a single column 'person' of type struct{name, age}</span></span>
+<span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>person <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">person_df</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Call the RPC function</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_rpc_call.html">mangoro_rpc_call</a></span><span class="op">(</span><span class="va">sock</span>, <span class="st">"echoStruct"</span>, <span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'data.frame':    3 obs. of  1 variable:</span></span>
+<span><span class="co">#&gt;  $ person:Classes 'AsIs' and 'data.frame':   3 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;   ..$ name: chr  "Alice" "Bob" "Charlie"</span></span>
+<span><span class="co">#&gt;   ..$ age : int  30 25 35</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">result_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'data.frame':    3 obs. of  1 variable:</span></span>
+<span><span class="co">#&gt;  $ person:'data.frame':  3 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;   ..$ name: chr  "Alice" "Bob" "Charlie"</span></span>
+<span><span class="co">#&gt;   ..$ age : int  30 25 35</span></span>
+<span></span>
+<span><span class="va">result_df</span></span>
+<span><span class="co">#&gt;   person.name person.age</span></span>
+<span><span class="co">#&gt; 1       Alice         30</span></span>
+<span><span class="co">#&gt; 2         Bob         25</span></span>
+<span><span class="co">#&gt; 3     Charlie         35</span></span>
+<span></span>
+<span><span class="co"># Verify roundtrip</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">input_df</span>, <span class="va">result_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="va">rpc_proc</span><span class="op">$</span><span class="fu">kill</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -455,13 +534,13 @@
 <h2 id="https-file-server-with-rpc-control">HTTP(S) File Server with RPC Control<a class="anchor" aria-label="anchor" href="#https-file-server-with-rpc-control"></a>
 </h2>
 <p>The package includes an HTTP file server that can be controlled via RPC, demonstrating a slighly more complex use case.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build the HTTP server controller</span></span>
 <span><span class="va">http_server_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"go"</span>, package <span class="op">=</span> <span class="st">"mangoro"</span><span class="op">)</span>, <span class="st">"cmd"</span>, <span class="st">"http-server"</span>, <span class="st">"main.go"</span><span class="op">)</span></span>
 <span><span class="va">http_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mangoro_go_build.html">mangoro_go_build</a></span><span class="op">(</span><span class="va">http_server_path</span>, <span class="va">http_bin</span>, gomaxprocs <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp1gIhnX/file1792d556f059f1' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1gIhnX/file1792d556f059f1"</span></span>
+<span><span class="co">#&gt; [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/Rtmp5hKDOM/file17ba2b301bc472' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp5hKDOM/file17ba2b301bc472"</span></span>
 <span></span>
 <span><span class="co"># Start the RPC controller (not the HTTP server itself yet)</span></span>
 <span><span class="va">ipc_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ipc_path.html">create_ipc_path</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -470,10 +549,10 @@
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">is_alive</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">read_output_lines</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Registered functions: [startServer stopServer serverStatus]"                             </span></span>
-<span><span class="co">#&gt; [2] "HTTP server controller listening on ipc:///tmp/Rtmp1gIhnX/mangoro-echo1792d5600fa45a.ipc"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Registered functions: [startServer stopServer serverStatus]"                            </span></span>
+<span><span class="co">#&gt; [2] "HTTP server controller listening on ipc:///tmp/Rtmp5hKDOM/mangoro-echo17ba2b5c37b83.ipc"</span></span></code></pre></div>
 <p>Control the HTTP server via RPC:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://nanonext.r-lib.org/reference/socket.html" class="external-link">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="va">ipc_url</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get server status (should be stopped initially)</span></span>
@@ -521,7 +600,7 @@
 <h3 id="httpstls-support">HTTPS/TLS Support<a class="anchor" aria-label="anchor" href="#httpstls-support"></a>
 </h3>
 <p>The HTTP server supports HTTPS with TLS certificates. Start an HTTPS server by providing certificate and key files:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Start HTTPS server with certificates (reusing the existing server controller)</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mangoro_http_start.html">mangoro_http_start</a></span><span class="op">(</span></span>
 <span>  <span class="va">sock</span>,</span>
@@ -558,12 +637,12 @@
 <span><span class="co">#&gt;   status             message</span></span>
 <span><span class="co">#&gt; 1     ok HTTP server stopped</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">read_output_lines</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "[mangoro server] 2025/11/13 04:47:59 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" </span></span>
-<span><span class="co">#&gt; [2] "[mangoro server] 2025/11/13 04:48:01 GET / 127.0.0.1:57926 75.902µs"                                    </span></span>
-<span><span class="co">#&gt; [3] "[mangoro server] 2025/11/13 04:48:01 HTTP server stopped"                                               </span></span>
-<span><span class="co">#&gt; [4] "[mangoro server] 2025/11/13 04:48:05 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"</span></span>
-<span><span class="co">#&gt; [5] "[mangoro server] 2025/11/13 04:48:07 GET /.Rbuildignore 127.0.0.1:44386 8.702294ms"                     </span></span>
-<span><span class="co">#&gt; [6] "[mangoro server] 2025/11/13 04:48:07 HTTP server stopped"</span></span>
+<span><span class="co">#&gt; [1] "[mangoro server] 2025/11/13 05:18:27 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" </span></span>
+<span><span class="co">#&gt; [2] "[mangoro server] 2025/11/13 05:18:29 GET / 127.0.0.1:44874 66.293µs"                                    </span></span>
+<span><span class="co">#&gt; [3] "[mangoro server] 2025/11/13 05:18:29 HTTP server stopped"                                               </span></span>
+<span><span class="co">#&gt; [4] "[mangoro server] 2025/11/13 05:18:32 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"</span></span>
+<span><span class="co">#&gt; [5] "[mangoro server] 2025/11/13 05:18:34 GET /.Rbuildignore 127.0.0.1:56212 5.465772ms"                     </span></span>
+<span><span class="co">#&gt; [6] "[mangoro server] 2025/11/13 05:18:34 HTTP server stopped"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="va">http_ctl_proc</span><span class="op">$</span><span class="fu">kill</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
