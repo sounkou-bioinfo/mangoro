@@ -420,8 +420,8 @@ result
 http_ctl_proc$read_output_lines()
 close(sock)
 http_ctl_proc$kill()
-```
 
+```
 
 The `rgoipc` package provides the interfaces for type-safe function registration with Arrow schema validation. See [inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package implementation and [inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) and [inst/go/cmd/http-server](inst/go/cmd/http-server) for complete server examples.
 
