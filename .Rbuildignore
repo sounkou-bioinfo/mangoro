@@ -1,3 +1,4 @@
+^misc/.*$
 ^mango\.Rproj$
 ^\.Rproj\.user$
 ^Makefile$
