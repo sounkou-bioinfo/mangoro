@@ -38,5 +38,3 @@
   : Send a message with retries
 - [`mangoro_unpack_int32()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_unpack_int32.md)
   : Unpack a 32-bit integer from raw bytes (big-endian)
-- [`run_mangoro_bin()`](https://sounkou-bioinfo.github.io/mangoro/reference/run_mangoro_bin.md)
-  : Run a mangoro Go binary with arguments

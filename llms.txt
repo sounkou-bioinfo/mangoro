@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf1c25a8c7' '/tmp/RtmpwpGr91/file16bbf1358bb599.go'"
-#> [1] "/tmp/RtmpwpGr91/file16bbf1c25a8c7"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f374259bf40e' '/tmp/RtmpWfrEzp/file16f374275ee24c.go'"
+#> [1] "/tmp/RtmpWfrEzp/file16f374259bf40e"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf14a44ec2' '/tmp/RtmpwpGr91/file16bbf15329cdba.go'"
-#> [1] "/tmp/RtmpwpGr91/file16bbf14a44ec2"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f374996ca74' '/tmp/RtmpWfrEzp/file16f374551fc36c.go'"
+#> [1] "/tmp/RtmpWfrEzp/file16f374996ca74"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -253,8 +253,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf1fc8c586' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpwpGr91/file16bbf1fc8c586"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f37474915e88' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpWfrEzp/file16f37474915e88"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -392,8 +392,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpwpGr91/file16bbf1166f7195' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpwpGr91/file16bbf1166f7195"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpWfrEzp/file16f3743610b05b' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpWfrEzp/file16f3743610b05b"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -403,7 +403,7 @@ http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
 #> [1] "Registered functions: [startServer stopServer serverStatus]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpwpGr91/mangoro-echo16bbf1705cee00.ipc"
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpWfrEzp/mangoro-echo16f3746c710799.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -511,6 +511,4 @@ way, you must comply with the GPL-3 license.
   : Send a message with retries
 - [`mangoro_unpack_int32()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_unpack_int32.md)
   : Unpack a 32-bit integer from raw bytes (big-endian)
-- [`run_mangoro_bin()`](https://sounkou-bioinfo.github.io/mangoro/reference/run_mangoro_bin.md)
-  : Run a mangoro Go binary with arguments
 
