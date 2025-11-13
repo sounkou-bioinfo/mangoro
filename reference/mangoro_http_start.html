@@ -46,6 +46,8 @@
 <span>  cors <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  coop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cert <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  silent <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -80,6 +82,14 @@
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
 <dd><p>Enable TLS (default: FALSE)</p></dd>
+
+
+<dt id="arg-cert">cert<a class="anchor" aria-label="anchor" href="#arg-cert"></a></dt>
+<dd><p>Path to TLS certificate file (required if tls = TRUE)</p></dd>
+
+
+<dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
+<dd><p>Path to TLS key file (required if tls = TRUE)</p></dd>
 
 
 <dt id="arg-silent">silent<a class="anchor" aria-label="anchor" href="#arg-silent"></a></dt>

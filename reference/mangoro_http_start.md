@@ -13,6 +13,8 @@ mangoro_http_start(
   cors = FALSE,
   coop = FALSE,
   tls = FALSE,
+  cert = NULL,
+  key = NULL,
   silent = FALSE
 )
 ```
@@ -46,6 +48,14 @@ mangoro_http_start(
 - tls:
 
   Enable TLS (default: FALSE)
+
+- cert:
+
+  Path to TLS certificate file (required if tls = TRUE)
+
+- key:
+
+  Path to TLS key file (required if tls = TRUE)
 
 - silent:
 

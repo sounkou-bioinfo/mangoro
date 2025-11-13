@@ -63,8 +63,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e4e2a3ea8' '/tmp/RtmpnQxms9/file173f2e560629cc.go'"
-#> [1] "/tmp/RtmpnQxms9/file173f2e4e2a3ea8"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpgKgJCi/file1768a742aa2f0' '/tmp/RtmpgKgJCi/file1768a7236a81a8.go'"
+#> [1] "/tmp/RtmpgKgJCi/file1768a742aa2f0"
 ```
 
 create IPC path and send/receive message
@@ -159,8 +159,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e38c17669' '/tmp/RtmpnQxms9/file173f2e46b4ae92.go'"
-#> [1] "/tmp/RtmpnQxms9/file173f2e38c17669"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpgKgJCi/file1768a7481237b' '/tmp/RtmpgKgJCi/file1768a73288bfee.go'"
+#> [1] "/tmp/RtmpgKgJCi/file1768a7481237b"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -253,8 +253,8 @@ Arrow data.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e1429fb29' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpnQxms9/file173f2e1429fb29"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpgKgJCi/file1768a756e77355' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpgKgJCi/file1768a756e77355"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -453,8 +453,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpnQxms9/file173f2e32b3a4b0' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpnQxms9/file173f2e32b3a4b0"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpgKgJCi/file1768a735887775' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpgKgJCi/file1768a735887775"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -464,7 +464,7 @@ http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
 #> [1] "Registered functions: [startServer stopServer serverStatus]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpnQxms9/mangoro-echo173f2e53ba011b.ipc"
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpgKgJCi/mangoro-echo1768a72f1855e1.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -494,7 +494,7 @@ status
 readLines("http://127.0.0.1:8080/", n = 3, warn = FALSE)
 #> [1] "<pre>"                                      
 #> [2] "<a href=\".Rbuildignore\">.Rbuildignore</a>"
-#> [3] "<a href=\".cred\">.cred</a>"
+#> [3] "<a href=\".certs_test/\">.certs_test/</a>"
 
 # Stop the server
 result <- mangoro_http_stop(sock)
@@ -508,6 +508,63 @@ status
 #>   status message
 #> 1 status stopped
 
+# Verify it stopped
+status <- mangoro_http_status(sock)
+status
+#>   status message
+#> 1 status stopped
+```
+
+### HTTPS/TLS Support
+
+The HTTP server supports HTTPS with TLS certificates. Start an HTTPS
+server by providing certificate and key files:
+
+``` r
+# Start HTTPS server with certificates (reusing the existing server controller)
+result <- mangoro_http_start(
+  sock,
+  addr = "127.0.0.1:8443",
+  dir = ".",
+  tls = TRUE,
+  cert = ".certs_test/cert.pem" |> normalizePath(),
+  key = ".certs_test/key.pem" |> normalizePath(),
+  cors = TRUE
+)
+result
+#>   status                               message
+#> 1     ok HTTP server started on 127.0.0.1:8443
+
+# Check status
+status <- mangoro_http_status(sock)
+status
+#>   status                   message
+#> 1 status running at 127.0.0.1:8443
+
+# Download a file from HTTPS server using R's download.file
+temp_file <- tempfile()
+download.file("https://127.0.0.1:8443/.Rbuildignore", 
+              destfile = temp_file,
+              method = "curl",
+              extra = "-k",
+              quiet = TRUE)
+# Read the downloaded file
+readLines(temp_file, n = 3)
+#> [1] "^misc/.*$"         "^mango\\.Rproj$"   "^\\.Rproj\\.user$"
+# Stop the HTTPS server
+result <- mangoro_http_stop(sock)
+result
+#>   status             message
+#> 1     ok HTTP server stopped
+http_ctl_proc$read_output_lines()
+#> [1] "[HTTP] 2025/11/13 03:17:06 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
+#> [2] "[HTTP] 2025/11/13 03:17:08 GET / 127.0.0.1:37510 61.455µs"                                    
+#> [3] "[HTTP] 2025/11/13 03:17:08 HTTP server stopped"                                               
+#> [4] "[HTTP] 2025/11/13 03:17:11 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
+#> [5] "[HTTP] 2025/11/13 03:17:13 GET /.Rbuildignore 127.0.0.1:36648 10.039755ms"                    
+#> [6] "[HTTP] 2025/11/13 03:17:13 HTTP server stopped"
+http_ctl_proc$read_error_lines()
+#> character(0)
 close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE
