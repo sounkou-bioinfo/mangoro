@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,16 @@
       <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.3" id="mangoro-023">mangoro 0.2.3<a class="anchor" aria-label="anchor" href="#mangoro-023"></a></h2>
+<div class="section level3">
+<h3 id="cran-policy-compliance-0-2-3">CRAN Policy Compliance<a class="anchor" aria-label="anchor" href="#cran-policy-compliance-0-2-3"></a></h3>
+<ul><li>
+<code><a href="../reference/mangoro_go_build.html">mangoro_go_build()</a></code> now sets <code>GOCACHE</code> to a temporary directory by default to prevent populating <code>~/.cache/go-build</code> during package checks, complying with CRAN policy</li>
+<li>Added <code>gocache</code> parameter to <code><a href="../reference/mangoro_go_build.html">mangoro_go_build()</a></code> for users who want to specify a custom cache location or use the default Go cache (<code>gocache = NA</code>)</li>
+<li>Maintains backward compatibility while ensuring CRAN compliance</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.2" id="mangoro-022">mangoro 0.2.2<a class="anchor" aria-label="anchor" href="#mangoro-022"></a></h2>
 <div class="section level3">

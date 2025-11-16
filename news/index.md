@@ -1,5 +1,19 @@
 # Changelog
 
+## mangoro 0.2.3
+
+### CRAN Policy Compliance
+
+- [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)
+  now sets `GOCACHE` to a temporary directory by default to prevent
+  populating `~/.cache/go-build` during package checks, complying with
+  CRAN policy
+- Added `gocache` parameter to
+  [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)
+  for users who want to specify a custom cache location or use the
+  default Go cache (`gocache = NA`)
+- Maintains backward compatibility while ensuring CRAN compliance
+
 ## mangoro 0.2.2
 
 ### CRAN Packaging Improvements
