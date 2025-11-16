@@ -49,16 +49,43 @@ find_mangoro_vendor <- function() {
 #' @param src Path to the Go source file
 #' @param out Path to the output binary
 #' @param gomaxprocs Number of threads for Go build (sets GOMAXPROCS env variable)
+#' @param gocache Path to Go build cache directory. If NULL (default), uses a temporary directory to comply with CRAN policy. Set to NA to use the default Go cache location.
 #' @param ... Additional arguments to pass to Go build
 #' @return Path to the compiled binary
 #' @export
-mangoro_go_build <- function(src, out, gomaxprocs = 1, ...) {
+mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, ...) {
   go <- find_go()
   vend <- dirname(find_mangoro_vendor())
+
+  # Set GOCACHE to temporary directory by default (CRAN compliance)
+  old_gocache <- Sys.getenv("GOCACHE", unset = NA)
+  if (is.null(gocache)) {
+    # Default: use temp directory
+    Sys.setenv(GOCACHE = tempdir())
+  } else if (!is.na(gocache)) {
+    # User-specified cache directory
+    Sys.setenv(GOCACHE = gocache)
+  }
+  # If gocache = NA, leave GOCACHE unchanged
+
+  # Restore original GOCACHE on exit
+  on.exit(
+    {
+      if (!is.null(gocache) || is.na(old_gocache)) {
+        if (is.na(old_gocache)) {
+          Sys.unsetenv("GOCACHE")
+        } else {
+          Sys.setenv(GOCACHE = old_gocache)
+        }
+      }
+    },
+    add = TRUE
+  )
+
   # Only one -mod flag can be used per go build invocation
   args <- c("build", "-mod=vendor", "-o", out, src)
   oldwd <- setwd(vend)
-  on.exit(setwd(oldwd))
+  on.exit(setwd(oldwd), add = TRUE)
   env <- character()
   if (!is.null(gomaxprocs)) {
     env <- c(sprintf("GOMAXPROCS=%s", as.integer(gomaxprocs)))

@@ -4,7 +4,7 @@
 \alias{mangoro_go_build}
 \title{Compile a Go source file using the vendored dependencies}
 \usage{
-mangoro_go_build(src, out, gomaxprocs = 1, ...)
+mangoro_go_build(src, out, gomaxprocs = 1, gocache = NULL, ...)
 }
 \arguments{
 \item{src}{Path to the Go source file}
@@ -12,6 +12,8 @@ mangoro_go_build(src, out, gomaxprocs = 1, ...)
 \item{out}{Path to the output binary}
 
 \item{gomaxprocs}{Number of threads for Go build (sets GOMAXPROCS env variable)}
+
+\item{gocache}{Path to Go build cache directory. If NULL (default), uses a temporary directory to comply with CRAN policy. Set to NA to use the default Go cache location.}
 
 \item{...}{Additional arguments to pass to Go build}
 }
