@@ -20,9 +20,7 @@ knitr::opts_chunk$set(
 
 R/Go IPC with Nanomsg Next Gen.
 
-<p>
-<img src="inst/docs/logo.svg" alt="" width="180" align="right"/>
-</p>
+<a href="https://sounkou-bioinfo.github.io/mangoro/"><img src="man/figures/logo.svg" alt="" width="180" align="right"/></a>
 
 ## What is mangoro?
 
@@ -426,7 +424,7 @@ http_ctl_proc$kill()
 The `rgoipc` package provides the interfaces for type-safe function registration with Arrow schema validation. See [inst/go/pkg/rgoipc](inst/go/pkg/rgoipc) for the Go package implementation and [inst/go/cmd/rpc-example](inst/go/cmd/rpc-example) and [inst/go/cmd/http-server](inst/go/cmd/http-server) for complete server examples.
 
 ## Some issues to investigate 
-There is some conversion overhead now when sending data to go processes because we are sending the arrow data as bytes after convertion of the R objects using nanoarrow. Moroever for some reason, we cannot send directly matrices since we can a `arrow` package requirement.
+There is some conversion overhead now when sending data to go processes because we are sending the arrow data as bytes after convertion of the R objects using nanoarrow. Moroever for some reason, we cannot send directly matrices since we have some cryptic  `arrow` package requirement.
 
 ## LLM Usage Disclosure
 

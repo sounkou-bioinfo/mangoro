@@ -6,9 +6,7 @@ badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://s
 
 R/Go IPC with Nanomsg Next Gen.
 
-<p>
-<img src="inst/docs/logo.svg" alt="" width="180" align="right"/>
-</p>
+<a href="https://sounkou-bioinfo.github.io/mangoro/"><img src="man/figures/logo.svg" alt="" width="180" align="right"/></a>
 
 ## What is mangoro?
 
@@ -68,8 +66,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpP6IOdC/file1a6da43504bcb8' '/tmp/RtmpP6IOdC/file1a6da41152510d.go'"
-#> [1] "/tmp/RtmpP6IOdC/file1a6da43504bcb8"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpUudV5l/file1af0552c2e579f' '/tmp/RtmpUudV5l/file1af05586c7411.go'"
+#> [1] "/tmp/RtmpUudV5l/file1af0552c2e579f"
 ```
 
 create IPC path and send/receive message
@@ -164,8 +162,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpP6IOdC/file1a6da42d8a82eb' '/tmp/RtmpP6IOdC/file1a6da476357281.go'"
-#> [1] "/tmp/RtmpP6IOdC/file1a6da42d8a82eb"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpUudV5l/file1af0551176741c' '/tmp/RtmpUudV5l/file1af0553e7f0e5b.go'"
+#> [1] "/tmp/RtmpUudV5l/file1af0551176741c"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -261,8 +259,8 @@ objects, which represent this tabular structure.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpP6IOdC/file1a6da46d058d10' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpP6IOdC/file1a6da46d058d10"
+#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpUudV5l/file1af0555eedb2dd' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
+#> [1] "/tmp/RtmpUudV5l/file1af0555eedb2dd"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -545,8 +543,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpP6IOdC/file1a6da42cd58c38' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpP6IOdC/file1a6da42cd58c38"
+#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpUudV5l/file1af05567f1fedd' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
+#> [1] "/tmp/RtmpUudV5l/file1af05567f1fedd"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -556,7 +554,7 @@ http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
 #> [1] "Registered functions: [startServer stopServer serverStatus]"                             
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpP6IOdC/mangoro-echo1a6da431f6a1c6.ipc"
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpUudV5l/mangoro-echo1af0552f3db755.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -649,12 +647,12 @@ result
 #>   status             message
 #> 1     ok HTTP server stopped
 http_ctl_proc$read_output_lines()
-#> [1] "[mangoro server] 2025/11/16 04:21:01 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
-#> [2] "[mangoro server] 2025/11/16 04:21:03 GET / 127.0.0.1:57012 72.601µs"                                    
-#> [3] "[mangoro server] 2025/11/16 04:21:03 HTTP server stopped"                                               
-#> [4] "[mangoro server] 2025/11/16 04:21:06 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
-#> [5] "[mangoro server] 2025/11/16 04:21:08 GET /.Rbuildignore 127.0.0.1:56048 2.452837ms"                     
-#> [6] "[mangoro server] 2025/11/16 04:21:08 HTTP server stopped"
+#> [1] "[mangoro server] 2025/11/17 19:06:12 Starting HTTP server on 127.0.0.1:8080 serving /root/mangoro at /" 
+#> [2] "[mangoro server] 2025/11/17 19:06:14 GET / 127.0.0.1:41624 71.214µs"                                    
+#> [3] "[mangoro server] 2025/11/17 19:06:14 HTTP server stopped"                                               
+#> [4] "[mangoro server] 2025/11/17 19:06:17 Starting HTTPS server on 127.0.0.1:8443 serving /root/mangoro at /"
+#> [5] "[mangoro server] 2025/11/17 19:06:19 GET /.Rbuildignore 127.0.0.1:50074 1.632106ms"                     
+#> [6] "[mangoro server] 2025/11/17 19:06:19 HTTP server stopped"
 close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE
@@ -672,7 +670,8 @@ server examples.
 There is some conversion overhead now when sending data to go processes
 because we are sending the arrow data as bytes after convertion of the R
 objects using nanoarrow. Moroever for some reason, we cannot send
-directly matrices since we can a `arrow` package requirement.
+directly matrices since we have some cryptic `arrow` package
+requirement.
 
 ## LLM Usage Disclosure
 
