@@ -7,15 +7,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/sounkou-bioinfo/mangoro/blob/0.2.3/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/sounkou-bioinfo/mangoro/blob/main/DESCRIPTION)
 
 Toure S (2025). *mangoro: R/Go IPC using Nanomsg Next Gen*. R package
-version 0.2.3, <https://github.com/sounkou-bioinfo/mangoro>.
+version 0.2.3.9000, <https://github.com/sounkou-bioinfo/mangoro>.
 
     @Manual{,
       title = {mangoro: R/Go IPC using Nanomsg Next Gen},
       author = {Sounkou Mahamane Toure},
       year = {2025},
-      note = {R package version 0.2.3},
+      note = {R package version 0.2.3.9000},
       url = {https://github.com/sounkou-bioinfo/mangoro},
     }
