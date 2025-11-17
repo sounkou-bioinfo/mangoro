@@ -15,12 +15,12 @@ knitr::opts_chunk$set(
 [![mangoro status badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
 
 
-# mangoro 
+# mangoro <a href="https://sounkou-bioinfo.github.io/mangoro/"><img src="man/figures/logo.svg" alt="" width="180" align="right"/></a>
 
 
 R/Go IPC with Nanomsg Next Gen.
 
-<a href="https://sounkou-bioinfo.github.io/mangoro/"><img src="man/figures/logo.svg" alt="" width="180" align="right"/></a>
+
 
 ## What is mangoro?
 
