@@ -1,3 +1,10 @@
+# mangoro 0.2.4
+
+## DESCRIPTION File Updates
+
+- Added single quotes around all software names in Title and Description fields ('R', 'Go', 'IPC', 'Nanomsg', 'nanonext', 'nanoarrow') to comply with CRAN requirements
+
+
 # mangoro 0.2.3
 
 ## CRAN Policy Compliance
@@ -5,6 +12,8 @@
 - `mangoro_go_build()` now sets `GOCACHE` to a temporary directory by default to prevent populating `~/.cache/go-build` during package checks, complying with CRAN policy
 - Added `gocache` parameter to `mangoro_go_build()` for users who want to specify a custom cache location or use the default Go cache (`gocache = NA`)
 - Maintains backward compatibility while ensuring CRAN compliance
+
+
 
 # mangoro 0.2.2
 
