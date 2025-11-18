@@ -1,5 +1,13 @@
 # Changelog
 
+## mangoro 0.2.4
+
+### DESCRIPTION File Updates
+
+- Added single quotes around all software names in Title and Description
+  fields (‘R’, ‘Go’, ‘IPC’, ‘Nanomsg’, ‘nanonext’, ‘nanoarrow’) to
+  comply with CRAN requirements
+
 ## mangoro 0.2.3
 
 ### CRAN Policy Compliance
