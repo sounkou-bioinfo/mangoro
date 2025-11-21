@@ -200,16 +200,17 @@ mangoro_rpc_call <- function(sock, func_name, data) {
 #' @return List with status and message
 #' @export
 mangoro_http_start <- function(
-    sock,
-    addr,
-    dir = ".",
-    prefix = "/",
-    cors = FALSE,
-    coop = FALSE,
-    tls = FALSE,
-    cert = NULL,
-    key = NULL,
-    silent = FALSE) {
+  sock,
+  addr,
+  dir = ".",
+  prefix = "/",
+  cors = FALSE,
+  coop = FALSE,
+  tls = FALSE,
+  cert = NULL,
+  key = NULL,
+  silent = FALSE
+) {
   input_df <- data.frame(
     addr = addr,
     dir = dir,
