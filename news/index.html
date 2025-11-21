@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,9 +28,20 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/0.2.4/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.5" id="mangoro-025">mangoro 0.2.5<a class="anchor" aria-label="anchor" href="#mangoro-025"></a></h2>
+<div class="section level3">
+<h3 id="cran-policy-compliance-0-2-5">CRAN Policy Compliance<a class="anchor" aria-label="anchor" href="#cran-policy-compliance-0-2-5"></a></h3>
+<ul><li>Replaced non-suppressible console output (<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>/<code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code>) with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> where appropriate (notably <code><a href="../reference/mangoro_go_build.html">mangoro_go_build()</a></code>), so information.</li>
+<li>Updated <code>tools/generate_certs.R</code> to avoid writing into the package or user home by default: when no explicit <code>--dir</code> is provided it writes into a temporary directory and reports the chosen path via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>; the script still accepts an explicit <code>--dir</code> for persistent output.</li>
+<li>Added <code>inst/AUTHORS</code> and <code>inst/COPYRIGHTS</code> so vendored components and their license files are easy to find; full license/NOTICE/AUTHORS files remain in the vendor directories.</li>
+<li>Added <code>LICENSE.note</code> summarizing the license types present in vendored code.</li>
+<li>Added <code>Copyright: See inst/AUTHORS</code> to <code>DESCRIPTION</code> to make copyright ownership explicit as requested by CRAN.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.4" id="mangoro-024">mangoro 0.2.4<a class="anchor" aria-label="anchor" href="#mangoro-024"></a></h2>
 <div class="section level3">

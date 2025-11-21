@@ -1,5 +1,28 @@
 # Changelog
 
+## mangoro 0.2.5
+
+### CRAN Policy Compliance
+
+- Replaced non-suppressible console output
+  ([`print()`](https://rdrr.io/r/base/print.html)/[`cat()`](https://rdrr.io/r/base/cat.html))
+  with [`message()`](https://rdrr.io/r/base/message.html) where
+  appropriate (notably
+  [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)),
+  so information.
+- Updated `tools/generate_certs.R` to avoid writing into the package or
+  user home by default: when no explicit `--dir` is provided it writes
+  into a temporary directory and reports the chosen path via
+  [`message()`](https://rdrr.io/r/base/message.html); the script still
+  accepts an explicit `--dir` for persistent output.
+- Added `inst/AUTHORS` and `inst/COPYRIGHTS` so vendored components and
+  their license files are easy to find; full license/NOTICE/AUTHORS
+  files remain in the vendor directories.
+- Added `LICENSE.note` summarizing the license types present in vendored
+  code.
+- Added `Copyright: See inst/AUTHORS` to `DESCRIPTION` to make copyright
+  ownership explicit as requested by CRAN.
+
 ## mangoro 0.2.4
 
 ### DESCRIPTION File Updates
