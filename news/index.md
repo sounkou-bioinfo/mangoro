@@ -1,5 +1,9 @@
 # Changelog
 
+## mangoro 0.2.6
+
+- actually remove the generate_certs.R script from the package build
+
 ## mangoro 0.2.5
 
 ### CRAN Policy Compliance
