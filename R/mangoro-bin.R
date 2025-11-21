@@ -93,7 +93,7 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, ...) {
     if (!.Platform$OS.type == "windows") go <- sprintf("%s %s", env, go)
   }
   cmd <- sprintf("%s %s", go, paste(shQuote(args), collapse = " "))
-  print(cmd)
+  message(cmd)
   status <- system(
     cmd,
     ignore.stdout = FALSE,
@@ -102,7 +102,7 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, ...) {
     ...
   )
   if (!file.exists(out)) {
-    print(status)
+    message(paste(status, collapse = "\n"))
     stop("Go build failed")
   }
   out
@@ -117,14 +117,13 @@ get_mangos_version <- function() {
   vend <- dirname(find_mangoro_vendor())
   oldwd <- setwd(vend)
   on.exit(setwd(oldwd))
-  res <- suppressWarnings(
-    system2(
-      go,
-      c("list", "-m", "go.nanomsg.org/mangos/v3"),
-      stdout = TRUE,
-      stderr = TRUE
-    )
+  res <- system2(
+    go,
+    c("list", "-m", "go.nanomsg.org/mangos/v3"),
+    stdout = TRUE,
+    stderr = TRUE
   )
+
   if (
     length(res) == 0 ||
       any(grepl(
@@ -156,14 +155,13 @@ get_arrow_go_version <- function() {
   vend <- dirname(find_mangoro_vendor())
   oldwd <- setwd(vend)
   on.exit(setwd(oldwd))
-  res <- suppressWarnings(
-    system2(
-      go,
-      c("list", "-m", "github.com/apache/arrow/go/v18"),
-      stdout = TRUE,
-      stderr = TRUE
-    )
+  res <- system2(
+    go,
+    c("list", "-m", "github.com/apache/arrow/go/v18"),
+    stdout = TRUE,
+    stderr = TRUE
   )
+
   if (
     length(res) == 0 ||
       any(grepl(

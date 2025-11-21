@@ -3,13 +3,19 @@
 # Generate self-signed TLS certificates for development/testing
 # Prefers mkcert (for locally-trusted certificates) but falls back to openssl
 
-generate_certs <- function(dir = ".certs", domain = "localhost", days = 365, force = FALSE) {
+generate_certs <- function(dir = NULL, domain = "localhost", days = 365, force = FALSE) {
     # Check if mkcert is available (preferred method)
     mkcert_path <- Sys.which("mkcert")
     openssl_path <- Sys.which("openssl")
 
     if (!nzchar(mkcert_path) && !nzchar(openssl_path)) {
         stop("Neither mkcert nor openssl found in PATH. Please install one of them.")
+    }
+
+    # Default to a temporary directory when no explicit directory is provided
+    if (is.null(dir)) {
+        dir <- file.path(tempdir(), "mangoro-certs")
+        message("No output directory provided; using temporary directory: ", dir)
     }
 
     # Create directory
@@ -27,7 +33,7 @@ generate_certs <- function(dir = ".certs", domain = "localhost", days = 365, for
 
     # Try mkcert first (creates locally-trusted certificates)
     if (nzchar(mkcert_path)) {
-        cat("Using mkcert for locally-trusted certificate generation...\n")
+        message("Using mkcert for locally-trusted certificate generation...")
 
         # mkcert generates files like "localhost+2.pem" and "localhost+2-key.pem"
         # We'll generate them in the target directory
@@ -67,7 +73,7 @@ generate_certs <- function(dir = ".certs", domain = "localhost", days = 365, for
 
     # Fall back to openssl
     if (nzchar(openssl_path)) {
-        cat("Using openssl for self-signed certificate generation...\n")
+        message("Using openssl for self-signed certificate generation...")
 
         # Step 1: Generate private key
         system2(
@@ -164,11 +170,11 @@ while (i <= length(args)) {
         force_val <- TRUE
         i <- i + 1
     } else if (arg == "--help" || arg == "-h") {
-        cat(
+        message(
             "Generate self-signed TLS certificates\n\n",
             "Usage: Rscript tools/generate_certs.R [options]\n\n",
             "Options:\n",
-            "  --dir DIR        Output directory (default: .certs)\n",
+            "  --dir DIR        Output directory (default: temporary dir)\n",
             "  --domain DOMAIN  Domain name for cert (default: localhost)\n",
             "  --days DAYS      Validity in days (default: 365)\n",
             "  --force          Overwrite existing files\n",

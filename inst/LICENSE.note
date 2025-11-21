@@ -1,0 +1,34 @@
+This package includes several vendored third-party components. Full license texts for bundled code are included in the vendor directories listed below; this file summarizes the primary license types and points to the files containing the complete license statements.
+
+Locations with full license texts
+
+-  inst//go/vendor/github.com/pierrec/lz4/v4/LICENSE
+-  inst//go/vendor/github.com/Microsoft/go-winio/LICENSE
+-  inst//go/vendor/github.com/gorilla/websocket/LICENSE
+-  inst//go/vendor/github.com/klauspost/compress/zstd/internal/xxhash/LICENSE.txt
+-  inst//go/vendor/github.com/klauspost/compress/internal/snapref/LICENSE
+-  inst//go/vendor/github.com/klauspost/compress/LICENSE
+-  inst//go/vendor/github.com/klauspost/cpuid/v2/LICENSE
+-  inst//go/vendor/github.com/zeebo/xxh3/LICENSE
+-  inst//go/vendor/github.com/goccy/go-json/internal/decoder/slice.go
+-  inst//go/vendor/github.com/goccy/go-json/LICENSE
+-  inst//go/vendor/github.com/apache/arrow/go/v18/LICENSE.txt
+-  inst//go/vendor/github.com/google/flatbuffers/LICENSE
+-  inst//go/vendor/golang.org/x/sys/LICENSE
+-  inst//go/vendor/golang.org/x/mod/LICENSE
+-  inst//go/vendor/golang.org/x/tools/LICENSE
+-  inst//go/vendor/golang.org/x/exp/LICENSE
+-  inst//go/vendor/golang.org/x/xerrors/LICENSE
+-  inst//go/vendor/golang.org/x/sync/LICENSE
+-  inst//go/vendor/go.nanomsg.org/mangos/v3/LICENSE
+
+Summary of license types present in bundled code
+
+- Apache License, Version 2.0 (most vendored components)
+- BSD-style licenses (some downstream components included by Arrow)
+- MIT and other permissive licenses for small utilities included in vendored trees
+
+Notes
+
+- The full text of each applicable license and any NOTICE or AUTHORS files is included in the respective vendor directory and should be consulted for attribution requirements.
+- If you require a consolidated copy of all license files, please inspect the directories under `inst/go/vendor` and `tools/flatbuf` which contain the canonical license and attribution files.
