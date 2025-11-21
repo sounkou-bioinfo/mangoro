@@ -27,4 +27,4 @@ LICENSE
 ^pkgdown$
 ^\.github$
 ^\.cred$
-^\.tools/generate_certs.R$
+^tools/generate_certs.R$
