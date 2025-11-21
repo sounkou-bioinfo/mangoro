@@ -50,15 +50,15 @@ echo_proc <- processx::process$new(
   stdout = "|",
   stderr = "|"
 )
-on.exit(print(echo_proc$read_output()))
-on.exit(print(echo_proc$read_error()), add = TRUE)
+on.exit(message(echo_proc$read_output()))
+on.exit(message(echo_proc$read_error()), add = TRUE)
 on.exit(echo_proc$kill(), add = TRUE)
 Sys.sleep(4)
 if (!echo_proc$is_alive()) {
-  cat("Go process output:\n")
-  cat(echo_proc$read_output())
-  cat("Go process error:\n")
-  cat(echo_proc$read_error())
+  message("Go process output:\n")
+  message(echo_proc$read_output())
+  message("Go process error:\n")
+  message(echo_proc$read_error())
   break
 }
 sock <- nanonext::socket("req", dial = ipc_url)
@@ -71,16 +71,16 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
   Sys.sleep(1)
   send_result <- nanonext::send(sock, msg, mode = "raw")
   attempt <- attempt + 1
-  print(echo_proc$is_alive())
+  message(echo_proc$is_alive())
   if (!echo_proc$is_alive()) {
-    cat("Go process output:\n")
-    cat(echo_proc$read_output())
-    cat("Go process error:\n")
-    cat(echo_proc$read_error())
+    message("Go process output:\n")
+    message(echo_proc$read_output())
+    message("Go process error:\n")
+    message(echo_proc$read_error())
     break
   }
 }
-print(send_result)
+message(send_result)
 # Retry recv up to 35 times if error
 rep <- nanonext::recv(sock, mode = "raw")
 attempt <- 1
@@ -90,5 +90,5 @@ while (nanonext::is_error_value(rep) && attempt < max_attempts) {
   attempt <- attempt + 1
 }
 Sys.sleep(3)
-print(rawToChar(rep))
+message(rawToChar(rep))
 close(sock)
