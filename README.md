@@ -1,4 +1,6 @@
-[![mangoro status badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
+
+[![mangoro status
+badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
 [![CRAN](https://www.r-pkg.org/badges/version/mangoro)](https://CRAN.R-project.org/package=mangoro)
 
 # mangoro <a href="https://sounkou-bioinfo.github.io/mangoro/"><img src="man/figures/logo.svg" alt="" width="180" align="right"/></a>
@@ -27,7 +29,7 @@ Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.h
 ``` r
 # via r-universe
 install.packages('mangoro', repos = c('https://sounkou-bioinfo.r-universe.dev', 'https://cloud.r-project.org'))
-# For CRAN release 
+# For CRAN release
 install.packages('mangoro')
 ```
 
@@ -72,8 +74,8 @@ writeLines(go_echo_code, tmp_go)
 
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpltOvDA/file1b4f215399dd0' '/tmp/RtmpltOvDA/file1b4f269996acc.go'"
-#> [1] "/tmp/RtmpltOvDA/file1b4f215399dd0"
+#> GOMAXPROCS=1 /usr/local/go/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpbidgDB/file6d1ef6d6c28f1' '/tmp/RtmpbidgDB/file6d1ef5958cf3a.go'
+#> [1] "/tmp/RtmpbidgDB/file6d1ef6d6c28f1"
 ```
 
 create IPC path and send/receive message
@@ -168,8 +170,8 @@ tmp_go <- tempfile(fileext = ".go")
 writeLines(go_code, tmp_go)
 tmp_bin <- tempfile()
 mangoro_go_build(tmp_go, tmp_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpltOvDA/file1b4f2526beb89' '/tmp/RtmpltOvDA/file1b4f237647172.go'"
-#> [1] "/tmp/RtmpltOvDA/file1b4f2526beb89"
+#> GOMAXPROCS=1 /usr/local/go/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpbidgDB/file6d1ef716280b3' '/tmp/RtmpbidgDB/file6d1ef2127a73.go'
+#> [1] "/tmp/RtmpbidgDB/file6d1ef716280b3"
 
 echo_proc <- processx::process$new(tmp_bin, args = ipc_url, stdout = "|", stderr = "|"  )
 Sys.sleep(3)
@@ -265,8 +267,8 @@ objects, which represent this tabular structure.
 rpc_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "rpc-example", "main.go")
 rpc_bin <- tempfile()
 mangoro_go_build(rpc_server_path, rpc_bin)
-#> [1] "GOMAXPROCS=1 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpltOvDA/file1b4f26e47e3ca' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'"
-#> [1] "/tmp/RtmpltOvDA/file1b4f26e47e3ca"
+#> GOMAXPROCS=1 /usr/local/go/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpbidgDB/file6d1ef60209d29' '/usr/local/lib/R/site-library/mangoro/go/cmd/rpc-example/main.go'
+#> [1] "/tmp/RtmpbidgDB/file6d1ef60209d29"
 
 ipc_url <- create_ipc_path()
 rpc_proc <- processx::process$new(rpc_bin, args = ipc_url, stdout = "|", stderr = "|")
@@ -549,8 +551,8 @@ demonstrating a slighly more complex use case.
 http_server_path <- file.path(system.file("go", package = "mangoro"), "cmd", "http-server", "main.go")
 http_bin <- tempfile()
 mangoro_go_build(http_server_path, http_bin, gomaxprocs = 4)
-#> [1] "GOMAXPROCS=4 /usr/lib/go-1.22/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpltOvDA/file1b4f26692345' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'"
-#> [1] "/tmp/RtmpltOvDA/file1b4f26692345"
+#> GOMAXPROCS=4 /usr/local/go/bin/go 'build' '-mod=vendor' '-o' '/tmp/RtmpbidgDB/file6d1ef1e496bbd' '/usr/local/lib/R/site-library/mangoro/go/cmd/http-server/main.go'
+#> [1] "/tmp/RtmpbidgDB/file6d1ef1e496bbd"
 
 # Start the RPC controller (not the HTTP server itself yet)
 ipc_url <- create_ipc_path()
@@ -560,7 +562,7 @@ http_ctl_proc$is_alive()
 #> [1] TRUE
 http_ctl_proc$read_output_lines()
 #> [1] "Registered functions: [startServer stopServer serverStatus]"                            
-#> [2] "HTTP server controller listening on ipc:///tmp/RtmpltOvDA/mangoro-echo1b4f2239cbece.ipc"
+#> [2] "HTTP server controller listening on ipc:///tmp/RtmpbidgDB/mangoro-echo6d1ef7e64e0d1.ipc"
 ```
 
 Control the HTTP server via RPC:
@@ -588,9 +590,9 @@ status
 
 # Test accessing the HTTP server
 readLines("http://127.0.0.1:8080/", n = 3, warn = FALSE)
-#> [1] "<pre>"                                      
-#> [2] "<a href=\".Rbuildignore\">.Rbuildignore</a>"
-#> [3] "<a href=\".certs_test/\">.certs_test/</a>"
+#> [1] "<!doctype html>"                                        
+#> [2] "<meta name=\"viewport\" content=\"width=device-width\">"
+#> [3] "<pre>"
 
 # Stop the server
 result <- mangoro_http_stop(sock)
@@ -646,19 +648,19 @@ download.file("https://127.0.0.1:8443/.Rbuildignore",
               quiet = TRUE)
 # Read the downloaded file
 readLines(temp_file, n = 3)
-#> [1] "LICENSE"            "^\\.certs_test/.*$" "^misc/.*$"
+#> [1] "^LICENSE$"          "^\\.certs_test/.*$" "^misc/.*$"
 # Stop the HTTPS server
 result <- mangoro_http_stop(sock)
 result
 #>   status             message
 #> 1     ok HTTP server stopped
 http_ctl_proc$read_output_lines()
-#> [1] "[mangoro server] 2025/11/21 20:54:48 Starting HTTP server on 127.0.0.1:8080 serving /home/sounkoutoure/Projects/mangoro at /" 
-#> [2] "[mangoro server] 2025/11/21 20:54:50 GET / 127.0.0.1:58146 365.181µs"                                                         
-#> [3] "[mangoro server] 2025/11/21 20:54:50 HTTP server stopped"                                                                     
-#> [4] "[mangoro server] 2025/11/21 20:54:53 Starting HTTPS server on 127.0.0.1:8443 serving /home/sounkoutoure/Projects/mangoro at /"
-#> [5] "[mangoro server] 2025/11/21 20:54:55 GET /.Rbuildignore 127.0.0.1:35162 7.39129ms"                                            
-#> [6] "[mangoro server] 2025/11/21 20:54:55 HTTP server stopped"
+#> [1] "[mangoro server] 2025/11/26 23:46:02 Starting HTTP server on 127.0.0.1:8080 serving /home/sounkoutoure/Projects/mangoro at /" 
+#> [2] "[mangoro server] 2025/11/26 23:46:04 GET / 127.0.0.1:33454 288.722µs"                                                         
+#> [3] "[mangoro server] 2025/11/26 23:46:04 HTTP server stopped"                                                                     
+#> [4] "[mangoro server] 2025/11/26 23:46:07 Starting HTTPS server on 127.0.0.1:8443 serving /home/sounkoutoure/Projects/mangoro at /"
+#> [5] "[mangoro server] 2025/11/26 23:46:09 GET /.Rbuildignore 127.0.0.1:39436 2.617108ms"                                           
+#> [6] "[mangoro server] 2025/11/26 23:46:09 HTTP server stopped"
 close(sock)
 http_ctl_proc$kill()
 #> [1] TRUE
