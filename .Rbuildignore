@@ -1,4 +1,4 @@
-LICENSE
+^LICENSE$
 ^\.certs_test/.*$
 ^misc/.*$
 ^mangoro\.Rproj$
