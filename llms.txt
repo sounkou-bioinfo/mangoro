@@ -24,7 +24,7 @@ Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.h
 ``` r
 # via r-universe
 install.packages('mangoro', repos = c('https://sounkou-bioinfo.r-universe.dev', 'https://cloud.r-project.org'))
-# For CRAN release (not available yet)
+# For CRAN release 
 install.packages('mangoro')
 ```
 
