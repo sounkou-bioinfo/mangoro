@@ -2,6 +2,8 @@
 
 ## mangoro 0.2.6
 
+CRAN release: 2025-11-25
+
 - actually remove the generate_certs.R script from the package build
 
 ## mangoro 0.2.5
