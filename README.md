@@ -1,6 +1,5 @@
-
-[![mangoro status
-badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
+[![mangoro status badge](https://sounkou-bioinfo.r-universe.dev/mangoro/badges/version)](https://sounkou-bioinfo.r-universe.dev/mangoro)
+[![CRAN](https://www.r-pkg.org/badges/version/mangoro)](https://CRAN.R-project.org/package=mangoro)
 
 # mangoro <a href="https://sounkou-bioinfo.github.io/mangoro/"><img src="man/figures/logo.svg" alt="" width="180" align="right"/></a>
 
@@ -28,7 +27,7 @@ Packages](https://hypatia.math.ethz.ch/pipermail/r-package-devel/2025q4/012067.h
 ``` r
 # via r-universe
 install.packages('mangoro', repos = c('https://sounkou-bioinfo.r-universe.dev', 'https://cloud.r-project.org'))
-# For CRAN release (not available yet)
+# For CRAN release 
 install.packages('mangoro')
 ```
 
