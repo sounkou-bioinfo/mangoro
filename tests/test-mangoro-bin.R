@@ -53,13 +53,12 @@ echo_proc <- processx::process$new(
 on.exit(message(echo_proc$read_output()))
 on.exit(message(echo_proc$read_error()), add = TRUE)
 on.exit(echo_proc$kill(), add = TRUE)
-Sys.sleep(4)
+Sys.sleep(5)
 if (!echo_proc$is_alive()) {
   message("Go process output:\n")
   message(echo_proc$read_output())
   message("Go process error:\n")
   message(echo_proc$read_error())
-  break
 }
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")

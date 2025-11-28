@@ -1,25 +1,35 @@
 #!/bin/sh
-# check the go command and version
-# copied from https://github.com/walkerke/pmtiles/blob/main/configure.win
-# Detect architecture
-# for now on windows only, we skip the check for golang
+# check the go installation with go version command
+# before which we use R do detect architecture
+ 
+ > config.log
 
 # Restore flatbuf files from tools/ to vendor directory during installation
 if [ -d "tools/flatbuf" ] && [ ! -d "inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf" ]; then
-  echo "***********************************************************************"
-  echo "Restoring flatbuf files from tools/flatbuf..."
-  echo "***********************************************************************"
+  echo "***********************************************************************" >> config.log
+  echo "Restoring flatbuf files from tools/flatbuf..." >> config.log
+  echo "***********************************************************************" >> config.log
   mkdir -p inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf
   cp -r tools/flatbuf/* inst/go/vendor/github.com/apache/arrow/go/v18/arrow/internal/flatbuf/
-  echo "Flatbuf files restored."
+  echo "Flatbuf files restored." >> config.log
 fi
-
-if ! command -v go >/dev/null 2>&1; then
-echo "***********************************************************************"
-  echo "Go is not found on your system."
-  echo "Pre-compiled binaries are not available for ${BINARCH}."
-  echo "Please install Go (>= 1.22) to build from source."
-  echo "Visit https://golang.org/doc/install for installation instructions."
-  echo "for fully functional mangoro package, Go is required."
-  echo "***********************************************************************"
+## detect architecture using R
+OS=`"${R_HOME}/bin/Rscript" -e "cat(unlist(R.version)[['os']])"`
+ARCH=`"${R_HOME}/bin/Rscript" -e "cat(unlist(R.version)[['arch']])"`
+echo "Detected OS: $OS, ARCH: $ARCH" >> config.log
+# try to find go command using R's Sys.which
+echo "Checking for Go command..." >> config.log
+GO_CMD=`"${R_HOME}/bin/Rscript" -e "cat(Sys.which('go'))"`
+GO_CMD=`echo "$GO_CMD" | tr -d '\n'`
+GO_CMD=${GO_CMD:-go}
+echo "Go command: $GO_CMD" >> config.log
+# use "" because people may have spaces in path on windows
+if ! "$GO_CMD" version >/dev/null 2>&1; then
+echo "***********************************************************************" >> config.log
+  echo "Go is not found on your system." >> config.log
+  echo "Please install Go (>= 1.22) for $OS and $ARCH" >> config.log
+  echo "Visit https://golang.org/doc/install for installation instructions." >> config.log
+  echo "for fully functional mangoro package, Go is required." >> config.log
+  echo "***********************************************************************" >> config.log
+  cat config.log
 fi
