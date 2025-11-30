@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.9.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,12 @@
       <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.10" id="mangoro-0210">mangoro 0.2.10<a class="anchor" aria-label="anchor" href="#mangoro-0210"></a></h2>
+<ul><li>Go build telemetry and ~/.config side effect: The package now controls Go telemetry during build (default: off) and avoids populating ~/.config/go/telemetry and other user config/cache directories during installation and tests, complying with CRAN policy.</li>
+<li>Added a <code>telemetry</code> parameter to <code><a href="../reference/mangoro_go_build.html">mangoro_go_build()</a></code> for explicit control of Go telemetry mode.</li>
+<li>Configure improvements: The configure script now creates a config.log file for diagnostics and logging, improving reliability and transparency. Installation failures due to missing Go are now logged, and the script avoids suppressing diagnostics.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.6" id="mangoro-026">mangoro 0.2.6<a class="anchor" aria-label="anchor" href="#mangoro-026"></a></h2><p class="text-muted">CRAN release: 2025-11-25</p>
 <ul><li>actually remove the generate_certs.R script from the package build</li>

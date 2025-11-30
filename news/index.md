@@ -1,5 +1,19 @@
 # Changelog
 
+## mangoro 0.2.10
+
+- Go build telemetry and ~/.config side effect: The package now controls
+  Go telemetry during build (default: off) and avoids populating
+  ~/.config/go/telemetry and other user config/cache directories during
+  installation and tests, complying with CRAN policy.
+- Added a `telemetry` parameter to
+  [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)
+  for explicit control of Go telemetry mode.
+- Configure improvements: The configure script now creates a config.log
+  file for diagnostics and logging, improving reliability and
+  transparency. Installation failures due to missing Go are now logged,
+  and the script avoids suppressing diagnostics.
+
 ## mangoro 0.2.6
 
 CRAN release: 2025-11-25

@@ -5,7 +5,7 @@ Compile a Go source file using the vendored dependencies
 ## Usage
 
 ``` r
-mangoro_go_build(src, out, gomaxprocs = 1, gocache = NULL, ...)
+mangoro_go_build(src, out, gomaxprocs = 1, gocache = NULL, telemetry = "off", ...)
 ```
 
 ## Arguments
@@ -27,6 +27,11 @@ mangoro_go_build(src, out, gomaxprocs = 1, gocache = NULL, ...)
   Path to Go build cache directory. If NULL (default), uses a temporary
   directory to comply with CRAN policy. Set to NA to use the default Go
   cache location.
+
+- telemetry:
+
+  Go telemetry mode. One of 'off', 'local', or 'on'. Default is 'off'.
+  Controls the GOTELEMETRY environment variable during build.
 
 - ...:
 
