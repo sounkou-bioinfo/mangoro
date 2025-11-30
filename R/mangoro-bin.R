@@ -50,33 +50,48 @@ find_mangoro_vendor <- function() {
 #' @param out Path to the output binary
 #' @param gomaxprocs Number of threads for Go build (sets GOMAXPROCS env variable)
 #' @param gocache Path to Go build cache directory. If NULL (default), uses a temporary directory to comply with CRAN policy. Set to NA to use the default Go cache location.
+#' @param telemetry Go telemetry mode ('off', 'local', 'on'). Default: 'off'.
 #' @param ... Additional arguments to pass to Go build
 #' @return Path to the compiled binary
 #' @export
-mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, ...) {
+mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, telemetry = "off", ...) {
   go <- find_go()
   vend <- dirname(find_mangoro_vendor())
 
   # Set GOCACHE to temporary directory by default (CRAN compliance)
+
+  # Save and set GOCACHE as before
   old_gocache <- Sys.getenv("GOCACHE", unset = NA)
   if (is.null(gocache)) {
-    # Default: use temp directory
     Sys.setenv(GOCACHE = tempdir())
   } else if (!is.na(gocache)) {
-    # User-specified cache directory
     Sys.setenv(GOCACHE = gocache)
   }
   # If gocache = NA, leave GOCACHE unchanged
 
-  # Restore original GOCACHE on exit
+  # Save and set GOTELEMETRY
+  old_gotelemetry <- tryCatch(
+    system("go env GOTELEMETRY", intern = TRUE),
+    error = function(e) NA_character_
+  )
+  Sys.setenv(GOTELEMETRY = telemetry)
+
+  # Restore original GOCACHE and GOTELEMETRY on exit
   on.exit(
     {
+      # Restore GOCACHE
       if (!is.null(gocache) || is.na(old_gocache)) {
         if (is.na(old_gocache)) {
           Sys.unsetenv("GOCACHE")
         } else {
           Sys.setenv(GOCACHE = old_gocache)
         }
+      }
+      # Restore GOTELEMETRY
+      if (!is.na(old_gotelemetry) && nzchar(old_gotelemetry)) {
+        Sys.setenv(GOTELEMETRY = old_gotelemetry)
+      } else {
+        Sys.unsetenv("GOTELEMETRY")
       }
     },
     add = TRUE

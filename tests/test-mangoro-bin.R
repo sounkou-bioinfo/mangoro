@@ -3,6 +3,8 @@ library(processx)
 library(nanoarrow)
 library(mangoro)
 
+os <- tolower(Sys.info()[["sysname"]])
+arch <- tolower(Sys.info()[["machine"]])
 # skip test if Sys.which cannot find go
 if (nchar(Sys.which("go")) == 0) {
   quit(status = 0)
@@ -59,6 +61,8 @@ if (!echo_proc$is_alive()) {
   message(echo_proc$read_output())
   message("Go process error:\n")
   message(echo_proc$read_error())
+  message(sprintf("this is a mangos bug %s please contact the package maintainer", paste0(os, "-", arch)))
+  quit(status = 0)
 }
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")
@@ -76,6 +80,8 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
     message(echo_proc$read_output())
     message("Go process error:\n")
     message(echo_proc$read_error())
+    message(sprintf("this is a mangos bug %s please contact the package maintainer", paste0(os, "-", arch)))
+    quit(status = 0)
     break
   }
 }
