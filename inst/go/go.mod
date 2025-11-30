@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/apache/arrow/go/v18 v18.0.0-20241007013041-ab95a4d25142
-	go.nanomsg.org/mangos/v3 v3.4.3-0.20250905144305-2c434adf4860
+	go.nanomsg.org/mangos/v3 v3.4.3-0.20251129213113-0e615e77cd76
 )
 
 require (

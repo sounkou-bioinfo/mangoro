@@ -67,7 +67,7 @@ github.com/pierrec/lz4/v4/internal/xxh32
 # github.com/zeebo/xxh3 v1.0.2
 ## explicit; go 1.17
 github.com/zeebo/xxh3
-# go.nanomsg.org/mangos/v3 v3.4.3-0.20250905144305-2c434adf4860
+# go.nanomsg.org/mangos/v3 v3.4.3-0.20251129213113-0e615e77cd76
 ## explicit; go 1.22
 go.nanomsg.org/mangos/v3
 go.nanomsg.org/mangos/v3/errors

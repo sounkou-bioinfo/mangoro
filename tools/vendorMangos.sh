@@ -10,7 +10,7 @@ if [ ! -f go.mod ]; then
     go mod init mangoro.local || exit 1
 fi
 
-go get go.nanomsg.org/mangos/v3@2c434adf4860dd26da9fe96329237fe5aabc6acc
+go get go.nanomsg.org/mangos/v3@0e615e77cd761421bfe3cedb6ec198e02a628190
 
 go mod tidy
 
