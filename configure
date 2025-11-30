@@ -31,5 +31,5 @@ echo "***********************************************************************" >
   echo "Visit https://golang.org/doc/install for installation instructions." >> config.log
   echo "for fully functional mangoro package, Go is required." >> config.log
   echo "***********************************************************************" >> config.log
-  cat config.log
 fi
+cat config.log
