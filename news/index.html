@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,14 @@
       <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.12" id="mangoro-0212">mangoro 0.2.12<a class="anchor" aria-label="anchor" href="#mangoro-0212"></a></h2>
+<ul><li>Fixed leftover temp directory detritus: Configure scripts now use a predictable temp directory path (<code>${TMPDIR:-/tmp}/mangoro_go_home_$$</code>) instead of <code>mktemp -d</code> to ensure proper cleanup and avoid leaving temporary files in the check directory.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.11" id="mangoro-0211">mangoro 0.2.11<a class="anchor" aria-label="anchor" href="#mangoro-0211"></a></h2>
+<ul><li>Fixes <code>~/.config/go</code> directory creation: All Go invocations (in configure scripts and R functions) now temporarily set <code>HOME</code> to a temporary directory to prevent Go’s telemetry system from writing to <code>~/.config/go</code>. This is necessary because Go 1.23+ writes telemetry data to <code>os.UserConfigDir()</code> even for simple commands like <code>go version</code>. Both configure and configure.win scripts, as well as <code><a href="../reference/mangoro_go_build.html">mangoro_go_build()</a></code>, <code><a href="../reference/get_mangos_version.html">get_mangos_version()</a></code>, and <code><a href="../reference/get_arrow_go_version.html">get_arrow_go_version()</a></code> functions are now isolated. All environment variables are restored and temporary directories cleaned up after completion. This resolves the CRAN policy violation that caused the previous archive.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.10" id="mangoro-0210">mangoro 0.2.10<a class="anchor" aria-label="anchor" href="#mangoro-0210"></a></h2>
 <ul><li>Go build telemetry and ~/.config side effect: The package now controls Go telemetry during build (default: off) and avoids populating ~/.config/go/telemetry and other user config/cache directories during installation and tests, complying with CRAN policy.</li>
