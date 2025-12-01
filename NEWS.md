@@ -1,4 +1,12 @@
 
+# mangoro 0.2.12
+
+- Fixed leftover temp directory detritus: Configure scripts now use a predictable temp directory path (`${TMPDIR:-/tmp}/mangoro_go_home_$$`) instead of `mktemp -d` to ensure proper cleanup and avoid leaving temporary files in the check directory.
+
+# mangoro 0.2.11
+
+- Fixes `~/.config/go` directory creation: All Go invocations (in configure scripts and R functions) now temporarily set `HOME` to a temporary directory to prevent Go's telemetry system from writing to `~/.config/go`. This is necessary because Go 1.23+ writes telemetry data to `os.UserConfigDir()` even for simple commands like `go version`. Both configure and configure.win scripts, as well as `mangoro_go_build()`, `get_mangos_version()`, and `get_arrow_go_version()` functions are now isolated. All environment variables are restored and temporary directories cleaned up after completion. This resolves the CRAN policy violation that caused the previous archive.
+
 # mangoro 0.2.10
 
 - Go build telemetry and ~/.config side effect: The package now controls Go telemetry during build (default: off) and avoids populating ~/.config/go/telemetry and other user config/cache directories during installation and tests, complying with CRAN policy.

@@ -3,6 +3,40 @@
 #' @import jsonlite
 NULL
 
+# Internal helper to run code with isolated Go environment (CRAN compliance)
+# Temporarily sets HOME, GOCACHE, and GOENV to temp locations
+with_isolated_go_env <- function(expr) {
+  # Save original environment
+
+  old_home <- Sys.getenv("HOME", unset = NA)
+  old_gocache <- Sys.getenv("GOCACHE", unset = NA)
+
+  old_goenv <- Sys.getenv("GOENV", unset = NA)
+
+  # Create temp HOME
+  temp_home <- tempfile(pattern = "gohome")
+  dir.create(temp_home, showWarnings = FALSE)
+
+  # Set isolated environment
+  Sys.setenv(HOME = temp_home)
+  Sys.setenv(GOCACHE = tempdir())
+  Sys.setenv(GOENV = tempfile(pattern = "goenv", fileext = ".env"))
+
+  # Restore on exit
+  on.exit(
+    {
+      if (is.na(old_home)) Sys.unsetenv("HOME") else Sys.setenv(HOME = old_home)
+      if (is.na(old_gocache)) Sys.unsetenv("GOCACHE") else Sys.setenv(GOCACHE = old_gocache)
+      if (is.na(old_goenv)) Sys.unsetenv("GOENV") else Sys.setenv(GOENV = old_goenv)
+      unlink(temp_home, recursive = TRUE, force = TRUE)
+    },
+    add = TRUE
+  )
+
+  # Evaluate expression
+  force(expr)
+}
+
 
 #' Create a unique IPC path for mangoro
 #'
@@ -46,21 +80,51 @@ find_mangoro_vendor <- function() {
 
 #' Compile a Go source file using the vendored dependencies
 #'
+#' @description
+#' Compiles a Go source file using the vendored dependencies from the mangoro package.
+#'
+#' To comply with CRAN policy, this function temporarily redirects several environment
+#' variables to prevent Go from writing to user directories:
+#' \itemize{
+#'   \item \code{HOME} is set to a temporary directory because Go's telemetry system
+#'         (introduced in Go 1.23+) writes data to \code{~/.config/go/telemetry}
+#'         using \code{os.UserConfigDir()}, which cannot be disabled via environment
+#'         variables alone.
+#'   \item \code{GOCACHE} is set to a temporary directory to prevent build cache
+#'         writes to \code{~/.cache/go-build}.
+#'   \item \code{GOENV} is set to a temporary file to prevent config writes to
+#'         \code{~/.config/go/env}.
+#' }
+#' All environment variables are restored and temporary directories cleaned up
+#' after the build completes.
+#'
 #' @param src Path to the Go source file
 #' @param out Path to the output binary
 #' @param gomaxprocs Number of threads for Go build (sets GOMAXPROCS env variable)
-#' @param gocache Path to Go build cache directory. If NULL (default), uses a temporary directory to comply with CRAN policy. Set to NA to use the default Go cache location.
-#' @param telemetry Go telemetry mode ('off', 'local', 'on'). Default: 'off'.
+#' @param gocache Path to Go build cache directory. If NULL (default), uses a
+#'   temporary directory to comply with CRAN policy. Set to NA to use the default
+#'   Go cache location.
 #' @param ... Additional arguments to pass to Go build
 #' @return Path to the compiled binary
+#' @seealso \url{https://go.dev/doc/telemetry} for Go telemetry documentation
 #' @export
-mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, telemetry = "off", ...) {
+mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, ...) {
   go <- find_go()
   vend <- dirname(find_mangoro_vendor())
 
-  # Set GOCACHE to temporary directory by default (CRAN compliance)
+  # CRAN compliance: Redirect all Go-related directories to temp locations
 
-  # Save and set GOCACHE as before
+  # to prevent writes to user config directories (e.g., ~/.config/go)
+
+  # Save and set HOME to a temporary directory
+  # This is necessary because Go's telemetry uses os.UserConfigDir() directly
+  # and ignores GOENV for telemetry data storage
+  old_home <- Sys.getenv("HOME", unset = NA)
+  temp_home <- tempfile(pattern = "gohome")
+  dir.create(temp_home, showWarnings = FALSE)
+  Sys.setenv(HOME = temp_home)
+
+  # Save and set GOCACHE
   old_gocache <- Sys.getenv("GOCACHE", unset = NA)
   if (is.null(gocache)) {
     Sys.setenv(GOCACHE = tempdir())
@@ -69,16 +133,22 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, telemetry
   }
   # If gocache = NA, leave GOCACHE unchanged
 
-  # Save and set GOTELEMETRY
-  old_gotelemetry <- tryCatch(
-    system("go env GOTELEMETRY", intern = TRUE),
-    error = function(e) NA_character_
-  )
-  Sys.setenv(GOTELEMETRY = telemetry)
+  # Save and set GOENV to a temporary file
+  old_goenv <- Sys.getenv("GOENV", unset = NA)
+  Sys.setenv(GOENV = tempfile(pattern = "goenv", fileext = ".env"))
 
-  # Restore original GOCACHE and GOTELEMETRY on exit
+  # Restore original environment variables on exit
   on.exit(
     {
+      # Restore HOME first
+      if (is.na(old_home)) {
+        Sys.unsetenv("HOME")
+      } else {
+        Sys.setenv(HOME = old_home)
+      }
+      # Clean up temp home directory
+      unlink(temp_home, recursive = TRUE, force = TRUE)
+
       # Restore GOCACHE
       if (!is.null(gocache) || is.na(old_gocache)) {
         if (is.na(old_gocache)) {
@@ -87,11 +157,11 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, telemetry
           Sys.setenv(GOCACHE = old_gocache)
         }
       }
-      # Restore GOTELEMETRY
-      if (!is.na(old_gotelemetry) && nzchar(old_gotelemetry)) {
-        Sys.setenv(GOTELEMETRY = old_gotelemetry)
+      # Restore GOENV
+      if (is.na(old_goenv)) {
+        Sys.unsetenv("GOENV")
       } else {
-        Sys.unsetenv("GOTELEMETRY")
+        Sys.setenv(GOENV = old_goenv)
       }
     },
     add = TRUE
@@ -128,37 +198,39 @@ mangoro_go_build <- function(src, out, gomaxprocs = 1, gocache = NULL, telemetry
 #' @return The version string of go.nanomsg.org/mangos/v3 in the vendor go.mod
 #' @export
 get_mangos_version <- function() {
-  go <- find_go()
-  vend <- dirname(find_mangoro_vendor())
-  oldwd <- setwd(vend)
-  on.exit(setwd(oldwd))
-  res <- system2(
-    go,
-    c("list", "-m", "go.nanomsg.org/mangos/v3"),
-    stdout = TRUE,
-    stderr = TRUE
-  )
+  with_isolated_go_env({
+    go <- find_go()
+    vend <- dirname(find_mangoro_vendor())
+    oldwd <- setwd(vend)
+    on.exit(setwd(oldwd))
+    res <- system2(
+      go,
+      c("list", "-m", "go.nanomsg.org/mangos/v3"),
+      stdout = TRUE,
+      stderr = TRUE
+    )
 
-  if (
-    length(res) == 0 ||
-      any(grepl(
-        "not a module|no required module",
-        res,
-        ignore.case = TRUE
-      ))
-  ) {
-    return(NA_character_)
-  }
-  # Output is like: "go.nanomsg.org/mangos/v3 v3.2.2"
-  version <- sub(
-    "^go\\.nanomsg\\.org/mangos/v3\\s+",
-    "",
-    grep("^go\\.nanomsg\\.org/mangos/v3", res, value = TRUE)
-  )
-  if (length(version) == 0) {
-    return(NA_character_)
-  }
-  version
+    if (
+      length(res) == 0 ||
+        any(grepl(
+          "not a module|no required module",
+          res,
+          ignore.case = TRUE
+        ))
+    ) {
+      return(NA_character_)
+    }
+    # Output is like: "go.nanomsg.org/mangos/v3 v3.2.2"
+    version <- sub(
+      "^go\\.nanomsg\\.org/mangos/v3\\s+",
+      "",
+      grep("^go\\.nanomsg\\.org/mangos/v3", res, value = TRUE)
+    )
+    if (length(version) == 0) {
+      return(NA_character_)
+    }
+    version
+  })
 }
 
 #' Get the version of vendored Arrow Go using Go tooling (no jsonlite)
@@ -166,35 +238,37 @@ get_mangos_version <- function() {
 #' @return The version string of github.com/apache/arrow/go/v18 in the vendor go.mod
 #' @export
 get_arrow_go_version <- function() {
-  go <- find_go()
-  vend <- dirname(find_mangoro_vendor())
-  oldwd <- setwd(vend)
-  on.exit(setwd(oldwd))
-  res <- system2(
-    go,
-    c("list", "-m", "github.com/apache/arrow/go/v18"),
-    stdout = TRUE,
-    stderr = TRUE
-  )
+  with_isolated_go_env({
+    go <- find_go()
+    vend <- dirname(find_mangoro_vendor())
+    oldwd <- setwd(vend)
+    on.exit(setwd(oldwd))
+    res <- system2(
+      go,
+      c("list", "-m", "github.com/apache/arrow/go/v18"),
+      stdout = TRUE,
+      stderr = TRUE
+    )
 
-  if (
-    length(res) == 0 ||
-      any(grepl(
-        "not a module|no required module",
-        res,
-        ignore.case = TRUE
-      ))
-  ) {
-    return(NA_character_)
-  }
-  # Output is like: "github.com/apache/arrow/go/v18 v18.0.0"
-  version <- sub(
-    "^github\\.com/apache/arrow/go/v18\\s+",
-    "",
-    grep("^github\\.com/apache/arrow/go/v18", res, value = TRUE)
-  )
-  if (length(version) == 0) {
-    return(NA_character_)
-  }
-  version
+    if (
+      length(res) == 0 ||
+        any(grepl(
+          "not a module|no required module",
+          res,
+          ignore.case = TRUE
+        ))
+    ) {
+      return(NA_character_)
+    }
+    # Output is like: "github.com/apache/arrow/go/v18 v18.0.0"
+    version <- sub(
+      "^github\\.com/apache/arrow/go/v18\\s+",
+      "",
+      grep("^github\\.com/apache/arrow/go/v18", res, value = TRUE)
+    )
+    if (length(version) == 0) {
+      return(NA_character_)
+    }
+    version
+  })
 }

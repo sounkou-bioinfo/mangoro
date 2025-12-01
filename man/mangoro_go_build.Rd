@@ -4,7 +4,7 @@
 \alias{mangoro_go_build}
 \title{Compile a Go source file using the vendored dependencies}
 \usage{
- mangoro_go_build(src, out, gomaxprocs = 1, gocache = NULL, telemetry = "off", ...)
+mangoro_go_build(src, out, gomaxprocs = 1, gocache = NULL, ...)
 }
 \arguments{
 \item{src}{Path to the Go source file}
@@ -13,9 +13,9 @@
 
 \item{gomaxprocs}{Number of threads for Go build (sets GOMAXPROCS env variable)}
 
-\item{gocache}{Path to Go build cache directory. If NULL (default), uses a temporary directory to comply with CRAN policy. Set to NA to use the default Go cache location.}
-
-\item{telemetry}{Go telemetry mode. One of 'off', 'local', or 'on'. Default is 'off'. Controls the GOTELEMETRY environment variable during build.}
+\item{gocache}{Path to Go build cache directory. If NULL (default), uses a
+temporary directory to comply with CRAN policy. Set to NA to use the default
+Go cache location.}
 
 \item{...}{Additional arguments to pass to Go build}
 }
@@ -23,5 +23,23 @@
 Path to the compiled binary
 }
 \description{
-Compile a Go source file using the vendored dependencies
+Compiles a Go source file using the vendored dependencies from the mangoro package.
+
+To comply with CRAN policy, this function temporarily redirects several environment
+variables to prevent Go from writing to user directories:
+\itemize{
+\item \code{HOME} is set to a temporary directory because Go's telemetry system
+(introduced in Go 1.23+) writes data to \code{~/.config/go/telemetry}
+using \code{os.UserConfigDir()}, which cannot be disabled via environment
+variables alone.
+\item \code{GOCACHE} is set to a temporary directory to prevent build cache
+writes to \code{~/.cache/go-build}.
+\item \code{GOENV} is set to a temporary file to prevent config writes to
+\code{~/.config/go/env}.
+}
+All environment variables are restored and temporary directories cleaned up
+after the build completes.
+}
+\seealso{
+\url{https://go.dev/doc/telemetry} for Go telemetry documentation
 }

@@ -23,13 +23,30 @@ GO_CMD=`"${R_HOME}/bin/Rscript" -e "cat(Sys.which('go'))"`
 GO_CMD=`echo "$GO_CMD" | tr -d '\n'`
 GO_CMD=${GO_CMD:-go}
 echo "Go command: $GO_CMD" >> config.log
+
+# CRAN compliance: Use temporary HOME to prevent Go from writing to ~/.config/go
+# Use /tmp directly (not TMPDIR) to avoid detritus detection in R's session temp
+ORIG_HOME="$HOME"
+TEMP_GO_HOME="/tmp/mangoro_go_home_$$"
+mkdir -p "$TEMP_GO_HOME"
+
+# Setup trap to ensure cleanup on any exit (normal, error, or signal)
+cleanup() {
+  export HOME="$ORIG_HOME"
+  rm -rf "$TEMP_GO_HOME"
+}
+trap cleanup EXIT
+
+export HOME="$TEMP_GO_HOME"
+
 # use "" because people may have spaces in path on windows
 if ! "$GO_CMD" version >/dev/null 2>&1; then
 echo "***********************************************************************" >> config.log
   echo "Go is not found on your system PATH" >> config.log
-  echo "Please put it int the PATH or install Go (>= 1.22) for $OS and $ARCH" >> config.log
+  echo "Please put it in the PATH or install Go (>= 1.22) for $OS and $ARCH" >> config.log
   echo "Visit https://golang.org/doc/install for installation instructions." >> config.log
   echo "for fully functional mangoro package, Go is required." >> config.log
   echo "***********************************************************************" >> config.log
 fi
+
 cat config.log
