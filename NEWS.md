@@ -1,4 +1,9 @@
 
+# mangoro 0.2.13
+
+- Removed configure script
+
+
 # mangoro 0.2.12
 
 - Fixed leftover temp directory detritus: Configure scripts now use a predictable temp directory path (`${TMPDIR:-/tmp}/mangoro_go_home_$$`) instead of `mktemp -d` to ensure proper cleanup and avoid leaving temporary files in the check directory.

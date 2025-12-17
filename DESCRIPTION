@@ -1,6 +1,6 @@
 Package: mangoro
 Title: 'R'/'Go' 'IPC' using 'Nanomsg' Next Gen
-Version: 0.2.12
+Version: 0.2.13
 Authors@R: c(
     person(given = "Sounkou Mahamane", family = "Toure", 
     email = "sounkoutoure@gmail.com", role = c("aut", "cre")),
