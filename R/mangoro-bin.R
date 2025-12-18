@@ -3,7 +3,7 @@
 #' @import jsonlite
 NULL
 
-# Internal helper to run code with isolated Go environment (CRAN compliance)
+# Internal helper to run code with isolated Go environment
 # Temporarily sets HOME, GOCACHE, and GOENV to temp locations
 with_isolated_go_env <- function(expr) {
   # Save original environment
