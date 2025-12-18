@@ -59,11 +59,35 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 #' @return Path to the Go binary
 #' @export
 find_go <- function() {
-  go <- Sys.which("go")
-  if (!nzchar(go)) {
-    stop("Go not found in PATH")
+  opt_go <- getOption("mangoro.go_path", default = "")
+  env_go <- Sys.getenv("MANGORO_GO", unset = "")
+  candidates <- unique(c(opt_go, env_go, Sys.which("go")))
+  candidates <- candidates[nzchar(candidates)]
+
+  for (cand in candidates) {
+    go_path <- normalizePath(cand, mustWork = FALSE)
+    if (!file.exists(go_path) || file.access(go_path, 1) != 0) next
+    version_out <- try(system2(go_path, "version", stdout = TRUE, stderr = TRUE), silent = TRUE)
+    if (!inherits(version_out, "try-error")) return(go_path)
   }
-  go
+
+  platform <- Sys.info()
+  os_label <- switch(
+    tolower(platform[["sysname"]]),
+    darwin = "macOS",
+    windows = "Windows",
+    linux = "Linux",
+    platform[["sysname"]]
+  )
+  arch_label <- switch(
+    tolower(platform[["machine"]]),
+    aarch64 = "arm64",
+    platform[["machine"]]
+  )
+  stop(
+    "Go executable not found. Set options(mangoro.go_path=\"/full/path/to/go\") or MANGORO_GO env var, ",
+    "or add Go to PATH. Detected platform: ", os_label, " ", arch_label
+  )
 }
 
 #' Find the path to the mangoro vendor directory

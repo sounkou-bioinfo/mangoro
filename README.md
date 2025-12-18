@@ -33,6 +33,19 @@ install.packages('mangoro', repos = c('https://sounkou-bioinfo.r-universe.dev', 
 install.packages('mangoro')
 ```
 
+### Configuring Go path
+
+Go is required at runtime for IPC helpers. If `go` is not on your PATH, point
+mangoro to your Go binary explicitly:
+
+``` r
+options(mangoro.go_path = "/usr/local/go/bin/go")
+# or via env var
+Sys.setenv(MANGORO_GO = "/usr/local/go/bin/go")
+```
+These options are respected by helpers such as `mangoro_go_build()` and the
+package tests.
+
 ## On-the-fly Go compilation and echo
 
 Compile some go code on-the-fly from R using the `mangoro_go_build()`

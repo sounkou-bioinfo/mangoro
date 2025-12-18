@@ -18,7 +18,8 @@ Imports:
     nanoarrow,
     jsonlite
 Suggests:
-    processx
+    processx,
+    tinytest
 SystemRequirements: Go (https://golang.org), GNU make
 URL: https://github.com/sounkou-bioinfo/mangoro, https://sounkou-bioinfo.github.io/mangoro/
 BugReports: https://github.com/sounkou-bioinfo/mangoro/issues

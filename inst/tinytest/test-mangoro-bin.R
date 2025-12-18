@@ -2,11 +2,17 @@ library(nanonext)
 library(processx)
 library(nanoarrow)
 library(mangoro)
+library(tinytest)
 
 os <- tolower(Sys.info()[["sysname"]])
 arch <- tolower(Sys.info()[["machine"]])
-# skip test if Sys.which cannot find go
-if (nchar(Sys.which("go")) == 0) {
+
+safe_read <- function(proc, reader) {
+  tryCatch(reader(), error = function(e) "")
+}
+# skip test if Go not found via option/env/PATH
+go_path <- try(find_go(), silent = TRUE)
+if (inherits(go_path, "try-error")) {
   quit(status = 0)
 }
 # vendored mangos version
@@ -52,17 +58,13 @@ echo_proc <- processx::process$new(
   stdout = "|",
   stderr = "|"
 )
-on.exit(message(echo_proc$read_output()))
-on.exit(message(echo_proc$read_error()), add = TRUE)
+on.exit(message(safe_read(echo_proc, echo_proc$read_output)))
+on.exit(message(safe_read(echo_proc, echo_proc$read_error)), add = TRUE)
 on.exit(echo_proc$kill(), add = TRUE)
 Sys.sleep(5)
 if (!echo_proc$is_alive()) {
-  message("Go process output:\n")
-  message(echo_proc$read_output())
-  message("Go process error:\n")
-  message(echo_proc$read_error())
-  message(sprintf("this is a mangos bug %s please contact the package maintainer", paste0(os, "-", arch)))
-  quit(status = 0)
+  expect_true(TRUE, info = sprintf("Skipping: Go echo process not alive (%s-%s); output:\n%s", os, arch, safe_read(echo_proc, echo_proc$read_error)))
+  return(invisible(NULL))
 }
 sock <- nanonext::socket("req", dial = ipc_url)
 msg <- charToRaw("hello from R")
@@ -76,13 +78,8 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
   attempt <- attempt + 1
   message(echo_proc$is_alive())
   if (!echo_proc$is_alive()) {
-    message("Go process output:\n")
-    message(echo_proc$read_output())
-    message("Go process error:\n")
-    message(echo_proc$read_error())
-    message(sprintf("this is a mangos bug %s please contact the package maintainer", paste0(os, "-", arch)))
-    quit(status = 0)
-    break
+    expect_true(TRUE, info = sprintf("Skipping: Go echo process died during send (%s-%s); output:\n%s", os, arch, safe_read(echo_proc, echo_proc$read_error)))
+    return(invisible(NULL))
   }
 }
 message(send_result)
@@ -95,5 +92,17 @@ while (nanonext::is_error_value(rep) && attempt < max_attempts) {
   attempt <- attempt + 1
 }
 Sys.sleep(3)
-message(rawToChar(rep))
+if (nanonext::is_error_value(send_result)) {
+  expect_true(FALSE, info = sprintf("Send failed after %s attempts (%s-%s); proc output: %s", attempt, os, arch, safe_read(echo_proc, echo_proc$read_error)))
+  return(invisible(NULL))
+}
+if (nanonext::is_error_value(rep)) {
+  expect_true(FALSE, info = sprintf("Recv failed after %s attempts (%s-%s); proc output: %s", attempt, os, arch, safe_read(echo_proc, echo_proc$read_error)))
+  return(invisible(NULL))
+}
+if (!is.raw(rep)) {
+  expect_true(FALSE, info = sprintf("Response is not raw (class: %s)", paste(class(rep), collapse = ",")))
+  return(invisible(NULL))
+}
+expect_equal(rawToChar(rep), "hello from R [echoed by Go]")
 close(sock)
