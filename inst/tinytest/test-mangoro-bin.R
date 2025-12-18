@@ -63,7 +63,15 @@ on.exit(message(safe_read(echo_proc, echo_proc$read_error)), add = TRUE)
 on.exit(echo_proc$kill(), add = TRUE)
 Sys.sleep(5)
 if (!echo_proc$is_alive()) {
-  expect_true(TRUE, info = sprintf("Skipping: Go echo process not alive (%s-%s); output:\n%s", os, arch, safe_read(echo_proc, echo_proc$read_error)))
+  expect_true(
+    TRUE,
+    info = sprintf(
+      "Skipping: Go echo process not alive (%s-%s); output:\n%s",
+      os,
+      arch,
+      safe_read(echo_proc, echo_proc$read_error)
+    )
+  )
   return(invisible(NULL))
 }
 sock <- nanonext::socket("req", dial = ipc_url)
@@ -78,7 +86,15 @@ while (nanonext::is_error_value(send_result) && attempt < max_attempts) {
   attempt <- attempt + 1
   message(echo_proc$is_alive())
   if (!echo_proc$is_alive()) {
-    expect_true(TRUE, info = sprintf("Skipping: Go echo process died during send (%s-%s); output:\n%s", os, arch, safe_read(echo_proc, echo_proc$read_error)))
+    expect_true(
+      TRUE,
+      info = sprintf(
+        "Skipping: Go echo process died during send (%s-%s); output:\n%s",
+        os,
+        arch,
+        safe_read(echo_proc, echo_proc$read_error)
+      )
+    )
     return(invisible(NULL))
   }
 }
@@ -93,15 +109,39 @@ while (nanonext::is_error_value(rep) && attempt < max_attempts) {
 }
 Sys.sleep(3)
 if (nanonext::is_error_value(send_result)) {
-  expect_true(TRUE, info = sprintf("Skipping: send failed after %s attempts (%s-%s); proc output: %s", attempt, os, arch, safe_read(echo_proc, echo_proc$read_error)))
+  expect_true(
+    TRUE,
+    info = sprintf(
+      "Skipping: send failed after %s attempts (%s-%s); proc output: %s",
+      attempt,
+      os,
+      arch,
+      safe_read(echo_proc, echo_proc$read_error)
+    )
+  )
   return(invisible(NULL))
 }
 if (nanonext::is_error_value(rep)) {
-  expect_true(TRUE, info = sprintf("Skipping: recv failed after %s attempts (%s-%s); proc output: %s", attempt, os, arch, safe_read(echo_proc, echo_proc$read_error)))
+  expect_true(
+    TRUE,
+    info = sprintf(
+      "Skipping: recv failed after %s attempts (%s-%s); proc output: %s",
+      attempt,
+      os,
+      arch,
+      safe_read(echo_proc, echo_proc$read_error)
+    )
+  )
   return(invisible(NULL))
 }
 if (!is.raw(rep)) {
-  expect_true(TRUE, info = sprintf("Skipping: response is not raw (class: %s)", paste(class(rep), collapse = ",")))
+  expect_true(
+    TRUE,
+    info = sprintf(
+      "Skipping: response is not raw (class: %s)",
+      paste(class(rep), collapse = ",")
+    )
+  )
 } else {
   expect_equal(rawToChar(rep), "hello from R [echoed by Go]")
 }

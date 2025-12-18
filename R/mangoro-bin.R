@@ -25,9 +25,21 @@ with_isolated_go_env <- function(expr) {
   # Restore on exit
   on.exit(
     {
-      if (is.na(old_home)) Sys.unsetenv("HOME") else Sys.setenv(HOME = old_home)
-      if (is.na(old_gocache)) Sys.unsetenv("GOCACHE") else Sys.setenv(GOCACHE = old_gocache)
-      if (is.na(old_goenv)) Sys.unsetenv("GOENV") else Sys.setenv(GOENV = old_goenv)
+      if (is.na(old_home)) {
+        Sys.unsetenv("HOME")
+      } else {
+        Sys.setenv(HOME = old_home)
+      }
+      if (is.na(old_gocache)) {
+        Sys.unsetenv("GOCACHE")
+      } else {
+        Sys.setenv(GOCACHE = old_gocache)
+      }
+      if (is.na(old_goenv)) {
+        Sys.unsetenv("GOENV")
+      } else {
+        Sys.setenv(GOENV = old_goenv)
+      }
       unlink(temp_home, recursive = TRUE, force = TRUE)
     },
     add = TRUE
@@ -76,8 +88,13 @@ find_go <- function() {
 
   for (cand in candidates) {
     go_path <- normalizePath(cand, mustWork = FALSE)
-    if (!file.exists(go_path) || file.access(go_path, 1) != 0) next
-    version_out <- try(system2(go_path, "version", stdout = TRUE, stderr = TRUE), silent = TRUE)
+    if (!file.exists(go_path) || file.access(go_path, 1) != 0) {
+      next
+    }
+    version_out <- try(
+      system2(go_path, "version", stdout = TRUE, stderr = TRUE),
+      silent = TRUE
+    )
     if (!inherits(version_out, "try-error")) return(go_path)
   }
 
@@ -96,7 +113,10 @@ find_go <- function() {
   )
   stop(
     "Go executable not found. Set options(mangoro.go_path=\"/full/path/to/go\") or MANGORO_GO env var, ",
-    "or add Go to PATH. Detected platform: ", os_label, " ", arch_label
+    "or add Go to PATH. Detected platform: ",
+    os_label,
+    " ",
+    arch_label
   )
 }
 

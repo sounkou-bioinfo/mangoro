@@ -77,7 +77,9 @@ test_transpose_concurrent <- function(client_id, ipc_url) {
   # Create unique matrix for this client - use numeric (float64)
   mat <- matrix(as.numeric(client_id:(client_id + 11)), nrow = 3, ncol = 4)
   input_df <- as.data.frame(mat)
-  for (j in seq_along(input_df)) input_df[[j]] <- as.numeric(input_df[[j]])
+  for (j in seq_along(input_df)) {
+    input_df[[j]] <- as.numeric(input_df[[j]])
+  }
   colnames(input_df) <- paste0("V", seq_len(ncol(mat)))
 
   cat(sprintf(
