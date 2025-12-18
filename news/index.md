@@ -1,5 +1,12 @@
 # Changelog
 
+## mangoro 0.2.13
+
+- Added Go path overrides (`options(mangoro.go_path)` / `MANGORO_GO`)
+  with clearer platform messaging; Go path checks now occur at runtime
+  only.
+- Add tinytest `tests/tinytest.R`
+
 ## mangoro 0.2.12
 
 - Fixed leftover temp directory detritus: Configure scripts now use a
