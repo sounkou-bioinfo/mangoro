@@ -34,6 +34,28 @@ install.packages('mangoro', repos = c('https://sounkou-bioinfo.r-universe.dev', 
 install.packages('mangoro')
 ```
 
+### Configuring Go path
+
+Go is required at runtime for IPC helpers. If `go` is not on your PATH, point
+mangoro to your Go binary explicitly:
+
+```r
+options(mangoro.go_path = "/usr/local/go/bin/go")
+# or via env var
+Sys.setenv(MANGORO_GO = "/usr/local/go/bin/go")
+```
+These options are respected by helpers such as `mangoro_go_build()` and the
+package tests.
+
+### Running tests
+
+Tests use `tinytest` and run automatically via `tests/tinytest.R` during
+`R CMD check`. You can run them manually with:
+
+```r
+tinytest::test_package("mangoro", testdir = system.file("tinytest", package = "mangoro"))
+```
+
 ## On-the-fly Go compilation and echo
 
 Compile some go code on-the-fly from R using the `mangoro_go_build()` function. This uses the vendored go code in [inst/go/vendor](inst/go/vendor)

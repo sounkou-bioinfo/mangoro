@@ -2,7 +2,7 @@
 # mangoro 0.2.13
 
 - Added Go path overrides (`options(mangoro.go_path)` / `MANGORO_GO`) with clearer platform messaging; Go path checks now occur at runtime only.
-- Tests now run via tinytest with explicit expectations on the Go echo roundtrip.
+- Add tinytest `tests/tinytest.R` 
 
 
 # mangoro 0.2.12

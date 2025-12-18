@@ -10,5 +10,12 @@ find_go()
 Path to the Go binary
 }
 \description{
-Find the path to the Go executable
+Locates a usable \code{go} binary for runtime IPC helpers. Resolution order:
+\enumerate{
+\item \code{options(mangoro.go_path)}
+\item \code{Sys.getenv("MANGORO_GO")}
+\item \code{Sys.which("go")}
+}
+Candidates are validated by running \verb{go version}. Errors reference the
+detected OS/arch using user-friendly labels (e.g., macOS arm64).
 }

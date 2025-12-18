@@ -46,6 +46,15 @@ Sys.setenv(MANGORO_GO = "/usr/local/go/bin/go")
 These options are respected by helpers such as `mangoro_go_build()` and the
 package tests.
 
+### Running tests
+
+Tests use `tinytest` and run automatically via `tests/tinytest.R` during
+`R CMD check`. You can run them manually with:
+
+``` r
+tinytest::test_package("mangoro", testdir = system.file("tinytest", package = "mangoro"))
+```
+
 ## On-the-fly Go compilation and echo
 
 Compile some go code on-the-fly from R using the `mangoro_go_build()`

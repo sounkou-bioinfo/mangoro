@@ -56,6 +56,16 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 
 #' Find the path to the Go executable
 #'
+#' @description
+#' Locates a usable `go` binary for runtime IPC helpers. Resolution order:
+#' \enumerate{
+#'   \item `options(mangoro.go_path)`
+#'   \item `Sys.getenv("MANGORO_GO")`
+#'   \item `Sys.which("go")`
+#' }
+#' Candidates are validated by running `go version`. Errors reference the
+#' detected OS/arch using user-friendly labels (e.g., macOS arm64).
+#'
 #' @return Path to the Go binary
 #' @export
 find_go <- function() {

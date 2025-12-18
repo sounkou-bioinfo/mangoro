@@ -2,7 +2,7 @@
 # vendorMangos.sh: Vendors go.nanomsg.org/mangos/v3 into src/go for local builds
 # Usage: bash vendorMangos.sh
 
-set -xe
+set -x
 cd "$(dirname "$0")/../inst/go"
 
 # Initialize go module if not present
