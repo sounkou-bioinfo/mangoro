@@ -22,7 +22,7 @@ all: check
 
 rd:
 	R -e 'roxygen2::roxygenize()'
-build:  install_deps
+build:
 	R CMD build .
 
 check: build
@@ -45,7 +45,7 @@ dev-install:
 	R CMD INSTALL --preclean .
 
 test: install
-	R -e "tinytest::test_package('$(PKGNAME)', testdir = 'inst/tinytest')"
+	RUN_MANGORO_TINYTEST=TRUE R -e "tinytest::test_package('$(PKGNAME)', testdir = 'inst/tinytest')"
 
 rdm: install
 	R -e "rmarkdown::render('README.Rmd')"
