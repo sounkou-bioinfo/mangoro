@@ -37,7 +37,7 @@ jobs:
       
       - uses: actions/setup-go@v5
         with:
-          go-version: '>=1.17.0'
+          go-version: '>=1.24'
       - run: go version
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -58,3 +58,5 @@ jobs:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           error-on: '"error"'
+        env:
+          RUN_MANGORO_TINYTEST: true

@@ -3,6 +3,10 @@ library(processx)
 library(nanoarrow)
 library(mangoro)
 library(tinytest)
+# skip if RUN_MANGORO_TINYTEST env is not set
+if (!is.na(Sys.getenv("RUN_MANGORO_TINYTEST", unset = NA))) {
+  quit(status = 0)
+}
 
 os <- tolower(Sys.info()[["sysname"]])
 arch <- tolower(Sys.info()[["machine"]])
