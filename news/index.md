@@ -1,14 +1,15 @@
 # Changelog
 
-## mangoro 0.2.13
+## mangoro 0.2.14
 
 - Skips tests by default by checking environment variable
-  “RUN_MANGORO_TINYTEST” \# mangoro 0.2.13
+  “RUN_MANGORO_TINYTEST”
+
+## mangoro 0.2.13
 
 - Added Go path overrides (`options(mangoro.go_path)` / `MANGORO_GO`)
   with clearer platform messaging; Go path checks now occur at runtime
   only.
-
 - Add tinytest `tests/tinytest.R`
 
 ## mangoro 0.2.12
