@@ -97,8 +97,11 @@ go_binary_candidates <- function() {
   sysname <- tolower(Sys.info()[["sysname"]])
   if (sysname == "darwin") {
     mac_defaults <- c(
+      "/Library/Frameworks/Go.framework/Versions/Current/bin/go",
       "/usr/local/go/bin/go",
+      "/usr/local/opt/go/bin/go",
       "/usr/local/bin/go",
+      "/opt/homebrew/opt/go/bin/go",
       "/opt/homebrew/bin/go"
     )
     mac_globs <- c(
@@ -109,9 +112,23 @@ go_binary_candidates <- function() {
   } else if (sysname == "windows") {
     win_defaults <- c(
       "C:/Program Files/Go/bin/go.exe",
+      "C:/Program Files (x86)/Go/bin/go.exe",
       "C:/Go/bin/go.exe"
     )
-    candidates <- c(candidates, win_defaults)
+    rtools_defaults <- c(
+      "C:/rtools45/usr/bin/go.exe",
+      "C:/rtools45/x86_64-w64-mingw32.static.posix/bin/go.exe",
+      "C:/rtools44/usr/bin/go.exe",
+      "C:/rtools44/x86_64-w64-mingw32.static.posix/bin/go.exe",
+      "C:/rtools43/usr/bin/go.exe",
+      "C:/rtools42/usr/bin/go.exe"
+    )
+    msys_defaults <- c(
+      "C:/msys64/usr/bin/go.exe",
+      "C:/msys64/mingw64/bin/go.exe",
+      "C:/msys64/mingw32/bin/go.exe"
+    )
+    candidates <- c(candidates, win_defaults, rtools_defaults, msys_defaults)
   } else {
     linux_defaults <- c(
       "/usr/local/go/bin/go",
@@ -195,6 +212,11 @@ go_version_satisfies <- function(found, required) {
 
 find_go <- function() {
   min_go <- mangoro_min_go_version()
+  opt_go <- getOption("mangoro.go_path", default = "")
+  env_go <- Sys.getenv("MANGORO_GO", unset = "")
+  explicit <- unique(c(opt_go, env_go))
+  explicit <- explicit[nzchar(explicit)]
+
   candidates <- go_binary_candidates()
   too_old <- character()
 
@@ -213,6 +235,14 @@ find_go <- function() {
     if (!isTRUE(parsed$devel) && !go_version_satisfies(parsed$version, min_go)) {
       too_old <- c(too_old, sprintf("%s (go %s)", go_path, parsed$version))
       next
+    }
+    if (length(explicit) == 0 || !any(normalizePath(explicit, mustWork = FALSE) == go_path)) {
+      warning(
+        "Using Go from PATH or defaults: ",
+        go_path,
+        ". Set mangoro.go_path or MANGORO_GO to silence this warning.",
+        call. = FALSE
+      )
     }
     return(go_path)
   }
