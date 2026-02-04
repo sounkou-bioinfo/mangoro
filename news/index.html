@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mangoro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.14.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,13 @@
       <small>Source: <a href="https://github.com/sounkou-bioinfo/mangoro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.15" id="mangoro-0215">mangoro 0.2.15<a class="anchor" aria-label="anchor" href="#mangoro-0215"></a></h2>
+<ul><li>Add <code><a href="../reference/go_binary_candidates.html">go_binary_candidates()</a></code> and strengthen Go discovery/validation (platform-specific search paths, <code>go version</code> validation, and minimum Go version check).</li>
+<li>Tinytest now checks Go candidates first and emits a short warning before skipping when Go is unavailable or unsuitable.</li>
+<li>
+<code>find_go()</code> now warns when it falls back to PATH or platform defaults instead of an explicit user-provided Go path.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.14" id="mangoro-0214">mangoro 0.2.14<a class="anchor" aria-label="anchor" href="#mangoro-0214"></a></h2>
 <ul><li>Skips tests by default by checking environment variable “RUN_MANGORO_TINYTEST”</li>

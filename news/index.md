@@ -1,5 +1,16 @@
 # Changelog
 
+## mangoro 0.2.15
+
+- Add
+  [`go_binary_candidates()`](https://sounkou-bioinfo.github.io/mangoro/reference/go_binary_candidates.md)
+  and strengthen Go discovery/validation (platform-specific search
+  paths, `go version` validation, and minimum Go version check).
+- Tinytest now checks Go candidates first and emits a short warning
+  before skipping when Go is unavailable or unsuitable.
+- `find_go()` now warns when it falls back to PATH or platform defaults
+  instead of an explicit user-provided Go path.
+
 ## mangoro 0.2.14
 
 - Skips tests by default by checking environment variable

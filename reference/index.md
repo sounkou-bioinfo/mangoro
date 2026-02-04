@@ -4,14 +4,14 @@
 
 - [`create_ipc_path()`](https://sounkou-bioinfo.github.io/mangoro/reference/create_ipc_path.md)
   : Create a unique IPC path for mangoro
-- [`find_go()`](https://sounkou-bioinfo.github.io/mangoro/reference/find_go.md)
-  : Find the path to the Go executable
 - [`find_mangoro_vendor()`](https://sounkou-bioinfo.github.io/mangoro/reference/find_mangoro_vendor.md)
   : Find the path to the mangoro vendor directory
 - [`get_arrow_go_version()`](https://sounkou-bioinfo.github.io/mangoro/reference/get_arrow_go_version.md)
   : Get the version of vendored Arrow Go using Go tooling (no jsonlite)
 - [`get_mangos_version()`](https://sounkou-bioinfo.github.io/mangoro/reference/get_mangos_version.md)
   : Get the version of vendored mangos using Go tooling (no jsonlite)
+- [`go_binary_candidates()`](https://sounkou-bioinfo.github.io/mangoro/reference/go_binary_candidates.md)
+  : Determine candidate Go binaries
 - [`mangoro_go_build()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.md)
   : Compile a Go source file using the vendored dependencies
 - [`mangoro_http_start()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_start.md)
@@ -20,6 +20,8 @@
   : Get HTTP server status via RPC
 - [`mangoro_http_stop()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_stop.md)
   : Stop the HTTP file server via RPC
+- [`mangoro_min_go_version()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_min_go_version.md)
+  : Find the path to the Go executable
 - [`mangoro_pack_int32()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_pack_int32.md)
   : Pack a 32-bit integer to raw bytes (big-endian)
 - [`mangoro_rpc_call()`](https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call.md)

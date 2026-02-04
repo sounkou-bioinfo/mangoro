@@ -6,15 +6,16 @@
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/news/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/create_ipc_path.html</loc></url>
-<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/find_go.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/find_mangoro_vendor.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/get_arrow_go_version.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/get_mangos_version.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/go_binary_candidates.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_go_build.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_start.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_status.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_http_stop.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_min_go_version.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_pack_int32.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/mangoro/reference/mangoro_rpc_call_message.html</loc></url>
