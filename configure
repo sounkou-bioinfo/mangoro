@@ -1,6 +1,6 @@
 #!/bin/sh
-# check the go installation with go version command
-# before which we use R do detect architecture
+# We just restore flatfbuf 
+# Really we shoud just use a tarball for inst/go and unpack it
  
  > config.log
 
