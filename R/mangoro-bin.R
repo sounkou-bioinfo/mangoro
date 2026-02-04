@@ -67,6 +67,64 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 }
 
 
+#' Determine candidate Go binaries
+#'
+#' @description
+#' Builds a list of candidate `go` paths from package options, environment
+#' variables, PATH entries, and platform-specific defaults. This function does
+#' not validate candidates.
+#'
+#' @return Character vector of candidate Go binary paths
+#' @export
+go_binary_candidates <- function() {
+  go_exe <- if (.Platform$OS.type == "windows") "go.exe" else "go"
+
+  opt_go <- getOption("mangoro.go_path", default = "")
+  env_go <- Sys.getenv("MANGORO_GO", unset = "")
+  goroot <- Sys.getenv("GOROOT", unset = "")
+
+  candidates <- unique(c(opt_go, env_go))
+  if (nzchar(goroot)) {
+    candidates <- c(candidates, file.path(goroot, "bin", go_exe))
+  }
+
+  path_env <- Sys.getenv("PATH", unset = "")
+  if (nzchar(path_env)) {
+    path_dirs <- strsplit(path_env, .Platform$path.sep, fixed = TRUE)[[1]]
+    candidates <- c(candidates, file.path(path_dirs, go_exe))
+  }
+
+  sysname <- tolower(Sys.info()[["sysname"]])
+  if (sysname == "darwin") {
+    mac_defaults <- c(
+      "/usr/local/go/bin/go",
+      "/usr/local/bin/go",
+      "/opt/homebrew/bin/go"
+    )
+    mac_globs <- c(
+      "/usr/local/Cellar/go/*/bin/go",
+      "/opt/homebrew/Cellar/go/*/bin/go"
+    )
+    candidates <- c(candidates, mac_defaults, Sys.glob(mac_globs))
+  } else if (sysname == "windows") {
+    win_defaults <- c(
+      "C:/Program Files/Go/bin/go.exe",
+      "C:/Go/bin/go.exe"
+    )
+    candidates <- c(candidates, win_defaults)
+  } else {
+    linux_defaults <- c(
+      "/usr/local/go/bin/go",
+      "/usr/local/bin/go",
+      "/usr/bin/go"
+    )
+    candidates <- c(candidates, linux_defaults)
+  }
+
+  candidates <- candidates[nzchar(candidates)]
+  unique(normalizePath(candidates, mustWork = FALSE))
+}
+
 #' Find the path to the Go executable
 #'
 #' @description
@@ -74,18 +132,71 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 #' \enumerate{
 #'   \item `options(mangoro.go_path)`
 #'   \item `Sys.getenv("MANGORO_GO")`
-#' 
+#'   \item `PATH` entries and platform defaults via `go_binary_candidates()`
 #' }
-#' Candidates are validated by running `go version`. Errors reference the
+#' Candidates are validated by running `go version` and checking the minimum
+#' required Go version from the vendored `go.mod`. Errors reference the
 #' detected OS/arch using user-friendly labels (e.g., macOS arm64).
 #'
 #' @return Path to the Go binary
 #' @export
+
+mangoro_min_go_version <- function() {
+  gomod <- system.file("go/go.mod", package = "mangoro")
+  if (!nzchar(gomod)) {
+    gomod <- file.path("inst", "go", "go.mod")
+    if (!file.exists(gomod)) {
+      return(NA_character_)
+    }
+  }
+  lines <- readLines(gomod, warn = FALSE)
+  line <- grep("^\\s*go\\s+[0-9]+(\\.[0-9]+)?", lines, value = TRUE)
+  if (length(line) == 0) {
+    return(NA_character_)
+  }
+  sub("^\\s*go\\s+", "", line[[1]])
+}
+
+parse_go_version <- function(version_out) {
+  out <- paste(version_out, collapse = " ")
+  match <- regexec("go version (go[0-9]+\\.[0-9]+(\\.[0-9]+)?|devel)", out)
+  token <- regmatches(out, match)[[1]]
+  if (length(token) == 0) {
+    return(list(valid = FALSE))
+  }
+  if (identical(token[[2]], "devel")) {
+    return(list(valid = TRUE, devel = TRUE, version = NA_character_))
+  }
+  list(valid = TRUE, devel = FALSE, version = sub("^go", "", token[[2]]))
+}
+
+go_version_satisfies <- function(found, required) {
+  if (is.na(required) || !nzchar(required)) {
+    return(TRUE)
+  }
+  if (is.na(found) || !nzchar(found)) {
+    return(FALSE)
+  }
+  parse <- function(x) {
+    vals <- as.integer(strsplit(x, ".", fixed = TRUE)[[1]])
+    vals <- c(vals, rep(0L, 3L - length(vals)))[1:3]
+    vals
+  }
+  f <- parse(found)
+  r <- parse(required)
+  if (f[1] != r[1]) {
+    return(f[1] > r[1])
+  }
+  if (f[2] != r[2]) {
+    return(f[2] > r[2])
+  }
+  f[3] >= r[3]
+}
+
 find_go <- function() {
-  opt_go <- getOption("mangoro.go_path", default = "")
-  env_go <- Sys.getenv("MANGORO_GO", unset = "")
-  candidates <- unique(c(opt_go, env_go))
-  candidates <- candidates[nzchar(candidates)]
+  min_go <- mangoro_min_go_version()
+  candidates <- go_binary_candidates()
+  too_old <- character()
 
   for (cand in candidates) {
     go_path <- normalizePath(cand, mustWork = FALSE)
@@ -96,29 +207,44 @@ find_go <- function() {
       system2(go_path, "version", stdout = TRUE, stderr = TRUE),
       silent = TRUE
     )
-    if (!inherits(version_out, "try-error")) return(go_path)
+    if (inherits(version_out, "try-error")) next
+    parsed <- parse_go_version(version_out)
+    if (!isTRUE(parsed$valid)) next
+    if (!isTRUE(parsed$devel) && !go_version_satisfies(parsed$version, min_go)) {
+      too_old <- c(too_old, sprintf("%s (go %s)", go_path, parsed$version))
+      next
+    }
+    return(go_path)
   }
 
   platform <- Sys.info()
-  os_label <- switch(
-    tolower(platform[["sysname"]]),
+  os_label <- switch(tolower(platform[["sysname"]]),
     darwin = "macOS",
     windows = "Windows",
     linux = "Linux",
     platform[["sysname"]]
   )
-  arch_label <- switch(
-    tolower(platform[["machine"]]),
+  arch_label <- switch(tolower(platform[["machine"]]),
     aarch64 = "arm64",
     platform[["machine"]]
   )
-  stop(
+  msg <- paste0(
     "Go executable not found. Set options(mangoro.go_path=\"/full/path/to/go\") or MANGORO_GO env var, ",
     "or add Go to PATH. Detected platform: ",
     os_label,
     " ",
     arch_label
   )
+  if (length(too_old) > 0 && !is.na(min_go)) {
+    msg <- paste0(
+      msg,
+      ". Found Go binaries but version is too old (requires >= ",
+      min_go,
+      "): ",
+      paste(too_old, collapse = ", ")
+    )
+  }
+  stop(msg)
 }
 
 #' Find the path to the mangoro vendor directory

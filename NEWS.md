@@ -1,4 +1,8 @@
 
+# mangoro 0.2.15
+
+- Add `go_binary_candidates()` and strengthen Go discovery/validation (platform-specific search paths, `go version` validation, and minimum Go version check).
+
 # mangoro 0.2.14
 
 - Skips tests by default by checking environment variable "RUN_MANGORO_TINYTEST"
