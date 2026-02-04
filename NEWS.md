@@ -2,6 +2,7 @@
 # mangoro 0.2.15
 
 - Add `go_binary_candidates()` and strengthen Go discovery/validation (platform-specific search paths, `go version` validation, and minimum Go version check).
+- Tinytest now checks Go candidates first and emits a short warning before skipping when Go is unavailable or unsuitable.
 
 # mangoro 0.2.14
 
