@@ -66,6 +66,7 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
   ipc_url
 }
 
+
 #' Find the path to the Go executable
 #'
 #' @description
@@ -73,7 +74,7 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 #' \enumerate{
 #'   \item `options(mangoro.go_path)`
 #'   \item `Sys.getenv("MANGORO_GO")`
-#'   \item `Sys.which("go")`
+#' 
 #' }
 #' Candidates are validated by running `go version`. Errors reference the
 #' detected OS/arch using user-friendly labels (e.g., macOS arm64).
@@ -83,7 +84,7 @@ create_ipc_path <- function(prefix = "mangoro-echo") {
 find_go <- function() {
   opt_go <- getOption("mangoro.go_path", default = "")
   env_go <- Sys.getenv("MANGORO_GO", unset = "")
-  candidates <- unique(c(opt_go, env_go, Sys.which("go")))
+  candidates <- unique(c(opt_go, env_go))
   candidates <- candidates[nzchar(candidates)]
 
   for (cand in candidates) {
