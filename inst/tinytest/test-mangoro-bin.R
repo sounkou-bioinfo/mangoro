@@ -10,12 +10,7 @@ arch <- tolower(Sys.info()[["machine"]])
 safe_read <- function(proc, reader) {
   tryCatch(reader(), error = function(e) "")
 }
-# skip test if Go not found via option/env/PATH
-candidates <- go_binary_candidates()
-if (length(candidates) == 0) {
-  warning("Skipping tinytest: Go not found. Set mangoro.go_path or MANGORO_GO, or add Go to PATH.")
-  quit(status = 0)
-}
+
 go_path <- try(find_go(), silent = TRUE)
 if (inherits(go_path, "try-error")) {
   warning("Skipping tinytest: Go not suitable for this package. Set mangoro.go_path or MANGORO_GO, or add Go to PATH.")

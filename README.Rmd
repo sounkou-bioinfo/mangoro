@@ -30,8 +30,6 @@ Beside being the way mangos is said in [bambara](https://bm.wikipedia.org/wiki/M
 ```r
 # via r-universe
 install.packages('mangoro', repos = c('https://sounkou-bioinfo.r-universe.dev', 'https://cloud.r-project.org'))
-# For CRAN release
-install.packages('mangoro')
 ```
 
 ### Configuring Go path
