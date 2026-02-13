@@ -11,11 +11,13 @@ safe_read <- function(proc, reader) {
   tryCatch(reader(), error = function(e) "")
 }
 
-go_path <- try(find_go(), silent = TRUE)
-if (inherits(go_path, "try-error")) {
-  warning("Skipping tinytest: Go not suitable for this package. Set mangoro.go_path or MANGORO_GO, or add Go to PATH.")
-  quit(status = 0)
-}
+go_path <- tryCatch(mangoro:::find_go(),
+  error = function(e) {
+    message("find go error: ", e$message)
+    exit_file(sprintf("Skipping: Go toolchain not found (%s-%s)", os, arch))
+  }
+)
+
 # vendored mangos version
 get_mangos_version()
 go_echo_code <- paste(
